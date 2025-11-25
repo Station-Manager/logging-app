@@ -1,0 +1,9 @@
+version: '3'
+
+vars:
+  MODULE_NAME: "Logging App"
+
+includes:
+  version: ../Taskfile.version.yml
+  production: ../Taskfile.prod.yml
+
