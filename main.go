@@ -40,7 +40,16 @@ func main() {
 		os.Exit(ExitContainerInit)
 	}
 
+	facade, err := getFacadeService()
+	if err != nil {
+		_, _ = fmt.Fprintf(os.Stderr, "failed to get facade service: %v\n", err)
+		os.Exit(ExitFacadeService)
+	}
+
 	startup := func(ctx context.Context) {
+		if err = facade.Start(); err != nil {
+			panic(err)
+		}
 	}
 
 	shutdown := func(ctx context.Context) {
@@ -64,15 +73,17 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		Menu:                             nil,
-		Logger:                           nil,
-		LogLevel:                         logger.WARNING,
-		LogLevelProduction:               logger.ERROR,
-		OnStartup:                        startup,
-		OnDomReady:                       nil,
-		OnShutdown:                       shutdown,
-		OnBeforeClose:                    nil,
-		Bind:                             []interface{}{},
+		Menu:               nil,
+		Logger:             nil,
+		LogLevel:           logger.WARNING,
+		LogLevelProduction: logger.ERROR,
+		OnStartup:          startup,
+		OnDomReady:         nil,
+		OnShutdown:         shutdown,
+		OnBeforeClose:      nil,
+		Bind: []interface{}{
+			facade,
+		},
 		EnumBind:                         []interface{}{},
 		WindowStartState:                 options.Normal,
 		ErrorFormatter:                   nil,
