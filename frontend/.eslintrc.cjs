@@ -1,7 +1,44 @@
 module.exports = {
-  // ...existing code...
+  root: true,
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    sourceType: 'module',
+    ecmaVersion: 'latest',
+    project: ['./tsconfig.json'],
+    tsconfigRootDir: __dirname,
+  },
+  env: {
+    browser: true,
+    es2021: true,
+  },
+  plugins: ['@typescript-eslint', 'svelte'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:@typescript-eslint/recommended-type-checked',
+    'plugin:svelte/recommended',
+    'prettier',
+  ],
+  ignorePatterns: ['src/lib/wailsjs/**'],
+  overrides: [
+    {
+      files: ['*.svelte'],
+      parser: 'svelte-eslint-parser',
+      parserOptions: {
+        parser: '@typescript-eslint/parser',
+        extraFileExtensions: ['.svelte'],
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
+      },
+    },
+    {
+      files: ['**/*.d.ts', 'src/lib/wailsjs/**/*'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off',
+      },
+    },
+  ],
   rules: {
-    // ...existing rules...
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -30,4 +67,3 @@ module.exports = {
     ],
   },
 };
-

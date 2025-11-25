@@ -15,12 +15,18 @@ tasks:
     cmds:
       - echo "Running..."
       - go vet ./...
+      - task: format
       - wails dev -ldflags "-X main.version=Dev"
 
   update:
-     cmds:
+    cmds:
       - go get -u
       - go mod tidy
       - go mod verify
       - task: default
 
+  format:
+    dir: frontend
+    cmds:
+      - npm run format
+      - npm run lint
