@@ -8,6 +8,7 @@ import (
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
+	"github.com/Station-Manager/types"
 	"sync"
 	"sync/atomic"
 )
@@ -159,4 +160,33 @@ func (s *Service) Stop() error {
 	s.started.Store(false)
 
 	return nil
+}
+
+// FetchUiConfig retrieves the UI configuration object. It returns an error if the service is not initialized, or the underlying
+// ConfigService returns an error.
+func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
+	const op errors.Op = "facade.Service.UiConfig"
+
+	if !s.initialized.Load() {
+		return nil, errors.New(op).Msg(errMsgServiceNotInit)
+	}
+
+	requiredCfg, err := s.ConfigService.RequiredConfigs()
+	if err != nil {
+		return nil, errors.New(op).Err(err)
+	}
+
+	return &types.UiConfig{
+		DefaultRigID: requiredCfg.DefaultRigID,
+	}, nil
+}
+
+func (s *Service) FetchCatStateValues() (map[string]map[string]string, error) {
+	const op errors.Op = "facade.Service.FetchCatStateValues"
+
+	if !s.initialized.Load() {
+		return nil, errors.New(op).Msg(errMsgServiceNotInit)
+	}
+
+	return nil, nil
 }

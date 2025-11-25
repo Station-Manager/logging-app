@@ -9,6 +9,7 @@ require (
 	github.com/Station-Manager/errors v0.0.5
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.7
+	github.com/Station-Manager/types v0.0.25
 	github.com/Station-Manager/utils v0.0.2
 	github.com/wailsapp/wails/v2 v2.11.0
 )
@@ -16,7 +17,6 @@ require (
 require (
 	github.com/Station-Manager/adapters v0.0.10 // indirect
 	github.com/Station-Manager/serial v0.0.4 // indirect
-	github.com/Station-Manager/types v0.0.25 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect
 	github.com/aarondl/randomize v0.0.2 // indirect
