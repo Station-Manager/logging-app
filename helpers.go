@@ -1,8 +1,12 @@
 package main
 
 import (
+	"github.com/Station-Manager/config"
+	"github.com/Station-Manager/database"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
+	"github.com/Station-Manager/logging"
+	"reflect"
 	"strings"
 )
 
@@ -12,6 +16,15 @@ func initializeContainer(workingDir string) error {
 	container = iocdi.New()
 
 	if err := container.RegisterInstance("workingdir", workingDir); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(config.ServiceName, reflect.TypeOf((*config.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(logging.ServiceName, reflect.TypeOf((*logging.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(database.ServiceName, reflect.TypeOf((*database.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 
