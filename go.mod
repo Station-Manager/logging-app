@@ -14,8 +14,8 @@ require (
 
 require (
 	github.com/Station-Manager/adapters v0.0.10 // indirect
-	github.com/Station-Manager/cat v0.0.0-20251124075701-6e76d39602b7 // indirect
-	github.com/Station-Manager/types v0.0.23 // indirect
+	github.com/Station-Manager/cat v0.0.2 // indirect
+	github.com/Station-Manager/types v0.0.24 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect
 	github.com/aarondl/randomize v0.0.2 // indirect
@@ -73,7 +73,7 @@ require (
 	golang.org/x/text v0.31.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
-	modernc.org/libc v1.67.0 // indirect
+	modernc.org/libc v1.67.1 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.40.1 // indirect

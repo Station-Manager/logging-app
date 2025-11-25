@@ -14,8 +14,13 @@ tasks:
       - .env
     cmds:
       - echo "Running..."
+      - go vet ./...
+      - wails dev -ldflags "-X main.version=Dev"
+
+  update:
+     cmds:
       - go get -u
       - go mod tidy
       - go mod verify
-      - go vet ./...
-      - wails dev -ldflags "-X main.version=Dev"
+      - task: default
+
