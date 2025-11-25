@@ -7,3 +7,15 @@ includes:
   version: ../Taskfile.version.yml
   production: ../Taskfile.prod.yml
 
+tasks:
+  default:
+    desc: "Development build of {{.MODULE_NAME}}"
+    env_files:
+      - .env
+    cmds:
+      - echo "Running..."
+      - go get -u
+      - go mod tidy
+      - go mod verify
+      - go vet ./...
+      - wails dev -ldflags "-X main.version=Dev"
