@@ -47,12 +47,15 @@ func main() {
 	}
 
 	startup := func(ctx context.Context) {
-		if err = facade.Start(); err != nil {
+		if err = facade.Start(ctx); err != nil {
 			panic(err)
 		}
 	}
 
 	shutdown := func(ctx context.Context) {
+		if err = facade.Stop(); err != nil {
+			panic(err)
+		}
 	}
 
 	opts := &options.App{

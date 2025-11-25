@@ -3,6 +3,7 @@ module github.com/Station-Manager/logging-app
 go 1.25
 
 require (
+	github.com/Station-Manager/cat v0.0.2
 	github.com/Station-Manager/config v0.0.12
 	github.com/Station-Manager/database v0.0.11
 	github.com/Station-Manager/errors v0.0.5
@@ -14,7 +15,7 @@ require (
 
 require (
 	github.com/Station-Manager/adapters v0.0.10 // indirect
-	github.com/Station-Manager/cat v0.0.2 // indirect
+	github.com/Station-Manager/serial v0.0.4 // indirect
 	github.com/Station-Manager/types v0.0.24 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect

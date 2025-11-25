@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
 	"github.com/Station-Manager/database"
 	"github.com/Station-Manager/errors"
@@ -29,6 +30,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(facade.ServiceName, reflect.TypeOf((*facade.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(cat.ServiceName, reflect.TypeOf((*cat.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 
