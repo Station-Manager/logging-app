@@ -1,5 +1,7 @@
 version: '3'
 
+dotenv: ['.env']
+
 vars:
   MODULE_NAME: "Logging App"
 
@@ -10,8 +12,7 @@ includes:
 tasks:
   default:
     desc: "Development build of {{.MODULE_NAME}}"
-    env_files:
-      - .env
+
     cmds:
       - echo "Running..."
       - go vet ./...

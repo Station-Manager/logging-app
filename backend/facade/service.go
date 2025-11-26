@@ -181,6 +181,7 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 	}, nil
 }
 
+// FetchCatStateValues retrieves the cat state values from the ConfigService.
 func (s *Service) FetchCatStateValues() (map[string]map[string]string, error) {
 	const op errors.Op = "facade.Service.FetchCatStateValues"
 
@@ -188,5 +189,10 @@ func (s *Service) FetchCatStateValues() (map[string]map[string]string, error) {
 		return nil, errors.New(op).Msg(errMsgServiceNotInit)
 	}
 
-	return nil, nil
+	values, err := s.ConfigService.CatStateValues()
+	if err != nil {
+		return nil, errors.New(op).Err(err)
+	}
+
+	return values, nil
 }
