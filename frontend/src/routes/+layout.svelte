@@ -1,12 +1,13 @@
 <script lang="ts">
-	import './layout.css';
-	import favicon from '/src/favicon.png';
-	
-	let { children } = $props();
+    import "./layout.css";
+    import {SvelteToast} from "@zerodevx/svelte-toast";
+
+    let {children} = $props();
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon}>
-</svelte:head>
-
-{@render children()}
+<div>
+    <SvelteToast/>
+</div>
+<main>
+    {@render children()}
+</main>
