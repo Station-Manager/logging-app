@@ -76,7 +76,9 @@ func (s *Service) Initialize() error {
 func (s *Service) SetContainer(container *iocdi.Container) error {
 	const op errors.Op = "facade.Service.SetContainer"
 	if !s.initialized.Load() {
-		return errors.New(op).Msg(errMsgServiceNotInit)
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return err
 	}
 
 	if s.started.Load() {
@@ -84,7 +86,9 @@ func (s *Service) SetContainer(container *iocdi.Container) error {
 	}
 
 	if container == nil {
-		return errors.New(op).Msg("Container cannot be nil")
+		err := errors.New(op).Msg("Container cannot be nil")
+		s.LoggerService.ErrorWith().Err(err).Msg("Container cannot be nil")
+		return err
 	}
 
 	s.container = container
@@ -96,7 +100,9 @@ func (s *Service) SetContainer(container *iocdi.Container) error {
 func (s *Service) Start(ctx context.Context) error {
 	const op errors.Op = "facade.Service.Start"
 	if !s.initialized.Load() {
-		return errors.New(op).Msg(errMsgServiceNotInit)
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return err
 	}
 
 	s.mu.Lock()
@@ -107,16 +113,22 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 
 	if ctx == nil || ctx.Err() != nil {
-		return errors.New(op).Msg("Context cannot be nil or cancelled")
+		err := errors.New(op).Msg("Context cannot be nil or cancelled")
+		s.LoggerService.ErrorWith().Msg("Context cannot be nil or cancelled")
+		return err
 	}
 	s.ctx = ctx
 
 	// Open and migrate the database. Don't need to ping as opening the database will do that.
 	if err := s.DatabaseService.Open(); err != nil {
-		return errors.New(op).Err(err)
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
+		return err
 	}
 	if err := s.DatabaseService.Migrate(); err != nil {
-		return errors.New(op).Err(err)
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to migrate database.")
+		return err
 	}
 
 	run := &runState{
@@ -135,7 +147,9 @@ func (s *Service) Start(ctx context.Context) error {
 func (s *Service) Stop() error {
 	const op errors.Op = "facade.Service.Stop"
 	if !s.initialized.Load() {
-		return errors.New(op).Msg(errMsgServiceNotInit)
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return err
 	}
 
 	run := s.currentRun
@@ -153,6 +167,7 @@ func (s *Service) Stop() error {
 	}
 
 	if err := s.DatabaseService.Close(); err != nil {
+		// Log the error, but it's not fatal
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to close database")
 	}
 
@@ -168,12 +183,16 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 	const op errors.Op = "facade.Service.UiConfig"
 
 	if !s.initialized.Load() {
-		return nil, errors.New(op).Msg(errMsgServiceNotInit)
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return nil, err
 	}
 
 	requiredCfg, err := s.ConfigService.RequiredConfigs()
 	if err != nil {
-		return nil, errors.New(op).Err(err)
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch required configs.")
+		return nil, err
 	}
 
 	return &types.UiConfig{
@@ -186,12 +205,16 @@ func (s *Service) FetchCatStateValues() (map[string]map[string]string, error) {
 	const op errors.Op = "facade.Service.FetchCatStateValues"
 
 	if !s.initialized.Load() {
-		return nil, errors.New(op).Msg(errMsgServiceNotInit)
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return nil, err
 	}
 
 	values, err := s.ConfigService.CatStateValues()
 	if err != nil {
-		return nil, errors.New(op).Err(err)
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch CAT state values.")
+		return nil, err
 	}
 
 	return values, nil

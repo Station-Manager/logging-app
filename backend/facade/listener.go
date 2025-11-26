@@ -2,6 +2,7 @@ package facade
 
 import "github.com/Station-Manager/errors"
 
+// catStatusChannelListener listens to the CAT status updates channel and logs received updates or handles shutdown signals.
 func (s *Service) catStatusChannelListener(shutdown <-chan struct{}) {
 	const op errors.Op = "facade.Service.catStatusChannelListener"
 
