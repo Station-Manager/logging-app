@@ -63,7 +63,7 @@ export const formatSeconds = (totalSeconds: number): string => {
     return [hours, minutes, secs].map((v) => v.toString().padStart(2, '0')).join(':');
 };
 
-// Derived reactive value for formatted elapsed time
-export const sessionElapsedTime = $derived.by((): string => {
+// Function to get formatted elapsed time
+export const getSessionElapsedTime = (): string => {
     return formatSeconds(sessionTimeState.elapsed);
-});
+};
