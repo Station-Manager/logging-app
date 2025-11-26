@@ -1,13 +1,15 @@
 <script lang="ts">
     import "./layout.css";
     import {SvelteToast} from "@zerodevx/svelte-toast";
+    import MainNav from "$lib/components/MainNav.svelte";
 
     let {children} = $props();
 </script>
 
-<div>
+<header>
     <SvelteToast/>
-</div>
+    <MainNav/>
+</header>
 <main>
     {@render children()}
 </main>

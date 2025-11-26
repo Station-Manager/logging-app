@@ -2,6 +2,6 @@
 
 </script>
 
-<div class="border border-red-500">
+<div class="">
 Logging Card
 </div>
