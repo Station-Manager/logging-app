@@ -28,6 +28,9 @@ type Service struct {
 	DatabaseService *database.Service `di.inject:"databaseservice"`
 	CatService      *cat.Service      `di.inject:"catservice"`
 
+	requiredCfgs   *types.RequiredConfigs
+	CurrentLogbook types.Logbook
+
 	container *iocdi.Container
 	ctx       context.Context
 
@@ -119,15 +122,17 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 	s.ctx = ctx
 
-	// Open and migrate the database. Don't need to ping as opening the database will do that.
-	if err := s.DatabaseService.Open(); err != nil {
+	reqCfg, err := s.ConfigService.RequiredConfigs()
+	if err != nil {
 		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch required configs.")
 		return err
 	}
-	if err := s.DatabaseService.Migrate(); err != nil {
+	s.requiredCfgs = &reqCfg
+
+	if err = s.openAndLoadFromDatabase(); err != nil {
 		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to migrate database.")
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open and load from database.")
 		return err
 	}
 
@@ -197,6 +202,8 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 
 	return &types.UiConfig{
 		DefaultRigID: requiredCfg.DefaultRigID,
+		Logbook:      s.CurrentLogbook,
+		RigName:      s.CatService.RigConfig().Name,
 	}, nil
 }
 

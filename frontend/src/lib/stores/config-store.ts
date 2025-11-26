@@ -3,6 +3,9 @@ import { types } from '$lib/wailsjs/go/models';
 import { FetchUiConfig } from '$lib/wailsjs/go/facade/Service';
 import { LogError } from '$lib/wailsjs/runtime';
 
+// The backend guarantees that UiConfig and its fields are never null. We
+// therefore model configStore as a non-nullable UiConfig and always
+// initialize it with a concrete instance.
 export const configStore: Writable<types.UiConfig> = writable(new types.UiConfig());
 
 /**
@@ -23,6 +26,8 @@ export const loadConfig = async (): Promise<void> => {
         if (!cfg) {
             const msg = 'UiConfig fetch returned null or undefined; using defaults.';
             LogError(msg);
+            // Backend guarantees non-null config; fall back to an empty instance
+            // which also satisfies the non-null contract.
             configStore.set(new types.UiConfig());
         } else {
             configStore.set(cfg);
