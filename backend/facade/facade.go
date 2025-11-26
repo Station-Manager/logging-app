@@ -60,3 +60,14 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 
 	return nil, nil
 }
+
+func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
+	const op errors.Op = "facade.Service.IsContestDuplicate"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return false, err
+	}
+
+	return false, nil
+}
