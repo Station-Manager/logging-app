@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"github.com/Station-Manager/enums/tags"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/utils"
 	"github.com/wailsapp/wails/v2"
@@ -87,7 +88,9 @@ func main() {
 		Bind: []interface{}{
 			facade,
 		},
-		EnumBind:                         []interface{}{},
+		EnumBind: []interface{}{
+			tags.AllCatStateTags,
+		},
 		WindowStartState:                 options.Normal,
 		ErrorFormatter:                   nil,
 		CSSDragProperty:                  "",

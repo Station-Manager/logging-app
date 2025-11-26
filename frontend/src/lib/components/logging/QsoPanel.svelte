@@ -16,6 +16,11 @@
                 label="RST Sent"
                 value={qsoState.rstSent}
         />
+        <Rst
+                id="rst_rcvd"
+                label="RST Rcvd"
+                value={qsoState.rstRcvd}
+        />
     </div>
     <div class="w-[300px] border">Col 2</div>
 </div>

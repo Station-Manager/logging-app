@@ -1,6 +1,7 @@
 import type { LayoutData } from './$types';
 import { loadConfig } from '$lib/stores/config-store.js';
-import { LogError } from '$lib/wailsjs/runtime';
+import { loadCatStateValues } from '$lib/stores/cat-state-store';
+import { handleAsyncError } from '$lib/utils/error-handler';
 
 export const prerender = true;
 export const ssr = false;
@@ -19,9 +20,9 @@ export const ssr = false;
 export const load: LayoutData = async (): Promise<object> => {
     try {
         await loadConfig();
+        await loadCatStateValues();
     } catch (e: unknown) {
-        const errMsg: string = e instanceof Error ? e.message : String(e);
-        LogError(`Error initializing application: ${errMsg}`);
+        handleAsyncError(e, '+layout.ts->load: LayoutData');
     }
     return {};
 };

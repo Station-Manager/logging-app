@@ -1,6 +1,4 @@
 <script lang="ts">
-    // The value is bound to the parent component, making it mutable by the child
-    // So, the RST value is passed up to the parent component.
     interface Props {
         id: string;
         label: string;
