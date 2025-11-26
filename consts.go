@@ -5,3 +5,7 @@ const (
 	ExitContainerInit
 	ExitFacadeService
 )
+
+const (
+	AppTitle = "Station Manager | Logging"
+)

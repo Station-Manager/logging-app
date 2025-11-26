@@ -59,7 +59,7 @@ func main() {
 	}
 
 	opts := &options.App{
-		Title:             "Logging App", //fmt.Sprintf("%s | Logging: %s", facade.ConfigService.RequiredConfigs().AppTitle, version),
+		Title:             fmt.Sprintf("%s: %s", AppTitle, version),
 		Width:             minWidth,
 		Height:            minHeight,
 		DisableResize:     true,
