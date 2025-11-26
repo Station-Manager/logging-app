@@ -25,5 +25,5 @@ export const loggingModeStore: Writable<LoggingModeKey> = writable(DEFAULT_LOGGI
 // Derived helper: true when the current logging mode is contest.
 export const isContestMode: Readable<boolean> = derived(
     loggingModeStore,
-    ($mode) => $mode === CONTEST_LOGGING_MODE_KEY,
+    ($mode) => $mode === CONTEST_LOGGING_MODE_KEY
 );
