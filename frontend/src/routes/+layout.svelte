@@ -1,7 +1,7 @@
 <script lang="ts">
     import "./layout.css";
     import {SvelteToast} from "@zerodevx/svelte-toast";
-    import MainNav from "$lib/components/MainNav.svelte";
+    import MainNav from "$lib/ui/MainNav.svelte";
     import {onMount} from "svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
 

@@ -1,12 +1,15 @@
 <script lang="ts">
-    import Callsign from "$lib/components/logging/Callsign.svelte";
-    import Rst from "$lib/components/logging/Rst.svelte";
-    import {qsoState} from "$lib/states/qso-state.svelte";
-    import Mode from "$lib/components/logging/Mode.svelte";
+    import Callsign from "$lib/ui/logging/components/Callsign.svelte";
+    import Rst from "$lib/ui/logging/components/Rst.svelte";
+    import {qsoState} from "$lib/states/qso-state.svelte.js";
+    import Mode from "$lib/ui/logging/components/Mode.svelte";
     import {catStateValues} from "$lib/stores/cat-state-store";
-    import TextInput from "$lib/components/logging/TextInput.svelte";
-    import Comment from "$lib/components/logging/Comment.svelte";
-    import TimeDatePanel from "$lib/components/logging/TimeDatePanel.svelte";
+    import TextInput from "$lib/ui/logging/components/TextInput.svelte";
+    import Comment from "$lib/ui/logging/components/Comment.svelte";
+    import DateInput from "$lib/ui/logging/components/DateInput.svelte";
+    import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
+    import TimerControls from "$lib/ui/logging/components/TimerControls.svelte";
+    import FormControls from "$lib/ui/logging/components/FormControls.svelte";
 </script>
 
 <div class="flex flex-row h-[351px]">
@@ -52,7 +55,29 @@
                     value={qsoState.comment}
             />
         </div>
-        <TimeDatePanel/>
+        <div class="flex flex-row gap-x-4 items-center -mt-8">
+            <DateInput
+                    id="qso_date"
+                    label="Date"
+                    value={qsoState.qsoDate}
+            />
+            <TimeInput
+                    id="time_on"
+                    label="Time On"
+                    value={qsoState.timeOn}
+                    disabled={false}
+            />
+            <TimeInput
+                    id="time_off"
+                    label="Time Off"
+                    value={qsoState.timeOff}
+                    disabled={false}
+            />
+            <div class="flex items-center mt-7 ml-2.5">
+                <TimerControls/>
+                <FormControls/>
+            </div>
+        </div>
     </div>
     <div class="w-[300px] border">Col 2</div>
 </div>

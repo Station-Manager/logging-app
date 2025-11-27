@@ -1,6 +1,6 @@
 <script lang="ts">
     import {clickoutside} from "@svelte-put/clickoutside";
-    import {clipboardState} from "$lib/states/clipboard-state.svelte";
+    import {clipboardState} from "$lib/states/clipboard-state.svelte.js";
 
     interface Props {
         id: string;
