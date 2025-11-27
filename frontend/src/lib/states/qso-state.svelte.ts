@@ -12,6 +12,8 @@ export interface QsoState {
     qsoDate: string;
     timeOn: string;
     timeOff: string;
+    vfoaFreq: string;
+    vfobFreq: string;
 }
 
 export const qsoState: QsoState = $state({
@@ -26,4 +28,6 @@ export const qsoState: QsoState = $state({
     qsoDate: '',
     timeOn: '',
     timeOff: '',
+    vfoaFreq: '',
+    vfobFreq: '',
 });
