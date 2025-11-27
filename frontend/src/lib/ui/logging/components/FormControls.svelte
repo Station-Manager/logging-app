@@ -6,7 +6,7 @@
     <button
             type="button"
             class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            title="ctrl-s">Log Contact
+            title="Ctrl-s">Log Contact
     </button>
     <button
             type="button"

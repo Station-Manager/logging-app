@@ -10,11 +10,12 @@
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
     import TimerControls from "$lib/ui/logging/components/TimerControls.svelte";
     import FormControls from "$lib/ui/logging/components/FormControls.svelte";
+    import Vfos from "$lib/ui/logging/components/Vfos.svelte";
 </script>
 
 <div class="flex flex-row h-[351px]">
-    <div class="flex flex-col gap-y-4 w-[724px] border">
-        <div class="flex flex-row gap-x-4">
+    <div class="flex flex-col gap-y-3 w-[744px] px-6">
+        <div class="flex flex-row gap-x-4 items-center h-[100px]">
             <Callsign
                     id="call"
                     label="Callsign"
@@ -36,6 +37,7 @@
                     value={qsoState.mainmode}
                     list={$catStateValues.getMainModes()}
             />
+            <Vfos/>
         </div>
         <div class="flex flex-row gap-x-4">
             <TextInput
@@ -79,5 +81,5 @@
             </div>
         </div>
     </div>
-    <div class="w-[300px] border">Col 2</div>
+    <div class="w-[280px] border">Col 2</div>
 </div>
