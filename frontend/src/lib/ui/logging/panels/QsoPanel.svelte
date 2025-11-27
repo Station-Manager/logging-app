@@ -47,7 +47,7 @@
                     id="qth"
                     label="Qth"
                     value={qsoState.qth}
-                    overallWidthCss="w-[160px]"
+                    overallWidthCss="w-[170px]"
             />
             <Comment
                     id="comment"
@@ -63,17 +63,17 @@
             />
             <TimeInput
                     id="time_on"
-                    label="Time On"
+                    label="Time On (UTC)"
                     value={qsoState.timeOn}
                     disabled={false}
             />
             <TimeInput
                     id="time_off"
-                    label="Time Off"
+                    label="Time Off (UTC)"
                     value={qsoState.timeOff}
-                    disabled={false}
+                    disabled={true}
             />
-            <div class="flex items-center mt-7 ml-2.5">
+            <div class="flex items-center mt-7">
                 <TimerControls/>
                 <FormControls/>
             </div>
