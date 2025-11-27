@@ -46,8 +46,8 @@
                     overallWidthCss="w-[160px]"
             />
             <Comment
-                    id="comments"
-                    label="Comments"
+                    id="comment"
+                    label="Comment"
                     value={qsoState.comment}
             />
         </div>
