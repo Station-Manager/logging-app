@@ -1,5 +1,6 @@
 <script lang="ts">
     import {clickoutside} from "@svelte-put/clickoutside";
+    import {clipboardState} from "$lib/states/clipboard-state.svelte";
 
     interface Props {
         id: string;
@@ -23,6 +24,7 @@
 
     let clipboardVisible = $state(false);
     let enabled: boolean = $state(true);
+    let clipboard: string[] = $derived(clipboardState.list);
 
     const clipboardAction = (): void => {
         if (value.trim().length === 0) {
@@ -35,6 +37,12 @@
     const onClickOutside = (): void => {
         clipboardVisible = false;
     }
+
+    const insertSelectedText = (text: string): void => {
+        value = text;
+        clipboardVisible = false;
+    }
+
 </script>
 
 <div class="relative {overallWidthCss}" use:clickoutside={{enabled}} onclickoutside={onClickOutside}>
@@ -51,7 +59,14 @@
         <label for={id} class={labelCss}>{label}</label>
     </div>
     <div class="{clipboardVisible ? '' : 'hidden'} absolute top-6 z-30 w-44 text-xs p-2 border border-gray-300 rounded-md bg-white shadow-lg">
-
+    {#each clipboard as item (item)}
+        <button
+                onclick={() => insertSelectedText(item)}
+                aria-label="clip-board"
+                class="cursor-pointer w-full text-left p-1 text-xs rounded-xs text-gray-700 hover:bg-gray-300 text-nowrap overflow-hidden text-ellipsis">
+            {item}
+        </button>
+    {/each}
     </div>
     <div class={divCss}>
         <textarea

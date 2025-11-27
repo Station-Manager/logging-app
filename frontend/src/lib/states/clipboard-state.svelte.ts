@@ -57,5 +57,5 @@ export const clipboardState: ClipboardState = $state<ClipboardStateInternal>({
             const excess: number = this.list.length - this.maxLength;
             this.list.splice(0, excess);
         }
-    }
+    },
 }) as ClipboardState;
