@@ -2,8 +2,10 @@
     import VfoBox from "$lib/ui/logging/components/VfoBox.svelte";
     import VfoInput from "$lib/ui/logging/components/VfoInput.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
+    import {qsoState} from "$lib/states/qso-state.svelte";
 
     let isSplit = $derived(catState.split === 'ON');
+
 </script>
 
 <div class="flex flex-col w-[250px] h-[80px] mt-6 gap-y-2">
@@ -11,20 +13,20 @@
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-A' isSplit bgColorTopCss='bg-green-600/80' bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value=''/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq}/>
             {:else}
                 <VfoBox label='VFO-A'/>
-                <VfoInput id='vfob' value=''/>
+                <VfoInput id='vfob' value={qsoState.vfoaFreq}/>
             {/if}
         </div>
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-B' action='TX' isSplit bgColorTopCss='bg-red-800/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value=''/>
+                <VfoInput id='vfoa' value={qsoState.vfobFreq}/>
             {:else}
                 <VfoBox label='VFO-B' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfob' value=''/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq}/>
             {/if}
         </div>
     {:else}
@@ -32,19 +34,19 @@
             {#if isSplit}
                 <VfoBox label='VFO-B' action='TX' isSplit bgColorTopCss='bg-green-600/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value=''/>
+                <VfoInput id='vfoa' value={qsoState.vfobFreq}/>
             {:else}
                 <VfoBox label='VFO-B'/>
-                <VfoInput id='vfob' value=''/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq}/>
             {/if}
         </div>
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-A' isSplit bgColorTopCss='bg-red-800/80' bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value=''/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq}/>
             {:else}
                 <VfoBox label='VFO-A' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfob' value=''/>
+                <VfoInput id='vfob' value={qsoState.vfoaFreq}/>
             {/if}
         </div>
     {/if}

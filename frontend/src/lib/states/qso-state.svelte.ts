@@ -28,6 +28,6 @@ export const qsoState: QsoState = $state({
     qsoDate: '',
     timeOn: '',
     timeOff: '',
-    vfoaFreq: '',
-    vfobFreq: '',
+    vfoaFreq: 'FA',
+    vfobFreq: 'FB',
 });
