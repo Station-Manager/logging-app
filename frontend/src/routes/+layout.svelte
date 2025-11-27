@@ -5,15 +5,16 @@
     import {onDestroy, onMount} from "svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
     import {EventsOn} from "$lib/wailsjs/runtime/runtime";
+    import {events} from "$lib/wailsjs/go/models";
+    import {catState} from "$lib/states/cat-state.svelte";
 
     let {children} = $props();
-    let catStateEventsCancel: () => void;
+    let catStateEventsCancel: () => void = (): void => {}
 
     const registerForCatStateEvents = (): () => void => {
-        return EventsOn("STATUS", (value: Record<string, string>) => {
-            if (!value || Object.keys(value).length === 0) {
-                return;
-            }
+        return EventsOn(events.EventName.STATUS, (status: Record<string, string>) => {
+            if (!status || Object.keys(status).length === 0) return;
+            catState.update(status);
         });
     }
 
@@ -24,6 +25,7 @@
 
     onDestroy((): void => {
         catStateEventsCancel();
+        catStateEventsCancel = () => {};
         sessionState.stop();
     });
 </script>
