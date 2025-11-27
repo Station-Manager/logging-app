@@ -6,6 +6,9 @@ export interface QsoState {
     rstSent: string;
     rstRcvd: string;
     mainmode: string;
+    name: string;
+    qth: string;
+    comment: string;
 }
 
 export const qsoState: QsoState = $state({
@@ -14,4 +17,7 @@ export const qsoState: QsoState = $state({
     rstSent: '',
     rstRcvd: '',
     mainmode: '',
+    name: '',
+    qth: '',
+    comment: '',
 });
