@@ -6,6 +6,7 @@
     import {catStateValues} from "$lib/stores/cat-state-store";
     import TextInput from "$lib/components/logging/TextInput.svelte";
     import Comment from "$lib/components/logging/Comment.svelte";
+    import TimeDatePanel from "$lib/components/logging/TimeDatePanel.svelte";
 </script>
 
 <div class="flex flex-row h-[351px]">
@@ -51,6 +52,7 @@
                     value={qsoState.comment}
             />
         </div>
+        <TimeDatePanel/>
     </div>
     <div class="w-[300px] border">Col 2</div>
 </div>
