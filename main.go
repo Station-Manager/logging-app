@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"github.com/Station-Manager/enums/events"
 	"github.com/Station-Manager/enums/tags"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/utils"
@@ -90,6 +91,7 @@ func main() {
 		},
 		EnumBind: []interface{}{
 			tags.AllCatStateTags,
+			events.AllEvents,
 		},
 		WindowStartState:                 options.Normal,
 		ErrorFormatter:                   nil,

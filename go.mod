@@ -3,10 +3,10 @@ module github.com/Station-Manager/logging-app
 go 1.25
 
 require (
-	github.com/Station-Manager/cat v0.0.3
+	github.com/Station-Manager/cat v0.0.4
 	github.com/Station-Manager/config v0.0.14
 	github.com/Station-Manager/database v0.0.13
-	github.com/Station-Manager/enums v0.0.0-20251126171057-afdec19188ec
+	github.com/Station-Manager/enums v0.0.1
 	github.com/Station-Manager/errors v0.0.5
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.7

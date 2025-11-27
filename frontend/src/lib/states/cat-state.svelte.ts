@@ -1,4 +1,4 @@
-import {tags} from "$lib/wailsjs/go/models";
+import { tags } from '$lib/wailsjs/go/models';
 
 export interface CatState {
     identity: string;
@@ -18,9 +18,9 @@ const tagToField: Record<tags.CatStateTag, keyof Omit<CatState, 'update'>> = {
     [tags.CatStateTag.VFOBFREQ]: 'vfobFreq',
     [tags.CatStateTag.SELECT]: 'select',
     [tags.CatStateTag.SPLIT]: 'split',
-    [tags.CatStateTag.MAINMODE]: "mainMode",
-    [tags.CatStateTag.SUBMODE]: "subMode",
-    [tags.CatStateTag.TXPWR]: "txPower"
+    [tags.CatStateTag.MAINMODE]: 'mainMode',
+    [tags.CatStateTag.SUBMODE]: 'subMode',
+    [tags.CatStateTag.TXPWR]: 'txPower',
 };
 
 export const catState: CatState = $state({
@@ -43,5 +43,5 @@ export const catState: CatState = $state({
                 this[field] = String(value);
             }
         }
-    }
+    },
 });
