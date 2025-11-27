@@ -5,6 +5,7 @@ export interface QsoState {
     callsign: string;
     rstSent: string;
     rstRcvd: string;
+    mainmode: string;
 }
 
 export const qsoState: QsoState = $state({
@@ -12,4 +13,5 @@ export const qsoState: QsoState = $state({
     callsign: '',
     rstSent: '',
     rstRcvd: '',
+    mainmode: '',
 });

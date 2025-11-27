@@ -1,7 +1,7 @@
-import { writable, type Writable } from "svelte/store";
-import { FetchCatStateValues } from "$lib/wailsjs/go/facade/Service";
-import { handleAsyncError } from "$lib/utils/error-handler";
-import {tags} from "$lib/wailsjs/go/models";
+import { writable, type Writable } from 'svelte/store';
+import { FetchCatStateValues } from '$lib/wailsjs/go/facade/Service';
+import { handleAsyncError } from '$lib/utils/error-handler';
+import { tags } from '$lib/wailsjs/go/models';
 
 export class StateValuesClass {
     private readonly data: Record<string, Record<string, string>>;
@@ -10,7 +10,7 @@ export class StateValuesClass {
         this.data = data;
     }
 
-    public getModes(): { key: string; value: string }[] {
+    public getMainModes(): { key: string; value: string }[] {
         const modes = this.data[tags.CatStateTag.MAINMODE] ?? {};
         return Object.entries(modes).map(([key, value]) => ({ key, value }));
     }
