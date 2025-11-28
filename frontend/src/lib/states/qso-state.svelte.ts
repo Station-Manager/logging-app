@@ -22,6 +22,32 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.freq_rx = qso.freq_rx ?? '';
     target.band = qso.band ?? '';
     target.band_rx = qso.band_rx ?? '';
+
+    // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
+    // as they represent the *current rig state* rather than stored log data.
+}
+
+/**
+ * Fields in QsoState that are driven directly from catState but do not map
+ * 1:1 to ADIF / database schema.
+ */
+export interface CatDrivenFields {
+    /** Current CAT identity / rig identifier. */
+    cat_identity: string;
+    /** Live VFO A frequency from CAT (formatted for display). */
+    cat_vfoa_freq: string;
+    /** Live VFO B frequency from CAT (formatted for display). */
+    cat_vfob_freq: string;
+    /** Which VFO is currently selected (e.g. A/B). */
+    cat_select: string;
+    /** Current split status (e.g. ON/OFF). */
+    cat_split: string;
+    /** Main mode as reported by CAT (may differ from ADIF-normalised mode). */
+    cat_main_mode: string;
+    /** Sub mode as reported by CAT. */
+    cat_sub_mode: string;
+    /** Transmit power reported by CAT. */
+    cat_tx_power: string;
 }
 
 /**
@@ -30,9 +56,9 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
  * Naming rule:
  * - Where possible, field names are identical to `types.Qso` (database schema)
  *   so that mapping in and out is mostly 1:1.
- * - Only genuinely UI-specific concerns (e.g. helper methods) deviate.
+ * - Only genuinely UI-specific concerns (e.g. helper methods, CAT-only state) deviate.
  */
-export interface QsoState {
+export interface QsoState extends CatDrivenFields {
     /** Full backend QSO snapshot (database schema aligned). */
     original?: types.Qso;
 
@@ -54,7 +80,7 @@ export interface QsoState {
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
-    /** Apply CAT-derived updates to a narrow subset of fields. */
+    /** Apply CAT-derived updates to QSO-related fields and live CAT-only fields. */
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void;
     /** Reset editable fields back to the original QSO snapshot if present. */
     resetToOriginal(this: QsoState): void;
@@ -64,10 +90,26 @@ export interface QsoState {
 
 /**
  * The subset of QSO fields that are expected to be driven by CAT data
- * in the log-editing UI.
+ * in the log-editing UI. This includes both ADIF-aligned fields and
+ * CAT-only UI fields.
  */
 export type CatForQsoPayload = Partial<
-    Pick<QsoState, 'freq' | 'freq_rx' | 'band' | 'band_rx' | 'mode'>
+    Pick<
+        QsoState,
+        | 'freq'
+        | 'freq_rx'
+        | 'band'
+        | 'band_rx'
+        | 'mode'
+        | 'cat_identity'
+        | 'cat_vfoa_freq'
+        | 'cat_vfob_freq'
+        | 'cat_select'
+        | 'cat_split'
+        | 'cat_main_mode'
+        | 'cat_sub_mode'
+        | 'cat_tx_power'
+    >
 >;
 
 export const qsoState: QsoState = $state({
@@ -89,6 +131,16 @@ export const qsoState: QsoState = $state({
     band: '',
     band_rx: '',
 
+    // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
+    cat_identity: '',
+    cat_vfoa_freq: '',
+    cat_vfob_freq: '',
+    cat_select: '',
+    cat_split: '',
+    cat_main_mode: '',
+    cat_sub_mode: '',
+    cat_tx_power: '',
+
     createFromQSO(this: QsoState, qso: types.Qso) {
         if (!qso) return;
 
@@ -107,6 +159,14 @@ export const qsoState: QsoState = $state({
             band: 'band',
             band_rx: 'band_rx',
             mode: 'mode',
+            cat_identity: 'cat_identity',
+            cat_vfoa_freq: 'cat_vfoa_freq',
+            cat_vfob_freq: 'cat_vfob_freq',
+            cat_select: 'cat_select',
+            cat_split: 'cat_split',
+            cat_main_mode: 'cat_main_mode',
+            cat_sub_mode: 'cat_sub_mode',
+            cat_tx_power: 'cat_tx_power',
         };
 
         (Object.entries(data) as Array<[keyof CatForQsoPayload, string]>).forEach(
@@ -146,6 +206,9 @@ export const qsoState: QsoState = $state({
         base.freq_rx = this.freq_rx;
         base.band = this.band;
         base.band_rx = this.band_rx;
+
+        // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
+        // as they represent live rig state rather than stored QSO data.
 
         return base;
     },
