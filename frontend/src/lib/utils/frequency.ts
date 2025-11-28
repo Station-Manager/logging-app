@@ -40,6 +40,10 @@ const BAND_RANGES: BandRange[] = [
 
 /**
  * Parse a CAT frequency string (kHz, 9-digit, zero-padded) into MHz.
+ *
+ * CAT format we expect here is a fixed-width numeric string where the value
+ * represents kHz. For example:
+ *   "007101000" -> 7,101,000 kHz -> 7.101 MHz
  */
 export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | null {
     if (!freqKHz) return null;
@@ -47,10 +51,12 @@ export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | n
     if (trimmed.length < FREQ_MIN_LENGTH) return null;
     if (!/^\d+$/.test(trimmed)) return null;
 
-    const kHz = Number(trimmed);
-    if (!Number.isFinite(kHz) || kHz <= 0) return null;
+    const value = Number(trimmed);
+    if (!Number.isFinite(value) || value <= 0) return null;
 
-    return kHz / 1000; // kHz -> MHz
+    // Value is kHz; divide by 1_000 to get MHz.
+    const mhz = value / 1_000_000; // because value is actually kHz * 1000
+    return mhz;
 }
 
 /**
@@ -128,4 +134,41 @@ export function frequencyToBandFromMHz(freqMHzStr: string | null | undefined): B
 export function frequencyToBandFromDottedMHz(freqStr: string | null | undefined): BandName | '' {
     const mhz = parseDottedMHz(freqStr);
     return frequencyToBandMHz(mhz);
+}
+
+/**
+ * Format a CAT frequency string (kHz, typically 9-digit, zero-padded) into a
+ * dotted MHz string suitable for display, e.g.:
+ *   "014320000" -> "14.320.000"
+ *
+ * Rules/assumptions:
+ * - Input must be a string of digits, at least FREQ_MIN_LENGTH long.
+ * - We interpret the value as kHz and convert to MHz with three decimal places,
+ *   then format as groups of 3 digits separated by dots (thousands-style).
+ * - Returns an empty string on invalid input.
+ */
+export function formatCatKHzToDottedMHz(freqKHz: string | null | undefined): string {
+    const mhz = parseCatKHzToMHz(freqKHz);
+    if (mhz == null) return '';
+
+    // We want exactly one digit group for MHz and two groups of three digits
+    // for kHz and Hz-equivalent (e.g. 7.101 MHz -> 7.101.000).
+    const mhzStr = mhz.toFixed(3); // e.g. 7.101 -> "7.101"
+
+    const [intPart, fracPartRaw] = mhzStr.split('.');
+    const fracPart = (fracPartRaw ?? '').padEnd(3, '0'); // ensure 3 digits
+
+    // Build base like "7.101000" then split into 1-3-3 groups for HF.
+    const base = intPart + fracPart + '000'; // add 3 zeros for Hz-style group
+    const chars = base.split('');
+    const parts: string[] = [];
+
+    // Last 3 digits: Hz-style group
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    // Next 3 digits: kHz-style group
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    // Remaining: MHz-style group (could be 1-3 digits)
+    parts.unshift(chars.join(''));
+
+    return parts.join('.');
 }
