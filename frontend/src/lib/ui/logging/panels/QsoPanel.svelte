@@ -19,22 +19,22 @@
             <Callsign
                     id="call"
                     label="Callsign"
-                    value={qsoState.callsign}
+                    value={qsoState.call}
             />
             <Rst
                     id="rst_sent"
                     label="RST Sent"
-                    value={qsoState.rstSent}
+                    value={qsoState.rst_sent}
             />
             <Rst
                     id="rst_rcvd"
                     label="RST Rcvd"
-                    value={qsoState.rstRcvd}
+                    value={qsoState.rst_rcvd}
             />
             <Mode
                     id="mode"
                     label="Mode"
-                    value={qsoState.mainmode}
+                    value={qsoState.mode}
                     list={$catStateValues.getMainModes()}
             />
             <Vfos/>
@@ -61,18 +61,18 @@
             <DateInput
                     id="qso_date"
                     label="Date"
-                    value={qsoState.qsoDate}
+                    value={qsoState.qso_date}
             />
             <TimeInput
                     id="time_on"
                     label="Time On (UTC)"
-                    value={qsoState.timeOn}
+                    value={qsoState.time_on}
                     disabled={false}
             />
             <TimeInput
                     id="time_off"
                     label="Time Off (UTC)"
-                    value={qsoState.timeOff}
+                    value={qsoState.time_off}
                     disabled={true}
             />
             <div class="flex items-center mt-7">
