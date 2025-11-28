@@ -94,7 +94,10 @@ describe('qso-state', () => {
         qsoState.freq = '7.000';
 
         // Unknown key should be ignored and not affect freq.
-        qsoState.updateFromCAT({ foo: 'bar' } as any);
+        type ExtendedCatPayload = CatForQsoPayload & { foo: string };
+        const payload: ExtendedCatPayload = { foo: 'bar' };
+
+        qsoState.updateFromCAT(payload);
 
         expect(qsoState.freq).toBe('7.000');
     });

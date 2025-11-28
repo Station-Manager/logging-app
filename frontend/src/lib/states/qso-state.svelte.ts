@@ -45,7 +45,7 @@ export interface QsoState {
     qth: string;
     comment: string;
     qso_date: string; // YYYY-MM-DD
-    time_on: string;  // HH:mm[:ss]
+    time_on: string; // HH:mm[:ss]
     time_off: string; // HH:mm[:ss]
     freq: string;
     freq_rx: string;
@@ -66,7 +66,9 @@ export interface QsoState {
  * The subset of QSO fields that are expected to be driven by CAT data
  * in the log-editing UI.
  */
-export type CatForQsoPayload = Partial<Pick<QsoState, 'freq' | 'freq_rx' | 'band' | 'band_rx' | 'mode'>>;
+export type CatForQsoPayload = Partial<
+    Pick<QsoState, 'freq' | 'freq_rx' | 'band' | 'band_rx' | 'mode'>
+>;
 
 export const qsoState: QsoState = $state({
     original: undefined,
@@ -107,11 +109,13 @@ export const qsoState: QsoState = $state({
             mode: 'mode',
         };
 
-        (Object.entries(data) as Array<[keyof CatForQsoPayload, string]>).forEach(([key, value]) => {
-            const target = mappings[key];
-            if (!target) return;
-            this[target] = value;
-        });
+        (Object.entries(data) as Array<[keyof CatForQsoPayload, string]>).forEach(
+            ([key, value]) => {
+                const target = mappings[key];
+                if (!target) return;
+                this[target] = value;
+            }
+        );
     },
 
     resetToOriginal(this: QsoState): void {
