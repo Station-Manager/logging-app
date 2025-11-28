@@ -55,7 +55,7 @@ export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | n
     if (!Number.isFinite(value) || value <= 0) return null;
 
     // Value is kHz; divide by 1_000 to get MHz.
-     // because value is actually kHz * 1000
+    // because value is actually kHz * 1000
     return value / 1_000_000;
 }
 
@@ -151,24 +151,26 @@ export function formatCatKHzToDottedMHz(freqKHz: string | null | undefined): str
     const mhz = parseCatKHzToMHz(freqKHz);
     if (mhz == null) return '';
 
-    // We want exactly one digit group for MHz and two groups of three digits
-    // for kHz and Hz-equivalent (e.g. 7.101 MHz -> 7.101.000).
-    const mhzStr = mhz.toFixed(3); // e.g. 7.101 -> "7.101"
-
+    // Represent MHz with six fractional digits so we have full kHz + Hz precision
+    // before grouping (e.g. 7.101234 MHz -> "7.101234").
+    const mhzStr = mhz.toFixed(6);
     const [intPart, fracPartRaw] = mhzStr.split('.');
-    const fracPart = (fracPartRaw ?? '').padEnd(3, '0'); // ensure 3 digits
+    const fracPart = (fracPartRaw ?? '').padEnd(6, '0').slice(0, 6); // exactly 6 digits
 
-    // Build base like "7.101000" then split into 1-3-3 groups for HF.
-    const base = intPart + fracPart + '000'; // add 3 zeros for Hz-style group
+    // Build a continuous string like "7" + "101234" = "7101234" and then
+    // split into MHz.kHz.Hz groups: 1-3 digits for MHz, 3 for kHz, 3 for Hz.
+    const base = intPart + fracPart; // e.g. "7" + "101000" -> "7101000"
     const chars = base.split('');
     const parts: string[] = [];
 
-    // Last 3 digits: Hz-style group
+    // Last 3 digits: Hz-level group
     parts.unshift(chars.splice(chars.length - 3, 3).join(''));
-    // Next 3 digits: kHz-style group
+    // Next 3 digits: kHz-level group
     parts.unshift(chars.splice(chars.length - 3, 3).join(''));
-    // Remaining: MHz-style group (could be 1-3 digits)
-    parts.unshift(chars.join(''));
+    // Remaining: MHz-level group
+    if (chars.length) {
+        parts.unshift(chars.join(''));
+    }
 
     return parts.join('.');
 }

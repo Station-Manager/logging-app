@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { formatCatKHzToDottedMHz, parseCatKHzToMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
+import {
+    formatCatKHzToDottedMHz,
+    parseCatKHzToMHz,
+    frequencyToBandFromCat,
+} from '$lib/utils/frequency';
 
 describe('frequency utils', () => {
     describe('parseCatKHzToMHz', () => {
@@ -37,4 +41,3 @@ describe('frequency utils', () => {
         });
     });
 });
-

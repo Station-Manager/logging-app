@@ -15,7 +15,6 @@
     let catStateEventsCancel: () => void = (): void => {}
 
     const registerForCatStateEvents = (): () => void => {
-        console.log('registerForCatStateEvents()');
         return EventsOn(events.EventName.STATUS, (status: Record<string, string>) => {
             if (!status || Object.keys(status).length === 0) return;
 
