@@ -7,6 +7,8 @@
     import {EventsOn} from "$lib/wailsjs/runtime/runtime";
     import {events} from "$lib/wailsjs/go/models";
     import {catState} from "$lib/states/cat-state.svelte";
+    import {handleAsyncError} from "$lib/utils/error-handler";
+    import {Ready} from "$lib/wailsjs/go/facade/Service";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}
@@ -21,6 +23,11 @@
     onMount(async (): Promise<void> => {
         sessionState.start();
         catStateEventsCancel = registerForCatStateEvents();
+        try {
+            await Ready();
+        } catch (e: unknown) {
+            handleAsyncError(e, '+layout.svelte->onMount')
+        }
     });
 
     onDestroy((): void => {

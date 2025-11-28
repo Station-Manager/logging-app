@@ -130,9 +130,17 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 	s.requiredCfgs = &reqCfg
 
+	// Start the database service
 	if err = s.openAndLoadFromDatabase(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open and load from database.")
+		return err
+	}
+
+	// Start the CAT service
+	if err = s.CatService.Start(); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start CAT service.")
 		return err
 	}
 
@@ -171,6 +179,12 @@ func (s *Service) Stop() error {
 		run.wg.Wait()
 	}
 
+	// Stop the CAT service
+	if err := s.CatService.Stop(); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop CAT service")
+	}
+
+	// Stop the database service
 	if err := s.DatabaseService.Close(); err != nil {
 		// Log the error, but it's not fatal
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to close database")

@@ -1,6 +1,7 @@
 package facade
 
 import (
+	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -50,11 +51,45 @@ func (s *Service) FetchCatStateValues() (map[string]map[string]string, error) {
 	return values, nil
 }
 
+// Ready checks if the service is initialized and started, then enqueues initialization and read commands to the CatService.
+func (s *Service) Ready() error {
+	const op errors.Op = "facade.Service.Ready"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return err
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return err
+	}
+
+	if err := s.CatService.EnqueueCommand(cmds.Init); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to enqueue command: %s", cmds.Init)
+		return errors.New(op).Err(err)
+	}
+
+	if err := s.CatService.EnqueueCommand(cmds.Read); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to enqueue command: %s", cmds.Read)
+		return errors.New(op).Err(err)
+	}
+
+	return nil
+}
+
 func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 	const op errors.Op = "facade.Service.NewQso"
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return nil, err
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
 		return nil, err
 	}
 
@@ -66,6 +101,12 @@ func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return false, err
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
 		return false, err
 	}
 
