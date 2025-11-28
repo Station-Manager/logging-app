@@ -34,7 +34,7 @@
     {:else}
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
-                <VfoBox label='VFO-B' isSplit action='TX' bgColorTopCss='bg-green-600/80'
+                <VfoBox label='VFO-B' isSplit bgColorTopCss='bg-green-600/80'
                         bgColorBottomCss='bg-blue-700/90'/>
                 <VfoInput id='vfob' value={vfobFreq} band={frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq)}/>
             {:else}
