@@ -55,8 +55,8 @@ export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | n
     if (!Number.isFinite(value) || value <= 0) return null;
 
     // Value is kHz; divide by 1_000 to get MHz.
-    const mhz = value / 1_000_000; // because value is actually kHz * 1000
-    return mhz;
+     // because value is actually kHz * 1000
+    return value / 1_000_000;
 }
 
 /**
