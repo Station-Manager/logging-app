@@ -17,7 +17,7 @@
         labelCss = 'block text-sm/5 font-medium',
         divCss = 'mt-2',
         inputCss = 'uppercase block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
-        overallWidthCss = 'w-[140px]'
+        overallWidthCss = 'w-[150px]'
     }: Props = $props();
 
     let invalid = $state(false);

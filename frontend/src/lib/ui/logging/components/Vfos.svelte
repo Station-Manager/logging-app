@@ -3,6 +3,7 @@
     import VfoInput from "$lib/ui/logging/components/VfoInput.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
     import {qsoState} from "$lib/states/qso-state.svelte";
+    import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
 
     let isSplit = $derived(catState.split === 'ON');
 
@@ -13,20 +14,20 @@
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-A' isSplit bgColorTopCss='bg-green-600/80' bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value={qsoState.vfoaFreq}/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq} band={frequencyToBandFromDottedMHz(qsoState.vfoaFreq)}/>
             {:else}
                 <VfoBox label='VFO-A'/>
-                <VfoInput id='vfob' value={qsoState.vfoaFreq}/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq} band={frequencyToBandFromDottedMHz(qsoState.vfoaFreq)}/>
             {/if}
         </div>
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-B' action='TX' isSplit bgColorTopCss='bg-red-800/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value={qsoState.vfobFreq}/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq} band={frequencyToBandFromDottedMHz(qsoState.vfobFreq)}/>
             {:else}
                 <VfoBox label='VFO-B' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfob' value={qsoState.vfobFreq}/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq} band={frequencyToBandFromDottedMHz(qsoState.vfobFreq)}/>
             {/if}
         </div>
     {:else}
@@ -34,19 +35,19 @@
             {#if isSplit}
                 <VfoBox label='VFO-B' action='TX' isSplit bgColorTopCss='bg-green-600/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value={qsoState.vfobFreq}/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq} band={frequencyToBandFromDottedMHz(qsoState.vfobFreq)}/>
             {:else}
                 <VfoBox label='VFO-B'/>
-                <VfoInput id='vfob' value={qsoState.vfobFreq}/>
+                <VfoInput id='vfob' value={qsoState.vfobFreq} band={frequencyToBandFromDottedMHz(qsoState.vfobFreq)}/>
             {/if}
         </div>
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-A' isSplit bgColorTopCss='bg-red-800/80' bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' value={qsoState.vfoaFreq}/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq} band={frequencyToBandFromDottedMHz(qsoState.vfoaFreq)}/>
             {:else}
                 <VfoBox label='VFO-A' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfob' value={qsoState.vfoaFreq}/>
+                <VfoInput id='vfoa' value={qsoState.vfoaFreq} band={frequencyToBandFromDottedMHz(qsoState.vfoaFreq)}/>
             {/if}
         </div>
     {/if}
