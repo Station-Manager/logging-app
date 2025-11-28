@@ -21,12 +21,13 @@
             // First update our CAT snapshot
             catState.update(status);
 
+            console.log('CAT status updated:', catState);
             // Then map the latest CAT state into the subset of QSO fields driven by CAT.
             const payload: CatForQsoPayload = {
                 // ADIF-aligned fields (these may be persisted if user saves the QSO)
-                freq: catState.vfoaFreq,
-                freq_rx: catState.vfobFreq,
-                mode: catState.mainMode,
+                //freq: catState.vfoaFreq,
+                //freq_rx: catState.vfobFreq,
+                //mode: catState.mainMode,
                 // band / band_rx can be added when you have a freq->band mapping available
 
                 // CAT-only, UI-facing mirrors

@@ -35,6 +35,7 @@
                     id="mode"
                     label="Mode"
                     value={qsoState.mode}
+                    selected={qsoState.cat_main_mode}
                     list={$catStateValues.getMainModes()}
             />
             <Vfos/>

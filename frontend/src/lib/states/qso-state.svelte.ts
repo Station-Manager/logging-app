@@ -117,9 +117,9 @@ export const qsoState: QsoState = $state({
 
     // Core QSO fields (aligned with types.Qso / DB schema)
     call: '',
-    rst_sent: '',
-    rst_rcvd: '',
-    mode: '',
+    rst_sent: '59',
+    rst_rcvd: '59',
+    mode: 'USB',
     name: '',
     qth: '',
     comment: '',
