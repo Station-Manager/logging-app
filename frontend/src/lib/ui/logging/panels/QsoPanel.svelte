@@ -1,7 +1,7 @@
 <script lang="ts">
     import Callsign from "$lib/ui/logging/components/Callsign.svelte";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
-    import {qsoState} from "$lib/states/qso-state.svelte.js";
+    import {qsoState} from "$lib/states/qso-state.svelte";
     import Mode from "$lib/ui/logging/components/Mode.svelte";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
@@ -24,17 +24,17 @@
             <Rst
                     id="rst_sent"
                     label="RST Sent"
-                    value={qsoState.rst_sent}
+                    bind:value={qsoState.rst_sent}
             />
             <Rst
                     id="rst_rcvd"
                     label="RST Rcvd"
-                    value={qsoState.rst_rcvd}
+                    bind:value={qsoState.rst_rcvd}
             />
             <Mode
                     id="mode"
                     label="Mode"
-                    value={qsoState.mode}
+                    bind:value={qsoState.mode}
                     selected={qsoState.cat_main_mode}
                     list={$catStateValues.getMainModes()}
             />
@@ -44,36 +44,36 @@
             <TextInput
                     id="name"
                     label="Name"
-                    value={qsoState.name}
+                    bind:value={qsoState.name}
             />
             <TextInput
                     id="qth"
                     label="Qth"
-                    value={qsoState.qth}
+                    bind:value={qsoState.qth}
                     overallWidthCss="w-[170px]"
             />
             <Comment
                     id="comment"
                     label="Comment"
-                    value={qsoState.comment}
+                    bind:value={qsoState.comment}
             />
         </div>
         <div class="flex flex-row gap-x-4 items-center -mt-8">
             <DateInput
                     id="qso_date"
                     label="Date"
-                    value={qsoState.qso_date}
+                    bind:value={qsoState.qso_date}
             />
             <TimeInput
                     id="time_on"
                     label="Time On (UTC)"
-                    value={qsoState.time_on}
+                    bind:value={qsoState.time_on}
                     disabled={false}
             />
             <TimeInput
                     id="time_off"
                     label="Time Off (UTC)"
-                    value={qsoState.time_off}
+                    bind:value={qsoState.time_off}
                     disabled={false}
             />
             <div class="flex items-center mt-7">

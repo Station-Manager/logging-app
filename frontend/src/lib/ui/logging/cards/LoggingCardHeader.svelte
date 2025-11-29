@@ -6,7 +6,7 @@
         isContestMode,
     } from "$lib/stores/logging-mode-store";
     import {configStore} from "$lib/stores/config-store";
-    import {getSessionElapsedTime} from "$lib/states/session-state.svelte.js";
+    import {getSessionElapsedTime} from "$lib/states/session-state.svelte";
 
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
     const modeChange = (event: Event): void => {
