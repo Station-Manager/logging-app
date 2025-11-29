@@ -104,6 +104,32 @@ function parseDottedMHz(freqStr: string | null | undefined): number | null {
 }
 
 /**
+ * Parse a "dotted" kHz string like `7.101.000` (meaning 7,101.000 kHz)
+ * into a numeric MHz value.
+ *
+ * Implementation detail:
+ * - We treat the dotted string as a Hz-like integer with 3 extra decimal
+ *   places (kHz) compared to MHz. For example:
+ *   "7.101.000" -> 7101000 -> 7.101 MHz.
+ */
+export function parseDottedKHzToMHz(freqStr: string | null | undefined): number | null {
+    if (freqStr == null) return null;
+    const trimmed = freqStr.trim();
+    if (!trimmed) return null;
+
+    if (!/^[0-9]+(?:\.[0-9]+)*$/.test(trimmed)) return null;
+
+    const compact = trimmed.replace(/\./g, '');
+    if (!/^[0-9]+$/.test(compact)) return null;
+
+    const raw = Number(compact);
+    if (!Number.isFinite(raw) || raw <= 0) return null;
+
+    // raw is effectively kHz * 1000 -> convert to MHz.
+    return raw / 1_000_000;
+}
+
+/**
  * Core band resolver that works on numeric MHz values.
  */
 export function frequencyToBandMHz(freqMHz: number | null | undefined): BandName | '' {
@@ -173,4 +199,41 @@ export function formatCatKHzToDottedMHz(freqKHz: string | null | undefined): str
     }
 
     return parts.join('.');
+}
+
+/**
+ * Format a dotted kHz string (e.g. `7.101.000`) as a normalised dotted MHz
+ * string. This is essentially a thin wrapper over `parseDottedKHzToMHz`
+ * combined with the same grouping logic used for CAT kHz values.
+ */
+export function formatDottedKHzToDottedMHz(freqStr: string | null | undefined): string {
+    const mhz = parseDottedKHzToMHz(freqStr);
+    if (mhz == null) return '';
+
+    const mhzStr = mhz.toFixed(6);
+    const [intPart, fracPartRaw] = mhzStr.split('.');
+    const fracPart = (fracPartRaw ?? '').padEnd(6, '0').slice(0, 6);
+
+    const base = intPart + fracPart;
+    const chars = base.split('');
+    const parts: string[] = [];
+
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    if (chars.length) {
+        parts.unshift(chars.join(''));
+    }
+
+    return parts.join('.');
+}
+
+/**
+ * Convert a dotted kHz-style string (e.g. "14.320.000") into a short MHz
+ * string (e.g. "14.320"). Returns an empty string for invalid input.
+ */
+export function dottedKHzToShortMHz(freqStr: string | null | undefined): string {
+    const mhz = parseDottedKHzToMHz(freqStr);
+    if (mhz == null) return '';
+    // 3 decimal places is typical for amateur HF MHz representation.
+    return mhz.toFixed(3).replace(/\.0+$/, '.0').replace(/\.0$/, '');
 }

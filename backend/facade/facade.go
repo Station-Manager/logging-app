@@ -1,7 +1,6 @@
 package facade
 
 import (
-	"fmt"
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
@@ -59,13 +58,13 @@ func (s *Service) Ready() error {
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
-		return err
+		return errors.Root(err)
 	}
 
 	if !s.started.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotStarted)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
-		return err
+		return errors.Root(err)
 	}
 
 	if err := s.CatService.EnqueueCommand(cmds.Init); err != nil {
@@ -86,13 +85,13 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
-		return nil, err
+		return nil, errors.Root(err)
 	}
 
 	if !s.started.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotStarted)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
-		return nil, err
+		return nil, errors.Root(err)
 	}
 
 	callsign = strings.ToUpper(strings.TrimSpace(callsign))
@@ -106,9 +105,35 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 		return nil, errors.Root(err)
 	}
 
-	fmt.Println(qso)
-
 	return qso, nil
+}
+
+func (s *Service) LogQso(qso types.Qso) error {
+	const op errors.Op = "facade.Service.LogQso"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return errors.Root(err)
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return errors.Root(err)
+	}
+
+	//	fmt.Println(qso)
+
+	_, err := s.DatabaseService.InsertQso(qso)
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO into database.")
+		return errors.Root(err)
+	}
+
+	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
+
+	return nil
 }
 
 func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {

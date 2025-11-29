@@ -3,6 +3,9 @@ import {
     formatCatKHzToDottedMHz,
     parseCatKHzToMHz,
     frequencyToBandFromCat,
+    parseDottedKHzToMHz,
+    formatDottedKHzToDottedMHz,
+    dottedKHzToShortMHz,
 } from '$lib/utils/frequency';
 
 describe('frequency utilities', () => {
@@ -41,6 +44,43 @@ describe('frequency utilities', () => {
             expect(frequencyToBandFromCat('014320000')).toBe('20m');
             // Zero / invalid -> no band
             expect(frequencyToBandFromCat('000000000')).toBe('');
+        });
+    });
+
+    describe('parseDottedKHzToMHz', () => {
+        it('parses dotted kHz strings into MHz', () => {
+            expect(parseDottedKHzToMHz('7.101.000')).toBeCloseTo(7.101, 6);
+            expect(parseDottedKHzToMHz('14.320.000')).toBeCloseTo(14.32, 6);
+        });
+
+        it('returns null for invalid dotted kHz inputs', () => {
+            expect(parseDottedKHzToMHz('')).toBeNull();
+            expect(parseDottedKHzToMHz('abc')).toBeNull();
+            expect(parseDottedKHzToMHz('7..101.000')).toBeNull();
+        });
+    });
+
+    describe('formatDottedKHzToDottedMHz', () => {
+        it('normalises dotted kHz strings to dotted MHz', () => {
+            expect(formatDottedKHzToDottedMHz('7.101.000')).toBe('7.101.000');
+            expect(formatDottedKHzToDottedMHz('14.320.000')).toBe('14.320.000');
+        });
+
+        it('returns empty string for invalid dotted kHz input', () => {
+            expect(formatDottedKHzToDottedMHz('')).toBe('');
+            expect(formatDottedKHzToDottedMHz('abc')).toBe('');
+        });
+    });
+
+    describe('dottedKHzToShortMHz', () => {
+        it('converts dotted kHz string to short MHz string', () => {
+            expect(dottedKHzToShortMHz('14.320.000')).toBe('14.320');
+            expect(dottedKHzToShortMHz('7.101.000')).toBe('7.101');
+        });
+
+        it('returns empty string for invalid inputs', () => {
+            expect(dottedKHzToShortMHz('')).toBe('');
+            expect(dottedKHzToShortMHz('abc')).toBe('');
         });
     });
 });

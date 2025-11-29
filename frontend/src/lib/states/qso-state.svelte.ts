@@ -1,5 +1,7 @@
 import { types } from '$lib/wailsjs/go/models';
 import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+import { catState } from '$lib/states/cat-state.svelte';
+import { dottedKHzToShortMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
 
 let elapsedIntervalID: number | null = null;
 
@@ -26,7 +28,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
 
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
-    target.cat_vfoa_freq = '';
+    target.cat_vfoa_freq = '14.320.000';
     target.cat_vfob_freq = '';
     target.cat_select = '';
     target.cat_split = '';
@@ -258,10 +260,31 @@ export const qsoState: QsoState = $state({
         base.time_on = this.time_on;
         base.time_off = this.time_off;
 
-        base.freq = this.freq;
-        base.freq_rx = this.freq_rx;
-        base.band = this.band;
-        base.band_rx = this.band_rx;
+        if (catState.select === 'VFOA' || catState.select === '') {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfoa_freq;
+            } else {
+                base.freq = qsoState.cat_vfoa_freq;
+                base.freq_rx = qsoState.cat_vfob_freq;
+            }
+        } else {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfob_freq;
+            } else {
+                base.freq = qsoState.cat_vfob_freq;
+                base.freq_rx = qsoState.cat_vfoa_freq;
+            }
+        }
+
+        base.band = frequencyToBandFromDottedMHz(base.freq);
+        base.band_rx = frequencyToBandFromDottedMHz(base.freq_rx);
+
+        base.freq = dottedKHzToShortMHz(base.freq);
+        base.freq_rx = dottedKHzToShortMHz(base.freq_rx);
+        // base.freq = this.freq;
+        // base.freq_rx = this.freq_rx;
+        // base.band = this.band;
+        // base.band_rx = this.band_rx;
 
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.
