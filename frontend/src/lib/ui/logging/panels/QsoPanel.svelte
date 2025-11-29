@@ -74,7 +74,7 @@
                     id="time_off"
                     label="Time Off (UTC)"
                     value={qsoState.time_off}
-                    disabled={true}
+                    disabled={false}
             />
             <div class="flex items-center mt-7">
                 <TimerControls/>

@@ -66,8 +66,6 @@
             handleAsyncError(e, "Callsign.svelte: validateAndFocus");
             inputElement.focus();
             inputElement.select();
-        } finally {
-
         }
     }
 

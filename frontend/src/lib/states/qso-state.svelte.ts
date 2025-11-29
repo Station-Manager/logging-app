@@ -269,12 +269,52 @@ export const qsoState: QsoState = $state({
         return base;
     },
 
+    // QSO elapsed-time timer helpers
+    // startTimer: begin a once-per-minute timer that updates time_off to the
+    // current UTC time. Idempotent: if a timer is already running, it does
+    // nothing.
     startTimer(this: QsoState): void {
+        // If a timer is already active, don't start another.
+        if (elapsedIntervalID !== null) {
+            return;
+        }
+
+        // Ensure we have an initial end time; if it's empty, initialise it
+        // to "now" so UI has an immediate value.
+        if (!this.time_off) {
+            this.time_off = getTimeUTC();
+        }
+
+        // Store interval id in module-scope variable so we can reliably clear it.
+        elapsedIntervalID = window.setInterval(() => {
+            // Always write through the shared qsoState instance to avoid any
+            // confusion around `this` binding inside the interval callback.
+            qsoState.time_off = getTimeUTC();
+        }, 60_000); // every minute
     },
+
+    // stopTimer: stop any running elapsed-time timer but keep the last
+    // recorded time_off value intact. Safe to call multiple times.
     stopTimer(this: QsoState): void {
+        if (elapsedIntervalID !== null) {
+            clearInterval(elapsedIntervalID);
+            elapsedIntervalID = null;
+        }
     },
+
+    // resetTimer: stop any running timer and reset the timing-related fields
+    // for a fresh QSO context.
     resetTimer(this: QsoState): void {
-    }
+        // Ensure no interval continues running.
+        this.stopTimer();
+
+        const date = getDateUTC();
+        const time = getTimeUTC();
+
+        this.qso_date = date;
+        this.time_on = time;
+        this.time_off = time;
+    },
 });
 
 // Immediately initialize defaults for the shared qsoState instance.
