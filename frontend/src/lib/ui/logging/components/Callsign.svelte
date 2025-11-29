@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {CALLSIGN_PATTERN} from "$lib/constants/callsign";
+    import {CALLSIGN_PATTERN, isValidCallsignLength} from "$lib/constants/callsign";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {NewQso} from "$lib/wailsjs/go/facade/Service";
     import {qsoState} from "$lib/states/qso-state.svelte";
@@ -29,7 +29,7 @@
 
     const isValid = (v: string): boolean => {
         const value = v.trim().toUpperCase();
-        return CALLSIGN_PATTERN.test(value);
+        return isValidCallsignLength(value) && CALLSIGN_PATTERN.test(value);
     }
 
     const handleInput = (e: Event): void => {
@@ -57,7 +57,6 @@
 
         try {
             const qso = await NewQso(value);
-            console.log(">", qso);
             qsoState.createFromQSO(qso);
             qsoState.startTimer();
         } catch (e: unknown) {

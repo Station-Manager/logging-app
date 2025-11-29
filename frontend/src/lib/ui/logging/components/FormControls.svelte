@@ -5,13 +5,26 @@
     import {types} from "$lib/wailsjs/go/models";
     import {configStore} from "$lib/stores/config-store";
     import {showToast} from "$lib/utils/toast";
+    import {isValidCallsignForLog} from "$lib/constants/callsign";
 
     const resetAction = (): void => {
         qsoState.stopTimer();
         resetQsoStateDefaults(qsoState);
+        const elem = document.getElementById('call') as HTMLInputElement;
+        if (elem) elem.focus();
     }
 
+    const canLog = $derived(() => isValidCallsignForLog(qsoState.call));
+
     const logContact = async (): Promise<void> => {
+        if (!canLog) {
+            const elem = document.getElementById('call') as HTMLInputElement;
+            if (elem) {
+                elem.focus();
+                elem.select();
+            }
+            return;
+        }
         try {
             const qso: types.Qso = qsoState.toQso();
             qso.logbook_id = $configStore.logbook.id
@@ -28,6 +41,7 @@
     <button
             onclick={logContact}
             type="button"
+            disabled={!canLog}
             class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             title="Ctrl-s">Log Contact
     </button>
