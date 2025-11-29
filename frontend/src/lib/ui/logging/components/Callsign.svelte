@@ -1,5 +1,8 @@
 <script lang="ts">
     import {CALLSIGN_PATTERN} from "$lib/constants/callsign";
+    import {handleAsyncError} from "$lib/utils/error-handler";
+    import {NewQso} from "$lib/wailsjs/go/facade/Service";
+    import {qsoState} from "$lib/states/qso-state.svelte";
 
     interface Props {
         id: string;
@@ -40,7 +43,7 @@
         invalid = !isValid(v);
     }
 
-    const validateAndFocus = (): void => {
+    const validateAndFocus = async (): Promise<void> => {
         const tabbed = lastKey === "Tab";
         lastKey = null;
         if (!tabbed) return;
@@ -52,7 +55,20 @@
             return;
         }
 
-        console.log("All passed");
+        try {
+            const qso = await NewQso(value);
+            console.log(">", qso);
+            qsoState.createFromQSO(qso);
+            qsoState.startTimer();
+        } catch (e: unknown) {
+            // Any error here is serious and means we cannot continue: either there is something wrong with the
+            // provided callsign or the backend is not available.
+            handleAsyncError(e, "Callsign.svelte: validateAndFocus");
+            inputElement.focus();
+            inputElement.select();
+        } finally {
+
+        }
     }
 
 </script>

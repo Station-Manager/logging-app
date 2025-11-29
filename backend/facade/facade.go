@@ -1,9 +1,11 @@
 package facade
 
 import (
+	"fmt"
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
+	"strings"
 )
 
 // FetchUiConfig retrieves the UI configuration object. It returns an error if the service is not initialized, or the underlying
@@ -93,7 +95,20 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 		return nil, err
 	}
 
-	return nil, nil
+	callsign = strings.ToUpper(strings.TrimSpace(callsign))
+
+	if len(callsign) < 3 {
+		return nil, errors.New(op).Msg("Callsign must be at least 3 characters long")
+	}
+
+	qso, err := s.initializeQso(callsign)
+	if err != nil {
+		return nil, errors.Root(err)
+	}
+
+	fmt.Println(qso)
+
+	return qso, nil
 }
 
 func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {

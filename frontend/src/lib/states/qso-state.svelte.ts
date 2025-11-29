@@ -1,4 +1,39 @@
 import { types } from '$lib/wailsjs/go/models';
+import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+
+let elapsedIntervalID: number | null = null;
+
+// Helper to reset a QsoState instance to its initial defaults for a new QSO.
+// This centralizes defaults (e.g., RST values, initial mode, empty CAT fields)
+// so they are applied consistently whenever a new QSO is started.
+export function resetQsoStateDefaults(target: QsoState): void {
+    // Core QSO defaults
+    target.original = undefined;
+    target.call = '';
+    target.rst_sent = '59';
+    target.rst_rcvd = '59';
+    target.mode = 'USB';
+    target.name = '';
+    target.qth = '';
+    target.comment = '';
+    target.qso_date = getDateUTC();
+    target.time_on = getTimeUTC();
+    target.time_off = target.time_on;
+    target.freq = '';
+    target.freq_rx = '';
+    target.band = '';
+    target.band_rx = '';
+
+    // CAT-only, UI-facing defaults (no CAT available yet)
+    target.cat_identity = '';
+    target.cat_vfoa_freq = '';
+    target.cat_vfob_freq = '';
+    target.cat_select = '';
+    target.cat_split = '';
+    target.cat_main_mode = '';
+    target.cat_sub_mode = '';
+    target.cat_tx_power = '';
+}
 
 // Helper to map backend QSO fields into the mutable QsoState instance.
 // If you add more fields to QsoState later (e.g., submode, tx_pwr, etc.), you only need to update applyQsoToState.
@@ -9,14 +44,27 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.qth = qso.qth ?? '';
     target.comment = qso.comment ?? '';
 
-    target.rst_sent = qso.rst_sent ?? '';
-    target.rst_rcvd = qso.rst_rcvd ?? '';
+    // Preserve frontend defaults for RST if backend does not provide a value.
+    if (qso.rst_sent != null && qso.rst_sent !== '') {
+        target.rst_sent = qso.rst_sent;
+    }
+    if (qso.rst_rcvd != null && qso.rst_rcvd !== '') {
+        target.rst_rcvd = qso.rst_rcvd;
+    }
 
-    target.mode = qso.mode ?? '';
+    if (qso.mode != null && qso.mode !== '') {
+        target.mode = qso.mode;
+    }
 
-    target.qso_date = qso.qso_date ?? '';
-    target.time_on = qso.time_on ?? '';
-    target.time_off = qso.time_off ?? '';
+    // Preserve frontend defaults for date/time if backend does not provide a value.
+    if (qso.qso_date != null && qso.qso_date !== '') {
+        target.qso_date = getDateUTC();
+    }
+    //    if (qso.time_on != null && qso.time_on !== '') {
+    target.time_on = getTimeUTC();
+    //    }
+    // time_off remains purely backend/explicit; empty means "not set" in UI.
+    target.time_off = target.time_on;
 
     target.freq = qso.freq ?? '';
     target.freq_rx = qso.freq_rx ?? '';
@@ -86,6 +134,10 @@ export interface QsoState extends CatDrivenFields {
     resetToOriginal(this: QsoState): void;
     /** Build a QSO instance suitable for sending back to the backend. */
     toQso(this: QsoState): types.Qso;
+
+    startTimer(this: QsoState): void;
+    stopTimer(this: QsoState): void;
+    resetTimer(this: QsoState): void;
 }
 
 /**
@@ -179,7 +231,11 @@ export const qsoState: QsoState = $state({
     },
 
     resetToOriginal(this: QsoState): void {
-        if (!this.original) return;
+        if (!this.original) {
+            // No original QSO (new QSO case) -> reset to defaults.
+            resetQsoStateDefaults(this);
+            return;
+        }
         applyQsoToState(this, this.original);
     },
 
@@ -212,4 +268,14 @@ export const qsoState: QsoState = $state({
 
         return base;
     },
+
+    startTimer(this: QsoState): void {
+    },
+    stopTimer(this: QsoState): void {
+    },
+    resetTimer(this: QsoState): void {
+    }
 });
+
+// Immediately initialize defaults for the shared qsoState instance.
+resetQsoStateDefaults(qsoState);
