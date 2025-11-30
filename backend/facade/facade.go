@@ -80,6 +80,7 @@ func (s *Service) Ready() error {
 	return nil
 }
 
+// NewQso initializes a new QSO object with the given callsign.
 func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 	const op errors.Op = "facade.Service.NewQso"
 	if !s.initialized.Load() {
@@ -108,6 +109,7 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 	return qso, nil
 }
 
+// LogQso inserts a new QSO into the database.
 func (s *Service) LogQso(qso types.Qso) error {
 	const op errors.Op = "facade.Service.LogQso"
 	if !s.initialized.Load() {
@@ -122,7 +124,7 @@ func (s *Service) LogQso(qso types.Qso) error {
 		return errors.Root(err)
 	}
 
-	//	fmt.Println(qso)
+	qso.SessionID = s.sessionID
 
 	_, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {

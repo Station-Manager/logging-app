@@ -30,6 +30,7 @@ type Service struct {
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
+	sessionID      int64
 
 	container *iocdi.Container
 	ctx       context.Context
@@ -182,6 +183,12 @@ func (s *Service) Stop() error {
 	// Stop the CAT service
 	if err := s.CatService.Stop(); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop CAT service")
+	}
+
+	// Soft-delete the session ID
+	if err := s.DatabaseService.SoftDeleteSessionID(s.sessionID); err != nil {
+		// Not a show-stopper, just log the error
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to soft-delete session ID")
 	}
 
 	// Stop the database service

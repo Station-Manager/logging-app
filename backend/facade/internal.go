@@ -17,6 +17,8 @@ func (s *Service) launchWorkerThread(run *runState, workerFunc func(<-chan struc
 	}()
 }
 
+// openAndLoadFromDatabase initializes the database connection, applies migrations, loads the default
+// logbook, and generates a session ID.
 func (s *Service) openAndLoadFromDatabase() error {
 	const op errors.Op = "facade.Service.loadFromDatabase"
 
@@ -32,6 +34,7 @@ func (s *Service) openAndLoadFromDatabase() error {
 		return err
 	}
 
+	// Load the default logbook
 	logbook, err := s.DatabaseService.FetchLogbookByID(s.requiredCfgs.DefaultRigID)
 	if err != nil {
 		err = errors.New(op).Err(err)
@@ -39,6 +42,14 @@ func (s *Service) openAndLoadFromDatabase() error {
 		return err
 	}
 	s.CurrentLogbook = logbook
+
+	// Generate a new session id
+	s.sessionID, err = s.DatabaseService.GenerateNewSessionID()
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to generate new session ID.")
+		return err
+	}
 
 	return nil
 }
