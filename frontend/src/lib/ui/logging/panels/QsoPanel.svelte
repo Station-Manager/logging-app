@@ -13,7 +13,7 @@
     import Vfos from "$lib/ui/logging/components/Vfos.svelte";
 </script>
 
-<div class="flex flex-row h-[351px]">
+<div class="flex flex-row h-[281px]">
     <div class="flex flex-col gap-y-3 w-[744px] px-6">
         <div class="flex flex-row gap-x-4 items-center h-[100px]">
             <Callsign
