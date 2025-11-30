@@ -135,15 +135,9 @@ func (s *Service) LogQso(qso types.Qso) error {
 	}
 	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
 
-	contactedStationExists, err := s.DatabaseService.ContactedStationExistsByCallsign(qso.Call)
-	if err != nil {
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to check if contacted station exists.")
+	if err = s.insertOrUpdateContactedStation(qso.ContactedStation); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert or update contacted station.")
 		return errors.Root(err)
-	}
-
-	if !contactedStationExists {
-		//TODO: add to the database
-		s.LoggerService.DebugWith().Str("callsign", qso.Call).Msg("Contacted station does not exist in database.")
 	}
 
 	return nil

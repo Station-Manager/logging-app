@@ -10,13 +10,13 @@ require (
 	github.com/Station-Manager/errors v0.0.8
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.7
-	github.com/Station-Manager/types v0.0.31
+	github.com/Station-Manager/types v0.0.33
 	github.com/Station-Manager/utils v0.0.2
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 
 require (
-	github.com/Station-Manager/adapters v0.0.10 // indirect
+	github.com/Station-Manager/adapters v0.0.11 // indirect
 	github.com/Station-Manager/serial v0.0.4 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect

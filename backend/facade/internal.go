@@ -1,6 +1,8 @@
 package facade
 
 import (
+	"database/sql"
+	stderr "errors"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 	"strings"
@@ -123,4 +125,36 @@ func (s *Service) contactedStationExistsByCallsign(callsign string) (bool, error
 	}
 
 	return exists, nil
+}
+
+func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation) error {
+	const op errors.Op = "facade.Service.insertOrUpdateContactedStation"
+
+	model, err := s.DatabaseService.FetchContactedStationByCallsign(station.Call)
+	if err != nil && !stderr.Is(err, sql.ErrNoRows) {
+		return errors.New(op).Err(err)
+	}
+
+	// Error == sql.ErrNoRows
+	if err != nil {
+		s.LoggerService.DebugWith().Str("callsign", station.Call).Msg("Contacted station does not exist in database, inserting.")
+		if _, err = s.DatabaseService.InsertContactedStation(station); err != nil {
+			s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert contacted station into database.")
+			return errors.Root(err)
+		}
+		return nil
+	}
+
+	// Do this before the comparison to ensure the ID is set and the comparison doesn't fail because of it.
+	station.ID = model.ID
+
+	if model != station {
+		s.LoggerService.DebugWith().Str("callsign", station.Call).Msg("Contacted station exists in database, but needs updating.")
+		if err = s.DatabaseService.UpdateContactedStation(station); err != nil {
+			s.LoggerService.ErrorWith().Err(err).Msg("Failed to update contacted station in database.")
+			return errors.Root(err)
+		}
+	}
+
+	return nil
 }
