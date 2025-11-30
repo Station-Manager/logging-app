@@ -10,8 +10,8 @@ github.com/Station-Manager/cat v0.0.5 h1:wdxTtL2LZJjPpkeQ5OEUXQfZJdvyZM6mSCnj2R4
 github.com/Station-Manager/cat v0.0.5/go.mod h1:8uYMmPE5vAfJhH4RMbSBQWgjTWN1v9OXmOVo/pD7cFs=
 github.com/Station-Manager/config v0.0.16 h1:JumklqedznDb/0C2+XEcgRpGLV6B9OuWVVqWE0Jj9xA=
 github.com/Station-Manager/config v0.0.16/go.mod h1:lXDw86WmAiwVyRYHY/8+fQd3TC0hlLxn1CYuXLwQYhU=
-github.com/Station-Manager/database v0.0.18 h1:icLfyvhNJ+6bE/Ocfj+2HCPrbOH2DB1x3Ew1FqrtARg=
-github.com/Station-Manager/database v0.0.18/go.mod h1:XCaZ61WDnVIAICNSTbzPgkq6s+3KO1nd8jfwBebCEYY=
+github.com/Station-Manager/database v0.0.20 h1:MQnoUiLCP1h1N01gH5c5f1/VSynvxwe18n1PvSI1H4U=
+github.com/Station-Manager/database v0.0.20/go.mod h1:kfPsaTD+HzW9tTsXRNMYRSPfyVYl5U4zzgLjCImArF0=
 github.com/Station-Manager/enums v0.0.1 h1:eQSGIscQpxUy7npIMMUKEiOswdxdXTv02Mw7cKhTxYU=
 github.com/Station-Manager/enums v0.0.1/go.mod h1:+DM4D5iPVIXyaflzHsBVQQb5DnBnL0iYNaddkKiBdao=
 github.com/Station-Manager/errors v0.0.8 h1:30Muy38/ePWPawXkaNmw+myeIvSy9vNc7i26rjW5t6k=
@@ -96,6 +96,7 @@ github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69
 github.com/golang-migrate/migrate/v4 v4.19.1 h1:OCyb44lFuQfYXYLx1SCxPZQGU7mcaZ7gH9yH4jSFbBA=
 github.com/golang-migrate/migrate/v4 v4.19.1/go.mod h1:CTcgfjxhaUtsLipnLoQRWCrjYXycRz/g5+RWDuYgPrE=
 github.com/google/go-cmp v0.7.0 h1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=
+github.com/google/go-cmp v0.7.0/go.mod h1:pXiqmnSA92OHEEa9HXL2W4E7lf9JzCmGVUdgjX3N/iU=
 github.com/google/pprof v0.0.0-20250317173921-a4b03ec1a45e h1:ijClszYn+mADRFY17kjQEVQ1XRhq2/JR1M3sGqeJoxs=
 github.com/google/pprof v0.0.0-20250317173921-a4b03ec1a45e/go.mod h1:boTsfXsheKC2y+lKOCMpSfarhxDeIzfZG1jqGcPl3cA=
 github.com/google/uuid v1.6.0 h1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=

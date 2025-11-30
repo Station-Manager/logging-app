@@ -8,4 +8,5 @@ var (
 	errMsgNilCatService      = "Cat service is nil."
 	errMsgInvalidRigID       = "Invalid default rig ID."
 	errMsgServiceNotStarted  = "Service not started."
+	errMsgInvalidCallsign    = "Invalid callsign: must be at least 3 characters long."
 )

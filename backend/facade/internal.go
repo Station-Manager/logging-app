@@ -91,3 +91,36 @@ func (s *Service) lookupCallsignOnline(callsign string) (types.ContactedStation,
 
 	return types.ContactedStation{}, nil
 }
+
+// contactedStationExistsByCallsign checks if a contacted station exists in the database using the given callsign.
+// The callsign is trimmed, uppercased, and validated before querying.
+// Returns a boolean indicating existence and an error if any operation fails.
+func (s *Service) contactedStationExistsByCallsign(callsign string) (bool, error) {
+	const op errors.Op = "facade.Service.contactedStationExistsByCallsign"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return false, errors.Root(err)
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return false, errors.Root(err)
+	}
+
+	callsign = strings.ToUpper(strings.TrimSpace(callsign))
+
+	if len(callsign) < 3 {
+		return false, errors.New(op).Msg(errMsgInvalidCallsign)
+	}
+
+	parsedCallsign := s.parseCallsign(callsign)
+
+	exists, err := s.DatabaseService.ContactedStationExistsByCallsign(parsedCallsign)
+	if err != nil {
+		return false, errors.New(op).Err(err)
+	}
+
+	return exists, nil
+}

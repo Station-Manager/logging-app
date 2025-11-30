@@ -98,7 +98,7 @@ func (s *Service) NewQso(callsign string) (*types.Qso, error) {
 	callsign = strings.ToUpper(strings.TrimSpace(callsign))
 
 	if len(callsign) < 3 {
-		return nil, errors.New(op).Msg("Callsign must be at least 3 characters long")
+		return nil, errors.New(op).Msg(errMsgInvalidCallsign)
 	}
 
 	qso, err := s.initializeQso(callsign)
@@ -126,14 +126,25 @@ func (s *Service) LogQso(qso types.Qso) error {
 
 	qso.SessionID = s.sessionID
 
+	// Insert the QSO into the database
 	_, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO into database.")
 		return errors.Root(err)
 	}
-
 	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
+
+	contactedStationExists, err := s.DatabaseService.ContactedStationExistsByCallsign(qso.Call)
+	if err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to check if contacted station exists.")
+		return errors.Root(err)
+	}
+
+	if !contactedStationExists {
+		//TODO: add to the database
+		s.LoggerService.DebugWith().Str("callsign", qso.Call).Msg("Contacted station does not exist in database.")
+	}
 
 	return nil
 }

@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.5
 	github.com/Station-Manager/config v0.0.16
-	github.com/Station-Manager/database v0.0.18
+	github.com/Station-Manager/database v0.0.20
 	github.com/Station-Manager/enums v0.0.1
 	github.com/Station-Manager/errors v0.0.8
 	github.com/Station-Manager/iocdi v0.0.1
@@ -37,7 +37,6 @@ require (
 	github.com/godbus/dbus/v5 v5.2.0 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.19.1 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/jchv/go-winloader v0.0.0-20250406163304-c1995be93bd1 // indirect
