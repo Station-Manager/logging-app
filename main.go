@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/Station-Manager/enums/events"
 	"github.com/Station-Manager/enums/tags"
+	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/utils"
 	"github.com/wailsapp/wails/v2"
@@ -39,6 +40,7 @@ func main() {
 
 	if err = initializeContainer(workingDir); err != nil {
 		_, _ = fmt.Fprintf(os.Stderr, "failed to initialize container: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "container initialization failed: %s\n", errors.Root(err))
 		os.Exit(ExitContainerInit)
 	}
 

@@ -8,10 +8,14 @@ import (
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/logging-app/backend/facade"
+	"github.com/Station-Manager/lookup/hamnut"
 	"reflect"
 	"strings"
 )
 
+// initializeContainer initializes the dependency injection container with required services and configurations.
+// It registers instances and services by their identifiers, builds the container, and ensures all dependencies are resolved.
+// Returns an error if any registration or build process fails.
 func initializeContainer(workingDir string) error {
 	const op errors.Op = "logging-app.main.initializeContainer"
 
@@ -33,6 +37,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(cat.ServiceName, reflect.TypeOf((*cat.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(hamnut.ServiceName, reflect.TypeOf((*hamnut.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 

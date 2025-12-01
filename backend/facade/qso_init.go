@@ -3,6 +3,7 @@ package facade
 import (
 	"database/sql"
 	stderr "errors"
+	"fmt"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -82,5 +83,16 @@ func (s *Service) initContactedStationSection(callsign string) (*types.Contacted
 }
 
 func (s *Service) initCountrySection(callsign string) (types.Country, error) {
+	const op errors.Op = "facade.Service.initCountrySection"
+
+	parsedCallsign := s.parseCallsign(callsign)
+
+	obj, err := s.HamnutService.Lookup(parsedCallsign)
+	if err != nil {
+		return types.Country{}, errors.New(op).Err(err)
+	}
+
+	fmt.Println(obj)
+
 	return types.Country{}, nil
 }

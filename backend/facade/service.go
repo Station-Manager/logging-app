@@ -8,6 +8,7 @@ import (
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
+	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/types"
 	"sync"
 	"sync/atomic"
@@ -27,6 +28,7 @@ type Service struct {
 	LoggerService   *logging.Service  `di.inject:"loggingservice"`
 	DatabaseService *database.Service `di.inject:"databaseservice"`
 	CatService      *cat.Service      `di.inject:"catservice"`
+	HamnutService   *hamnut.Service   `di.inject:"hamnutlookupservice"`
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
@@ -67,6 +69,11 @@ func (s *Service) Initialize() error {
 
 		if s.CatService == nil {
 			initErr = errors.New(op).Msg(errMsgNilCatService)
+			return
+		}
+
+		if s.HamnutService == nil {
+			initErr = errors.New(op).Msg(errMsgNilHamnutService)
 			return
 		}
 
