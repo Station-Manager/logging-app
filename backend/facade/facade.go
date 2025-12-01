@@ -124,6 +124,7 @@ func (s *Service) LogQso(qso types.Qso) error {
 		return errors.Root(err)
 	}
 
+	// Set the current session ID
 	qso.SessionID = s.sessionID
 
 	// Insert the QSO into the database
@@ -135,6 +136,9 @@ func (s *Service) LogQso(qso types.Qso) error {
 	}
 	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
 
+	// Check if the contacted station exists in the database and insert or update it if it does not
+	// match the current QSO's contacted station. The ContactedStation object is loaded when
+	// the QSO is initialized.
 	if err = s.insertOrUpdateContactedStation(qso.ContactedStation); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert or update contacted station.")
 		return errors.Root(err)

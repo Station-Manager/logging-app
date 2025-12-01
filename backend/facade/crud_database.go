@@ -84,6 +84,7 @@ func (s *Service) contactedStationExistsByCallsign(callsign string) (bool, error
 func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation) error {
 	const op errors.Op = "facade.Service.insertOrUpdateContactedStation"
 
+	// Does a Contacted Station record exist for this callsign?
 	model, err := s.DatabaseService.FetchContactedStationByCallsign(station.Call)
 	if err != nil && !stderr.Is(err, sql.ErrNoRows) {
 		return errors.New(op).Err(err)
@@ -99,7 +100,7 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 		return nil
 	}
 
-	// Do this before the comparison to ensure the ID is set and the comparison doesn't fail because of it.
+	// Do this before the comparison to ensure the ID is set, and the comparison doesn't fail because of it.
 	station.ID = model.ID
 
 	if model != station {
