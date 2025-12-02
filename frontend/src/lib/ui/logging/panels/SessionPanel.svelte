@@ -1,7 +1,48 @@
 <script lang="ts">
 
+    import {sessionState} from "$lib/states/session-state.svelte";
+    import {formatTime} from "$lib/utils/time-date";
+    import {parseDottedKHzToMHz} from "$lib/utils/frequency";
+
+    const distanceCss = "w-[92px]";
+    const timeCss = "w-[74px]";
+    const callsignCss = "w-[90px]";
+    const bandCss = "w-[50px]";
+    const freqCss = "w-[70px]";
+    const rstCss = "w-[50px]";
+    const modeCss = "w-[52px]";
+    const countryCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
+    const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 </script>
 
-<div>
-    Session Panel
+<div class="cursor-default flex flex-col">
+    <div class="flex flex-row border-b border-b-gray-300 font-semibold h-[32px] items-center px-5">
+        <div class={callsignCss}>Callsign</div>
+        <div class={nameCss}>Name</div>
+        <div class={freqCss}>Freq</div>
+        <div class={bandCss}>Band</div>
+        <div class={rstCss}>Send</div>
+        <div class={rstCss}>Rcvd</div>
+        <div class={modeCss}>Mode</div>
+        <div class={timeCss}>Time On</div>
+        <div class={countryCss}>Country</div>
+        <div class="w-[130px]">Distance</div>
+    </div>
+    <div class="relative h-[264px] overflow-y-scroll pt-1 flex flex-col text-sm">
+        {#each sessionState.list as entry (entry.id)}
+            <div class="flex flex-row odd:bg-white even:bg-gray-300">
+                <div class={callsignCss}>{entry.call}</div>
+                <div class={nameCss} title="{entry.name}">{entry.name}</div>
+                <div class={freqCss}>{parseDottedKHzToMHz(entry.freq)}</div>
+                <div class={bandCss}>{entry.band}</div>
+                <div class={rstCss}>{entry.rst_sent}</div>
+                <div class={rstCss}>{entry.rst_sent}</div>
+                <div class={modeCss}>{entry.mode}</div>
+                <div class={timeCss}>{formatTime(entry.time_on)}</div>
+                <div class={countryCss} title="{entry.country}">{entry.country}</div>
+                <div class={distanceCss}>{entry.distance} km</div>
+                <div><!--button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer">Edit</button--></div>
+            </div>
+        {/each}
+    </div>
 </div>

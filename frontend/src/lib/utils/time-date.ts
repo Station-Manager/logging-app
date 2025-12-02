@@ -1,3 +1,6 @@
+// Strict RFC3339-like format with explicit timezone offset (e.g. 2025-12-02T10:31:04+02:00).
+const REMOTE_TIME_REGEX = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})([+-])(\d{2}):(\d{2})$/;
+
 export function getTimeUTC(): string {
     const data: Date = new Date();
     return (
@@ -22,10 +25,43 @@ export function extractRemoteTime(timestamp?: string): string {
     }
 
     const trimmed = timestamp.trim();
-    const match = /^\d{4}-\d{2}-\d{2}T(\d{2}):(\d{2}):\d{2}[+-]\d{2}:\d{2}$/.exec(trimmed);
+    const match = REMOTE_TIME_REGEX.exec(trimmed);
     if (!match) {
         return '';
     }
 
-    return `${match[1]}:${match[2]}`;
+    const [, , , , hour, minute, second, , offsetHour, offsetMinute] = match;
+    const hourNum = Number(hour);
+    const minuteNum = Number(minute);
+    const secondNum = Number(second);
+    const offsetHourNum = Number(offsetHour);
+    const offsetMinuteNum = Number(offsetMinute);
+    if (
+        Number.isNaN(hourNum) ||
+        Number.isNaN(minuteNum) ||
+        Number.isNaN(secondNum) ||
+        Number.isNaN(offsetHourNum) ||
+        Number.isNaN(offsetMinuteNum) ||
+        hourNum > 23 ||
+        minuteNum > 59 ||
+        secondNum > 59 ||
+        offsetHourNum > 14 ||
+        offsetMinuteNum > 59
+    ) {
+        return '';
+    }
+
+    return `${hour}:${minute}`;
+}
+
+export function formatTime(timeStr: string | undefined): string {
+    if (timeStr === undefined) {
+        return '';
+    }
+    if (timeStr.length !== 4) {
+        throw new Error('Invalid time string length');
+    }
+    const hours: string = timeStr.slice(0, 2);
+    const minutes: string = timeStr.slice(2, 4);
+    return `${hours}:${minutes}`;
 }
