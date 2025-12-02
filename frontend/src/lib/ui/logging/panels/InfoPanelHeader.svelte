@@ -1,19 +1,30 @@
 <script lang="ts">
-    const WORKED_TAB_TITLE = "Worked";
-    const DETAILS_TAB_TITLE = "Details";
-    const STATION_TAB_TITLE = "My Station";
-    const SESSION_TAB_TITLE = "Session";
+    import {
+        DETAILS_TAB_TITLE,
+        SESSION_TAB_TITLE,
+        STATION_TAB_TITLE,
+        WORKED_TAB_TITLE
+    } from "$lib/ui/logging/panels/constants";
+
     const baseCss = "flex gap-x-2";
     const selectedBtn = "cursor-default text-indigo-600 font-semibold";
     const unselectedBtn = "cursor-pointer text-gray-500 hover:text-gray-700";
 
+    interface Props {
+        activePanel: string;
+    }
+
+    let {
+        activePanel = $bindable()
+    }: Props = $props();
+
     const btnClass = (value: string) =>
         `${baseCss} ${selected === value ? selectedBtn : unselectedBtn}`;
 
-    let selected = $state(WORKED_TAB_TITLE);
+    let selected = $state(activePanel);
 
     const clickHandler = (value: string):void => {
-        selected = value;
+        selected = activePanel = value;
     }
 </script>
 
