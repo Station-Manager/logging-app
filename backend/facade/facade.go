@@ -147,6 +147,30 @@ func (s *Service) LogQso(qso types.Qso) error {
 	return nil
 }
 
+func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
+	const op errors.Op = "facade.Service.CurrentSessionQsoSlice"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return nil, err
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return nil, errors.Root(err)
+	}
+
+	list, err := s.DatabaseService.FetchQsosBySessionId(s.sessionID, true, false)
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch QSOs by session ID.")
+		return nil, errors.Root(err)
+	}
+
+	return list, nil
+}
+
 func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
 	const op errors.Op = "facade.Service.IsContestDuplicate"
 	if !s.initialized.Load() {
