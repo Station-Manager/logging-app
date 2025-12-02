@@ -88,6 +88,8 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.remote_offset = details?.time_offset ?? '';
     target.ccode = details?.ccode ?? '';
 
+    target.contact_history = qso.contact_history ?? [];
+
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -152,6 +154,8 @@ export interface QsoState extends CatDrivenFields {
     ant_path: string;
     remote_time: string;
     remote_offset: string;
+
+    contact_history: types.ContactHistory[];
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -220,6 +224,8 @@ export const qsoState: QsoState = $state({
 
     remote_time: '',
     remote_offset: '',
+
+    contact_history: [],
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',

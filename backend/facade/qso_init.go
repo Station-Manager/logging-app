@@ -53,7 +53,7 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch contact history")
 	}
 
-	s.LoggerService.DebugWith().Str("callsign", callsign).Interface("history", history).Msg("Contact history fetched successfully")
+	s.LoggerService.DebugWith().Str("callsign", callsign).Interface("history", history).Int("count", len(history)).Msg("Contact history fetched successfully")
 
 	if err = mergeIntoQso(qso, country, history); err != nil {
 		return nil, errors.New(op).Err(err)
