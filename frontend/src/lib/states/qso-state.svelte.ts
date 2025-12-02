@@ -86,6 +86,7 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.long_path_bearing = details?.long_path_bearing ?? '';
     target.remote_time = extractRemoteTime(details?.local_time);
     target.remote_offset = details?.time_offset ?? '';
+    target.ccode = details?.ccode ?? '';
 
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
@@ -143,6 +144,7 @@ export interface QsoState extends CatDrivenFields {
     band_rx: string;
 
     country_name: string;
+    ccode: string;
     short_path_bearing: string;
     short_path_distance: string;
     long_path_bearing: string;
@@ -209,6 +211,7 @@ export const qsoState: QsoState = $state({
     band_rx: '',
 
     country_name: '',
+    ccode: '',
     short_path_bearing: '',
     short_path_distance: '',
     long_path_bearing: '',

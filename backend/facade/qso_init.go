@@ -50,7 +50,7 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		return nil, errors.New(op).Err(err)
 	}
 
-	s.LoggerService.DebugWith().Interface("qso", qso).Msg("QSO initialized successfully")
+	//	s.LoggerService.DebugWith().Interface("qso", qso).Msg("QSO initialized successfully")
 
 	return qso, nil
 }

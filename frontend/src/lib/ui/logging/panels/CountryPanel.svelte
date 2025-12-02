@@ -10,8 +10,10 @@
     let isVisible = $derived(qsoState.country_name !== '');
 
     let flagImgPath = $derived.by((): string => {
-        return `/flags/unknown.svg`;
-//        return `flags/${qsoState.country_name}.svg`;
+        if (qsoState.ccode === ''){
+            return `/flags/unknown.svg`;
+        }
+        return `flags/${qsoState.ccode.toLowerCase()}.svg`;
     });
 
     const toggleAntPath = (event: Event):void => {
@@ -30,7 +32,7 @@
 
 <div class="w-[240px] h-[236px] border border-gray-300 rounded-md bg-gray-200">
     <div class="{isVisible ? 'block' : 'hidden'} flex flex-col">
-        <div class="text-2xl text-center font-semibold py-2">
+        <div class="text-2xl text-center font-semibold py-3">
             {qsoState.country_name}
         </div>
         <div class="flex justify-center">
@@ -39,7 +41,7 @@
         <div class="text-center py-2">
             <div class="">
             {#if qsoState.short_path_distance === '' && qsoState.long_path_distance === ''}
-                <div class="text-center text-gray-500">No data</div>
+                <div class="text-center text-gray-500">No distance data</div>
             {:else}
                 {#if qsoState.ant_path === 'S'}
                     <span class="text-red-600">{qsoState.short_path_distance} km</span>
