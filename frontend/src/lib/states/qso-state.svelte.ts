@@ -132,6 +132,11 @@ export interface QsoState extends CatDrivenFields {
     band_rx: string;
 
     country_name: string;
+    short_path_bearing: string;
+    short_path_distance: string;
+    long_path_bearing: string;
+    long_path_distance: string;
+    ant_path: string;
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -191,6 +196,11 @@ export const qsoState: QsoState = $state({
     band_rx: '',
 
     country_name: '',
+    short_path_bearing: '',
+    short_path_distance: '',
+    long_path_bearing: '',
+    long_path_distance: '',
+    ant_path: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',
