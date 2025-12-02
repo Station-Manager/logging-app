@@ -1,7 +1,10 @@
 package facade
 
 import (
+	"github.com/Station-Manager/errors"
+	"github.com/Station-Manager/maidenhead"
 	"github.com/Station-Manager/types"
+	"strconv"
 	"strings"
 )
 
@@ -53,6 +56,40 @@ func (s *Service) parseCallsign(callsign string) string {
 // lookupCallsignOnline fetches details about the specified callsign from an online service (QRZ.com, HamQTH, etc.).
 // Returns a ContactedStation object or an error in case of failure.
 func (s *Service) lookupCallsignOnline(callsign string) (types.ContactedStation, error) {
+	const op errors.Op = "facade.Service.lookupCallsignOnline"
+	emptyRetVal := types.ContactedStation{}
 
-	return types.ContactedStation{}, nil
+	if !s.initialized.Load() {
+		return emptyRetVal, errors.New(op).Msg("service is not initialized")
+	}
+
+	station, err := s.QrzLookupService.Lookup(callsign)
+	if err != nil {
+		return emptyRetVal, errors.New(op).Err(err).Msg("Failed to lookup callsign")
+	}
+
+	return station, nil
+}
+
+func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.LoggingStation, cs types.ContactedStation) error {
+	const op errors.Op = "facade.Service.calulatedBearingAndDistance"
+	if country == nil {
+		return errors.New(op).Msg("country parameter is nil")
+	}
+	if ls.MyGridsquare == "" {
+		return errors.New(op).Msg("logging station's gridsquare is empty")
+	}
+	if cs.Gridsquare == "" {
+		return errors.New(op).Msg("contacted station's gridsquare is empty")
+	}
+
+	if location, err := maidenhead.GetLocation(ls.MyGridsquare, cs.Gridsquare); err != nil {
+		s.LoggerService.WarnWith().Err(err).Msg("Failed to get location between logging station and contacted station")
+	} else {
+		country.ShortPathBearing = strconv.FormatFloat(location.ShortPathBearing, 'f', -1, 64)
+		country.ShortPathDistance = strconv.Itoa(int(location.ShortPathDistanceKm))
+		country.LongPathBearing = strconv.FormatFloat(location.LongPathBearing, 'f', -1, 64)
+		country.LongPathDistance = strconv.Itoa(int(location.LongPathDistanceKm))
+	}
+	return nil
 }

@@ -11,6 +11,7 @@
     import TimerControls from "$lib/ui/logging/components/TimerControls.svelte";
     import FormControls from "$lib/ui/logging/components/FormControls.svelte";
     import Vfos from "$lib/ui/logging/components/Vfos.svelte";
+    import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
 </script>
 
 <div class="flex flex-row h-[281px]">
@@ -82,5 +83,7 @@
             </div>
         </div>
     </div>
-    <div class="w-[280px] border">Col 2</div>
+    <div class="flex w-[280px] pt-6 pl-2">
+        <CountryPanel/>
+    </div>
 </div>

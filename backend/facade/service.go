@@ -9,6 +9,7 @@ import (
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/lookup/hamnut"
+	"github.com/Station-Manager/lookup/qrz"
 	"github.com/Station-Manager/types"
 	"sync"
 	"sync/atomic"
@@ -24,11 +25,12 @@ type runState struct {
 }
 
 type Service struct {
-	ConfigService   *config.Service   `di.inject:"configservice"`
-	LoggerService   *logging.Service  `di.inject:"loggingservice"`
-	DatabaseService *database.Service `di.inject:"databaseservice"`
-	CatService      *cat.Service      `di.inject:"catservice"`
-	HamnutService   *hamnut.Service   `di.inject:"hamnutlookupservice"`
+	ConfigService       *config.Service   `di.inject:"configservice"`
+	LoggerService       *logging.Service  `di.inject:"loggingservice"`
+	DatabaseService     *database.Service `di.inject:"databaseservice"`
+	CatService          *cat.Service      `di.inject:"catservice"`
+	HamnutLookupService *hamnut.Service   `di.inject:"hamnutlookupservice"`
+	QrzLookupService    *qrz.Service      `di.inject:"qrzlookupservice"`
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
@@ -72,8 +74,13 @@ func (s *Service) Initialize() error {
 			return
 		}
 
-		if s.HamnutService == nil {
+		if s.HamnutLookupService == nil {
 			initErr = errors.New(op).Msg(errMsgNilHamnutService)
+			return
+		}
+
+		if s.QrzLookupService == nil {
+			initErr = errors.New(op).Msg(errMsgNilQrzService)
 			return
 		}
 

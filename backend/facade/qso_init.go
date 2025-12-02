@@ -3,7 +3,6 @@ package facade
 import (
 	"database/sql"
 	stderr "errors"
-	"fmt"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -28,11 +27,26 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to initialize the QSO's country section")
 		return nil, errors.New(op).Err(err)
 	}
+	s.LoggerService.DebugWith().Str("country", country.Name).Msg("Country details fetched successfully")
+
+	if err = mergeCountryIntoContactedStation(contactedStation, country); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to merge country details into contacted station")
+		return nil, errors.New(op).Err(err)
+	}
+	s.LoggerService.DebugWith().Str("country", contactedStation.Country).Msg("Country details fetched successfully")
+
+	if err = s.calulatedBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to calculate bearing and distance between stations")
+	}
 
 	qso := &types.Qso{
 		LoggingStation:   loggingStation,
 		ContactedStation: *contactedStation,
 		CountryDetails:   country,
+	}
+
+	if err = mergeIntoQso(qso, country); err != nil {
+		return nil, errors.New(op).Err(err)
 	}
 
 	return qso, nil
@@ -87,12 +101,10 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 
 	parsedCallsign := s.parseCallsign(callsign)
 
-	obj, err := s.HamnutService.Lookup(parsedCallsign)
+	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
 	if err != nil {
 		return types.Country{}, errors.New(op).Err(err)
 	}
 
-	fmt.Println(obj)
-
-	return types.Country{}, nil
+	return country, nil
 }

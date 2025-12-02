@@ -9,6 +9,7 @@ import (
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/logging-app/backend/facade"
 	"github.com/Station-Manager/lookup/hamnut"
+	"github.com/Station-Manager/lookup/qrz"
 	"reflect"
 	"strings"
 )
@@ -40,6 +41,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(hamnut.ServiceName, reflect.TypeOf((*hamnut.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(qrz.ServiceName, reflect.TypeOf((*qrz.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 

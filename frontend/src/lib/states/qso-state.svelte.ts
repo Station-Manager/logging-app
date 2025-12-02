@@ -26,6 +26,8 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.band = '';
     target.band_rx = '';
 
+    target.country_name = '';
+
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
     target.cat_vfoa_freq = '14.320.000';
@@ -73,6 +75,7 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.band = qso.band ?? '';
     target.band_rx = qso.band_rx ?? '';
 
+    target.country_name = qso.country ?? '';
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -127,6 +130,8 @@ export interface QsoState extends CatDrivenFields {
     freq_rx: string;
     band: string;
     band_rx: string;
+
+    country_name: string;
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -184,6 +189,8 @@ export const qsoState: QsoState = $state({
     freq_rx: '',
     band: '',
     band_rx: '',
+
+    country_name: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',
@@ -285,6 +292,8 @@ export const qsoState: QsoState = $state({
         // base.freq_rx = this.freq_rx;
         // base.band = this.band;
         // base.band_rx = this.band_rx;
+
+        base.country = this.country_name;
 
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.
