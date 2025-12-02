@@ -26,7 +26,6 @@
             shortPathRadio.checked = false;
         }
     };
-
 </script>
 
 <div class="w-[240px] h-[236px] border border-gray-300 rounded-md bg-gray-200">
