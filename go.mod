@@ -10,9 +10,9 @@ require (
 	github.com/Station-Manager/errors v0.0.9
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.7
-	github.com/Station-Manager/lookup v0.0.2
+	github.com/Station-Manager/lookup v0.0.3
 	github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467
-	github.com/Station-Manager/types v0.0.37
+	github.com/Station-Manager/types v0.0.38
 	github.com/Station-Manager/utils v0.0.2
 	github.com/wailsapp/wails/v2 v2.11.0
 )

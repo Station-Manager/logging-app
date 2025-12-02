@@ -40,9 +40,7 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	}
 
 	qso := &types.Qso{
-		QsoDetails: types.QsoDetails{
-			AntPath: "S",
-		},
+		QsoDetails:       s.initQsoDetailsSection(),
 		LoggingStation:   loggingStation,
 		ContactedStation: *contactedStation,
 		CountryDetails:   country,
@@ -112,4 +110,10 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 	}
 
 	return country, nil
+}
+
+func (s *Service) initQsoDetailsSection() types.QsoDetails {
+	return types.QsoDetails{
+		AntPath: "S",
+	}
 }
