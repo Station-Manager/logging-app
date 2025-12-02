@@ -27,6 +27,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.band_rx = '';
 
     target.country_name = '';
+    target.ant_path = 'S';
 
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
@@ -76,6 +77,11 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.band_rx = qso.band_rx ?? '';
 
     target.country_name = qso.country ?? '';
+    target.ant_path = qso.ant_path ?? 'S';
+    target.short_path_distance = qso.CountryDetails.short_path_distance;
+    target.short_path_bearing = qso.CountryDetails.short_path_bearing;
+    target.long_path_distance = qso.CountryDetails.long_path_distance;
+    target.long_path_bearing = qso.CountryDetails.long_path_bearing;
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -200,7 +206,7 @@ export const qsoState: QsoState = $state({
     short_path_distance: '',
     long_path_bearing: '',
     long_path_distance: '',
-    ant_path: '',
+    ant_path: 'S', // Default is the short-path
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',
@@ -304,6 +310,7 @@ export const qsoState: QsoState = $state({
         // base.band_rx = this.band_rx;
 
         base.country = this.country_name;
+        base.ant_path = this.ant_path;
 
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.

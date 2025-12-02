@@ -40,6 +40,9 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	}
 
 	qso := &types.Qso{
+		QsoDetails: types.QsoDetails{
+			AntPath: "S",
+		},
 		LoggingStation:   loggingStation,
 		ContactedStation: *contactedStation,
 		CountryDetails:   country,
@@ -48,6 +51,8 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	if err = mergeIntoQso(qso, country); err != nil {
 		return nil, errors.New(op).Err(err)
 	}
+
+	s.LoggerService.DebugWith().Interface("qso", qso).Msg("QSO initialized successfully")
 
 	return qso, nil
 }
