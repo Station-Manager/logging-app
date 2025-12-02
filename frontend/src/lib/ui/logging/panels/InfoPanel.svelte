@@ -12,13 +12,13 @@
 
 <div class="flex flex-col h-[370px]">
     <InfoPanelHeader bind:activePanel={selected}/>
+    {#if selected === WORKED_TAB_TITLE}
+        <WorkedPanel/>
+    {:else if selected === DETAILS_TAB_TITLE}
+        <DetailsPanel/>
+    {:else if selected === STATION_TAB_TITLE}
+        <StationPanel/>
+    {:else}
+        <SessionPanel/>
+    {/if}
 </div>
-{#if selected === WORKED_TAB_TITLE}
-    <WorkedPanel/>
-{:else if selected === DETAILS_TAB_TITLE}
-    <DetailsPanel/>
-{:else if selected === STATION_TAB_TITLE}
-    <StationPanel/>
-{:else}
-    <SessionPanel/>
-{/if}

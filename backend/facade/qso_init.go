@@ -27,15 +27,16 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to initialize the QSO's country section")
 		return nil, errors.New(op).Err(err)
 	}
-	s.LoggerService.DebugWith().Str("country", country.Name).Msg("Country details fetched successfully")
+	//	s.LoggerService.DebugWith().Str("country", country.Name).Msg("Country details fetched successfully")
 
 	if err = mergeCountryIntoContactedStation(contactedStation, country); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to merge country details into contacted station")
 		return nil, errors.New(op).Err(err)
 	}
-	s.LoggerService.DebugWith().Str("country", contactedStation.Country).Msg("Country details fetched successfully")
+	//	s.LoggerService.DebugWith().Str("country", contactedStation.Country).Msg("Country details fetched successfully")
 
 	if err = s.calulatedBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
+		// Not a serious error, we can still continue.
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to calculate bearing and distance between stations")
 	}
 
@@ -46,11 +47,17 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		CountryDetails:   country,
 	}
 
-	if err = mergeIntoQso(qso, country); err != nil {
-		return nil, errors.New(op).Err(err)
+	history, err := s.getContactHistory(*contactedStation)
+	if err != nil {
+		// Serious error, but we can still continue.
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch contact history")
 	}
 
-	//	s.LoggerService.DebugWith().Interface("qso", qso).Msg("QSO initialized successfully")
+	s.LoggerService.DebugWith().Str("callsign", callsign).Interface("history", history).Msg("Contact history fetched successfully")
+
+	if err = mergeIntoQso(qso, country, history); err != nil {
+		return nil, errors.New(op).Err(err)
+	}
 
 	return qso, nil
 }
@@ -72,6 +79,9 @@ func (s *Service) initLoggingStationSection() (types.LoggingStation, error) {
 	return loggingStation, nil
 }
 
+// initContactedStationSection initializes or retrieves a contacted station's information based on the provided callsign.
+// It attempts to fetch the station from the database or an online lookup if not found, returning the station details.
+// The callsign provided is prioritized for the contacted station's "Call" field.
 func (s *Service) initContactedStationSection(callsign string) (*types.ContactedStation, error) {
 	const op errors.Op = "facade.Service.initContactedStation"
 	parsedCallsign := s.parseCallsign(callsign)
@@ -116,4 +126,24 @@ func (s *Service) initQsoDetailsSection() types.QsoDetails {
 	return types.QsoDetails{
 		AntPath: "S",
 	}
+}
+
+// getContactHistory retrieves the contact history for a given contacted station from the database.
+// Returns a slice of ContactHistory or an empty slice if no history exists, along with any errors encountered.
+func (s *Service) getContactHistory(station types.ContactedStation) ([]types.ContactHistory, error) {
+	const op errors.Op = "facade.Service.fetchWorkedHistory"
+
+	callsign := s.parseCallsign(station.Call)
+	history, err := s.DatabaseService.ContactHistory(callsign)
+	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
+		return nil, errors.New(op).Err(err)
+	}
+
+	// The error at this point is ErrNotFound, which is fine.
+	if history == nil {
+		// We should not return nil
+		history = make([]types.ContactHistory, 0)
+	}
+
+	return history, nil
 }

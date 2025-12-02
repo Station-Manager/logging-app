@@ -2,6 +2,6 @@
 
 </script>
 
-<div>
+<div class="border">
     Worked Panel
 </div>
