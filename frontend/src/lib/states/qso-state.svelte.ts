@@ -1,5 +1,5 @@
 import { types } from '$lib/wailsjs/go/models';
-import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
 import { dottedKHzToShortMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
 
@@ -78,10 +78,15 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
 
     target.country_name = qso.country ?? '';
     target.ant_path = qso.ant_path ?? 'S';
-    target.short_path_distance = qso.CountryDetails.short_path_distance;
-    target.short_path_bearing = qso.CountryDetails.short_path_bearing;
-    target.long_path_distance = qso.CountryDetails.long_path_distance;
-    target.long_path_bearing = qso.CountryDetails.long_path_bearing;
+
+    const details = qso.country_details;
+    target.short_path_distance = details?.short_path_distance ?? '';
+    target.short_path_bearing = details?.short_path_bearing ?? '';
+    target.long_path_distance = details?.long_path_distance ?? '';
+    target.long_path_bearing = details?.long_path_bearing ?? '';
+    target.remote_time = extractRemoteTime(details?.local_time);
+    target.remote_offset = details?.time_offset ?? '';
+
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -143,6 +148,8 @@ export interface QsoState extends CatDrivenFields {
     long_path_bearing: string;
     long_path_distance: string;
     ant_path: string;
+    remote_time: string;
+    remote_offset: string;
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -207,6 +214,9 @@ export const qsoState: QsoState = $state({
     long_path_bearing: '',
     long_path_distance: '',
     ant_path: 'S', // Default is the short-path
+
+    remote_time: '',
+    remote_offset: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',

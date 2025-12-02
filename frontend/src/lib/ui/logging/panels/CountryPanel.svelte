@@ -65,5 +65,9 @@
                 </div>
             </div>
         </div>
+        <div class="flex flex-row font-semibold justify-center">
+            <div class="w-[100px]">Local time:</div>
+            <div class="text-sm pt-1 text-red-600">{qsoState.remote_time} ({qsoState.remote_offset})</div>
+        </div>
     </div>
 </div>

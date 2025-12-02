@@ -26,8 +26,8 @@ github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467 h1:Ypw+
 github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467/go.mod h1:0/Y79g9u/NU8Qp5MOWDELp9gJuDM5FkShi1Dc5cg6iY=
 github.com/Station-Manager/serial v0.0.4 h1:+gYNVqkCcnReTy6bRyl33ri/CiYMK5cDNl6v/tlojdM=
 github.com/Station-Manager/serial v0.0.4/go.mod h1:XqidPgzDkUFRuHaVAPFlcoAKJLnpIA3DbTbfBVkOV94=
-github.com/Station-Manager/types v0.0.38 h1:PJi42m9RbLG0+7spv+fXgWgwdGj48aCNR4JirwIOC1Q=
-github.com/Station-Manager/types v0.0.38/go.mod h1:SKTlS1jFqeDUcHGJIxUud4ITUxp1daeezEQ85UTJFXg=
+github.com/Station-Manager/types v0.0.40 h1:uc5vizI4yhvsXjljo2uYjl/yQWJMnp/Fg+Kg7P4tF+Y=
+github.com/Station-Manager/types v0.0.40/go.mod h1:SKTlS1jFqeDUcHGJIxUud4ITUxp1daeezEQ85UTJFXg=
 github.com/Station-Manager/utils v0.0.2 h1:/YHe/Yvx03eTBoBoSN2YnyEF/Zy67NKeahRcapkfqLQ=
 github.com/Station-Manager/utils v0.0.2/go.mod h1:6J2fGU4xpoe1PpLEWfgUs8fjKp/+v7wCzpvek2jiWpI=
 github.com/aarondl/inflect v0.0.2 h1:XvH8K5g1wKS921tMmDOUsZ3zS1Eo8WwK5RHC0IGGT2s=

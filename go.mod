@@ -12,7 +12,7 @@ require (
 	github.com/Station-Manager/logging v0.0.7
 	github.com/Station-Manager/lookup v0.0.3
 	github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467
-	github.com/Station-Manager/types v0.0.38
+	github.com/Station-Manager/types v0.0.40
 	github.com/Station-Manager/utils v0.0.2
 	github.com/wailsapp/wails/v2 v2.11.0
 )

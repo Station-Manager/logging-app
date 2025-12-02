@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { dottedKHzToShortMHz } from '$lib/utils/frequency';
 import { types } from '$lib/wailsjs/go/models';
 import { qsoState, type CatForQsoPayload } from './qso-state.svelte';
 
@@ -129,7 +130,7 @@ describe('qso-state', () => {
 
         expect(built.call).toBe('G1BBB');
         expect(built.mode).toBe('SSB');
-        expect(built.freq).toBe('14.200');
+        expect(built.freq).toBe(dottedKHzToShortMHz(qsoState.cat_vfoa_freq));
         expect(built.band).toBe('20m');
 
         // Ensure we still preserve non-UI fields like id/logbook_id from original.
