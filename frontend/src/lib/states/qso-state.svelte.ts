@@ -89,7 +89,6 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.ccode = details?.ccode ?? '';
 
     target.contact_history = qso.contact_history ?? [];
-
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -331,6 +330,13 @@ export const qsoState: QsoState = $state({
         base.country = this.country_name;
         base.ant_path = this.ant_path;
 
+        if (base.ant_path === 'S' || base.ant_path === '') {
+            base.distance = this.short_path_distance;
+            base.ant_az = this.short_path_bearing;
+        } else {
+            base.distance = this.long_path_distance;
+            base.ant_az = this.long_path_bearing;
+        }
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.
 
