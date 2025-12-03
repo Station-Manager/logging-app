@@ -26,9 +26,13 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 	}
 
 	return &types.UiConfig{
-		DefaultRigID: requiredCfg.DefaultRigID,
-		Logbook:      s.CurrentLogbook,
-		RigName:      s.CatService.RigConfig().Name,
+		DefaultRigID:       requiredCfg.DefaultRigID,
+		Logbook:            s.CurrentLogbook,
+		RigName:            s.CatService.RigConfig().Name,
+		DefaultIsRandomQso: requiredCfg.DefaultIsRandomQso,
+		DefaultTxPower:     requiredCfg.DefaultTxPower,
+		UsePowerMultiplier: requiredCfg.UsePowerMultiplier,
+		PowerMultiplier:    requiredCfg.PowerMultiplier,
 	}, nil
 }
 

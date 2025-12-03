@@ -1,6 +1,7 @@
 import { types } from '$lib/wailsjs/go/models';
 
 export interface SessionState {
+    operatorCall: string;
     total: number;
     list: types.Qso[];
     update(this: SessionState, list: types.Qso[]): void;
@@ -29,6 +30,7 @@ export const sessionTimeState: SessionTimeState = $state({
 });
 
 export const sessionState: SessionState = $state({
+    operatorCall: '',
     total: 0,
     list: [],
     update(list: types.Qso[]): void {

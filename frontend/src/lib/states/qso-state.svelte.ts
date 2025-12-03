@@ -89,6 +89,10 @@ function applyQsoToState(target: QsoState, qso: types.Qso): void {
     target.ccode = details?.ccode ?? '';
 
     target.contact_history = qso.contact_history ?? [];
+
+    target.qso_random = qso.qso_random ?? 'Y';
+    target.tx_pwr = qso.tx_pwr ?? '5'; // Default to 5w
+
     // NOTE: CAT-only fields are intentionally *not* populated from the backend QSO,
     // as they represent the *current rig state* rather than stored log data.
 }
@@ -143,6 +147,7 @@ export interface QsoState extends CatDrivenFields {
     freq_rx: string;
     band: string;
     band_rx: string;
+    tx_pwr: string;
 
     country_name: string;
     ccode: string;
@@ -155,6 +160,8 @@ export interface QsoState extends CatDrivenFields {
     remote_offset: string;
 
     contact_history: types.ContactHistory[];
+
+    qso_random: string;
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -225,6 +232,9 @@ export const qsoState: QsoState = $state({
     remote_offset: '',
 
     contact_history: [],
+
+    qso_random: 'Y',
+    tx_pwr: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',
@@ -337,6 +347,10 @@ export const qsoState: QsoState = $state({
             base.distance = this.long_path_distance;
             base.ant_az = this.long_path_bearing;
         }
+
+        base.qso_random = this.qso_random;
+        base.tx_pwr = this.tx_pwr;
+
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.
 

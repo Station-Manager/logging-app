@@ -10,7 +10,7 @@
 
     const baseCss = "flex gap-x-2";
     const selectedBtn = "cursor-default text-indigo-600 font-semibold";
-    const unselectedBtn = "cursor-pointer text-gray-500 hover:text-gray-700";
+    const unselectedBtn = "cursor-pointer text-gray-500 font-semibold hover:text-gray-700";
 
     interface Props {
         activePanel: string;
