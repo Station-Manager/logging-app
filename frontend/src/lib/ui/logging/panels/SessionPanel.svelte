@@ -10,6 +10,13 @@
     const modeCss = "w-[52px]";
     const countryCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
     const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
+
+    const editSessonQso = async (event: MouseEvent): Promise<void> => {
+        const target = event.currentTarget as HTMLButtonElement | null;
+        if (!target) {
+            return;
+        }
+    }
 </script>
 
 <div class="cursor-default flex flex-col">
@@ -25,7 +32,7 @@
         <div class={countryCss}>Country</div>
         <div class="w-[130px]">Distance</div>
     </div>
-    <div class="relative h-[264px] overflow-y-scroll pt-1 flex flex-col text-sm">
+    <div class="relative h-[264px] overflow-y-scroll pt-1 flex flex-col text-sm px-5">
         {#each sessionState.list as entry (entry.id)}
             <div class="flex flex-row odd:bg-white even:bg-gray-300">
                 <div class={callsignCss}>{entry.call}</div>
@@ -37,8 +44,8 @@
                 <div class={modeCss}>{entry.mode}</div>
                 <div class={timeCss}>{entry.time_on}</div>
                 <div class={countryCss} title="{entry.country}">{entry.country}</div>
-                <div class={distanceCss}>{entry.distance} km</div>
-                <div><!--button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer">Edit</button--></div>
+                <div class={distanceCss}>{entry.distance} km ({entry.ant_path})</div>
+                <div><button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer font-semibold hover:text-indigo-700">Edit</button></div>
             </div>
         {/each}
     </div>
