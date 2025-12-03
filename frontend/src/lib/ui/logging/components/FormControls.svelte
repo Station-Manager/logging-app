@@ -1,11 +1,12 @@
 <script lang="ts">
     import {qsoState, resetQsoStateDefaults} from "$lib/states/qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
-    import {LogQso} from "$lib/wailsjs/go/facade/Service";
+    import {LogQso, CurrentSessionQsoSlice} from "$lib/wailsjs/go/facade/Service";
     import {types} from "$lib/wailsjs/go/models";
     import {configStore} from "$lib/stores/config-store";
     import {showToast} from "$lib/utils/toast";
     import {isValidCallsignForLog} from "$lib/constants/callsign";
+    import {sessionState} from "$lib/states/session-state.svelte";
 
     const resetAction = (): void => {
         qsoState.stopTimer();
@@ -31,6 +32,8 @@
             await LogQso(qso);
             resetAction();
             showToast.SUCCESS("QSO logged.");
+            sessionState.update(await CurrentSessionQsoSlice());
+//            console.log("Logged QSO:", sessionState);
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
         }

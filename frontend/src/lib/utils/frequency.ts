@@ -237,3 +237,38 @@ export function dottedKHzToShortMHz(freqStr: string | null | undefined): string 
     // 3 decimal places is typical for amateur HF MHz representation.
     return mhz.toFixed(3).replace(/\.0+$/, '.0').replace(/\.0$/, '');
 }
+
+/**
+ * Convert a raw frequency string from the database (plain kHz, no padding or dots)
+ * into a dotted MHz string suitable for UI display, e.g. "14320" -> "14.320".
+ * Returns an empty string when the value is missing or invalid.
+ */
+export function rawKHzStringToDottedMHz(freqStr: string | null | undefined): string {
+    if (freqStr == null) return '';
+    const trimmed = freqStr.trim();
+    if (!trimmed) return '';
+    if (!/^\d+$/.test(trimmed)) return '';
+
+    const value = Number(trimmed);
+    if (!Number.isFinite(value) || value <= 0) return '';
+
+    const mhz = value / 1_000;
+    if (mhz > 1000) return '';
+    if (mhz < 1e-3) return '';
+
+    const mhzStr = mhz.toFixed(6);
+    const [intPart, fracPartRaw] = mhzStr.split('.');
+    const fracPart = (fracPartRaw ?? '').padEnd(6, '0').slice(0, 6);
+
+    const base = intPart + fracPart;
+    const chars = base.split('');
+    const parts: string[] = [];
+
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    if (chars.length) {
+        parts.unshift(chars.join(''));
+    }
+
+    return parts.join('.').replace(/\.0+$/, '.0').replace(/\.0$/, '');
+}

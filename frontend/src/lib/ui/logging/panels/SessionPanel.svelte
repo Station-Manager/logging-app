@@ -1,8 +1,5 @@
 <script lang="ts">
-
     import {sessionState} from "$lib/states/session-state.svelte";
-    import {formatTime} from "$lib/utils/time-date";
-    import {parseDottedKHzToMHz} from "$lib/utils/frequency";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -33,12 +30,12 @@
             <div class="flex flex-row odd:bg-white even:bg-gray-300">
                 <div class={callsignCss}>{entry.call}</div>
                 <div class={nameCss} title="{entry.name}">{entry.name}</div>
-                <div class={freqCss}>{parseDottedKHzToMHz(entry.freq)}</div>
+                <div class={freqCss}>{entry.freq}</div>
                 <div class={bandCss}>{entry.band}</div>
                 <div class={rstCss}>{entry.rst_sent}</div>
                 <div class={rstCss}>{entry.rst_sent}</div>
                 <div class={modeCss}>{entry.mode}</div>
-                <div class={timeCss}>{formatTime(entry.time_on)}</div>
+                <div class={timeCss}>{entry.time_on}</div>
                 <div class={countryCss} title="{entry.country}">{entry.country}</div>
                 <div class={distanceCss}>{entry.distance} km</div>
                 <div><!--button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer">Edit</button--></div>

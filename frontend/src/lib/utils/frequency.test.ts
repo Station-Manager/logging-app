@@ -6,6 +6,7 @@ import {
     parseDottedKHzToMHz,
     formatDottedKHzToDottedMHz,
     dottedKHzToShortMHz,
+    rawKHzStringToDottedMHz,
 } from '$lib/utils/frequency';
 
 describe('frequency utilities', () => {
@@ -81,6 +82,20 @@ describe('frequency utilities', () => {
         it('returns empty string for invalid inputs', () => {
             expect(dottedKHzToShortMHz('')).toBe('');
             expect(dottedKHzToShortMHz('abc')).toBe('');
+        });
+    });
+
+    describe('rawKHzStringToDottedMHz', () => {
+        it('formats plain kHz strings into dotted MHz', () => {
+            expect(rawKHzStringToDottedMHz('14320')).toBe('14.320');
+            expect(rawKHzStringToDottedMHz('7101')).toBe('7.101');
+        });
+
+        it('trims whitespace and rejects invalid input', () => {
+            expect(rawKHzStringToDottedMHz(' 14320 ')).toBe('14.320');
+            expect(rawKHzStringToDottedMHz('abc')).toBe('');
+            expect(rawKHzStringToDottedMHz('')).toBe('');
+            expect(rawKHzStringToDottedMHz('0000')).toBe('');
         });
     });
 });
