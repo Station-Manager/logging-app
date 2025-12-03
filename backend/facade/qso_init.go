@@ -7,6 +7,9 @@ import (
 	"github.com/Station-Manager/types"
 )
 
+// initializeQso initializes a QSO object by populating its sections such as logging station, contacted station, and country details.
+// It performs operations to calculate necessary details like bearing and distance, and merges retrieved data into the final QSO object.
+// If an error occurs during critical initialization steps, it returns an error.
 func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	const op errors.Op = "facade.Service.initializeQso"
 
@@ -52,8 +55,6 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		// Serious error, but we can still continue.
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch contact history")
 	}
-
-	s.LoggerService.DebugWith().Str("callsign", callsign).Interface("history", history).Int("count", len(history)).Msg("Contact history fetched successfully")
 
 	if err = mergeIntoQso(qso, country, history); err != nil {
 		return nil, errors.New(op).Err(err)
