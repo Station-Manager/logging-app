@@ -1,4 +1,3 @@
-
 export interface ContestTimers {
     sinceStartTimerID: number;
     sinceLastQsoTimerID: number;
@@ -20,14 +19,12 @@ export class ContestTimersClass implements ContestTimers {
         this.sinceLastQsoTimerID = 0;
         this.elapsedSinceStart = 0;
         this.elapasedSinceLastQso = 0;
-
     }
     start(): void {
         if (this.sinceStartTimerID === 0) {
             this.sinceStartTimerID = window.setInterval(() => {
                 this.elapsedSinceStart += 1;
             }, 1000);
-
         }
     }
     reset(): void {

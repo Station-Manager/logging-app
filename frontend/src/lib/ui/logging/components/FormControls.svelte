@@ -7,6 +7,8 @@
     import {showToast} from "$lib/utils/toast";
     import {isValidCallsignForLog} from "$lib/constants/callsign";
     import {sessionState} from "$lib/states/session-state.svelte";
+    import {isContestMode} from "$lib/stores/logging-mode-store";
+    import {contestTimers} from "$lib/utils/contest-timers.svelte";
 
     const resetAction = (): void => {
         qsoState.stopTimer();
@@ -30,12 +32,17 @@
             const qso: types.Qso = qsoState.toQso();
             qso.logbook_id = $configStore.logbook.id
             await LogQso(qso);
-            resetAction();
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
         }
+
+        if ($isContestMode){
+            contestTimers.reset();
+        }
+
+        resetAction();
     }
 </script>
 
