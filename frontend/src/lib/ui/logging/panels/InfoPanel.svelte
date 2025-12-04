@@ -1,6 +1,6 @@
 <script lang="ts">
     import InfoPanelHeader from "$lib/ui/logging/panels/InfoPanelHeader.svelte";
-    import {DETAILS_TAB_TITLE, STATION_TAB_TITLE, WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
+    import {DETAILS_TAB_TITLE, STATION_PANEL, WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
     import WorkedPanel from "$lib/ui/logging/panels/WorkedPanel.svelte";
     import DetailsPanel from "$lib/ui/logging/panels/DetailsPanel.svelte";
     import StationPanel from "$lib/ui/logging/panels/StationPanel.svelte";
@@ -14,7 +14,7 @@
         <WorkedPanel/>
     {:else if appState.activePanel === DETAILS_TAB_TITLE}
         <DetailsPanel/>
-    {:else if appState.activePanel === STATION_TAB_TITLE}
+    {:else if appState.activePanel === STATION_PANEL}
         <StationPanel/>
     {:else}
         <SessionPanel/>

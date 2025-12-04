@@ -6,12 +6,27 @@
         isContestMode,
     } from "$lib/stores/logging-mode-store";
     import {configStore} from "$lib/stores/config-store";
-    import {getSessionElapsedTime} from "$lib/states/session-state.svelte";
+    import {getSessionElapsedTime, sessionState} from "$lib/states/session-state.svelte";
+    import {appState} from "$lib/states/app-state.svelte";
+    import {STATION_PANEL} from "$lib/ui/logging/panels/constants";
 
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
     const modeChange = (event: Event): void => {
         const select = event.target as HTMLSelectElement;
         loggingModeStore.set(select.value as LoggingModeKey);
+    }
+
+    let operatorCallsign: string = $derived.by((): string => {
+        return sessionState.operatorCall.toUpperCase()
+    });
+
+    const operatorField = (): void => {
+        appState.activePanel = STATION_PANEL
+        const opField = document.getElementById("operator_callsign") as HTMLInputElement;
+        if (opField) {
+            opField.focus();
+            opField.select();
+        }
     }
 </script>
 
@@ -32,9 +47,20 @@
             </svg>
         </div>
     </div>
-    <div class="w-[165px]">
+    <div class="w-[165px] text-xs">
         {#if $isContestMode}
-            Station/Op
+        <div class="flex">
+            <div class="w-16">Station:</div>
+            <div class="font-bold">{$configStore.logbook.callsign}</div>
+        </div>
+        <div class="flex">
+            <div class="w-16">Operator:</div>
+            {#if $configStore.owners_callsign !== $configStore.logbook.callsign}
+                <button onclick={operatorField} class="text-left font-bold {operatorCallsign === '' ? 'border border-red-500' : ''} min-w-14 cursor-pointer rounded-sm" title="Set operator">{operatorCallsign}</button>
+            {:else}
+                <div class="text-left font-bold">{$configStore.logbook.callsign}</div>
+            {/if}
+        </div>
         {/if}
     </div>
     <div class="w-[165px]">
