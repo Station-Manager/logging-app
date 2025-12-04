@@ -63,9 +63,16 @@
         </div>
         {/if}
     </div>
-    <div class="w-[165px]">
+    <div class="w-[165px] text-xs">
         {#if $isContestMode}
-            QSO count/Last
+            <div class="flex">
+                <div class="w-12">QSOs:</div>
+                <div>?</div>
+            </div>
+            <div class="flex">
+                <div class="w-12">Last:</div>
+                <div>?</div>
+            </div>
         {/if}
     </div>
     <div class="flex flex-col text-xs font-semibold w-[200px]">
