@@ -16,6 +16,11 @@
     const modeChange = (event: Event): void => {
         const select = event.target as HTMLSelectElement;
         loggingModeStore.set(select.value as LoggingModeKey);
+        if (select.value === 'contest') {
+            contestTimers.start();
+        } else {
+            contestTimers.stop();
+        }
     }
 
     let operatorCallsign: string = $derived.by((): string => {

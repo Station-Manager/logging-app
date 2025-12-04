@@ -12,7 +12,7 @@ export class ContestTimersClass implements ContestTimers {
     sinceStartTimerID: number;
     sinceLastQsoTimerID: number;
     elapsedSinceStart: number;
-    elapasedSinceLastQso: number;
+    elapasedSinceLastQso: number = $state(0);
 
     constructor() {
         this.sinceStartTimerID = 0;
