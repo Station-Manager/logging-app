@@ -11,6 +11,7 @@
     import {STATION_PANEL} from "$lib/ui/logging/panels/constants";
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {formatTimeSecondsToHHColonMMColonSS} from "$lib/utils/time-date";
+    import {contestState} from "$lib/states/contest-state.svelte";
 
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
     const modeChange = (event: Event): void => {
@@ -74,7 +75,7 @@
         {#if $isContestMode}
             <div class="flex">
                 <div class="w-12">QSOs:</div>
-                <div>?</div>
+                <div>{contestState.totalQsos}</div>
             </div>
             <div class="flex">
                 <div class="w-12">Last:</div>

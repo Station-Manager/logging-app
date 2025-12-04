@@ -5,6 +5,7 @@ import (
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"net/url"
 	"strings"
 )
 
@@ -176,24 +177,30 @@ func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
 	return list, nil
 }
 
-func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
-	const op errors.Op = "facade.Service.IsContestDuplicate"
+func (s *Service) OpenInBrowser(urlStr string) error {
+	const op errors.Op = "facade.Service.OpenInBrowser"
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
-		return false, err
+		return err
 	}
 
 	if !s.started.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotStarted)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
-		return false, err
+		return errors.Root(err)
 	}
 
-	return false, nil
-}
-
-func (s *Service) OpenInBrowser(urlStr string) error {
+	if s.ctx == nil || (s.ctx.Err() != nil) {
+		s.LoggerService.ErrorWith().Msg("Context is not set")
+		return errors.New(op).Msg("Context is not set")
+	}
+	u, err := url.ParseRequestURI(urlStr)
+	if err != nil || u.Scheme != "https" {
+		err = errors.New(op).Err(err).Msg("Invalid or unsafe URL")
+		s.LoggerService.ErrorWith().Err(err).Str("url_scheme", u.Scheme).Msg("Invalid or unsafe URL")
+		return err
+	}
 
 	runtime.BrowserOpenURL(s.ctx, urlStr)
 

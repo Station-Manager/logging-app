@@ -16,3 +16,4 @@ This section describes the development environment for the application.
 - Go version: 1.25.3
 - Wails version: 2.11.0
 - npm version: latest
+

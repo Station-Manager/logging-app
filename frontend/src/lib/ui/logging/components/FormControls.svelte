@@ -1,7 +1,7 @@
 <script lang="ts">
     import {qsoState, resetQsoStateDefaults} from "$lib/states/qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
-    import {LogQso, CurrentSessionQsoSlice} from "$lib/wailsjs/go/facade/Service";
+    import {LogQso, CurrentSessionQsoSlice, TotalQsosByLogbookId} from "$lib/wailsjs/go/facade/Service";
     import {types} from "$lib/wailsjs/go/models";
     import {configStore} from "$lib/stores/config-store";
     import {showToast} from "$lib/utils/toast";
@@ -9,6 +9,7 @@
     import {sessionState} from "$lib/states/session-state.svelte";
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
+    import {contestState} from "$lib/states/contest-state.svelte";
 
     const resetAction = (): void => {
         qsoState.stopTimer();
@@ -34,12 +35,14 @@
             await LogQso(qso);
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
+
+            if ($isContestMode){
+                contestTimers.reset();
+                contestState.totalQsos = await TotalQsosByLogbookId($configStore.logbook.id);
+            }
+
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
-        }
-
-        if ($isContestMode){
-            contestTimers.reset();
         }
 
         resetAction();
