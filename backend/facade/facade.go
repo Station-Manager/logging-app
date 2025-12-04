@@ -4,6 +4,7 @@ import (
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"strings"
 )
 
@@ -190,4 +191,11 @@ func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func (s *Service) OpenInBrowser(urlStr string) error {
+
+	runtime.BrowserOpenURL(s.ctx, urlStr)
+
+	return nil
 }

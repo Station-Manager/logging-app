@@ -18,6 +18,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.name = '';
     target.qth = '';
     target.comment = '';
+    target.notes = '';
     target.qso_date = getDateUTC();
     target.time_on = getTimeUTC();
     target.time_off = target.time_on;
@@ -28,7 +29,14 @@ export function resetQsoStateDefaults(target: QsoState): void {
 
     target.country_name = '';
     target.ant_path = 'S';
-    target.tx_pwr = '34';
+    target.tx_pwr = '';
+    target.rx_pwr = '';
+    target.cqz = '';
+    target.ituz = '';
+
+    target.email = '';
+    target.rig = '';
+    target.web = '';
 
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
@@ -141,6 +149,7 @@ export interface QsoState extends CatDrivenFields {
     name: string;
     qth: string;
     comment: string;
+    notes: string;
     qso_date: string; // YYYY-MM-DD
     time_on: string; // HH:mm[:ss]
     time_off: string; // HH:mm[:ss]
@@ -149,6 +158,7 @@ export interface QsoState extends CatDrivenFields {
     band: string;
     band_rx: string;
     tx_pwr: string;
+    rx_pwr: string;
 
     country_name: string;
     ccode: string;
@@ -163,6 +173,12 @@ export interface QsoState extends CatDrivenFields {
     contact_history: types.ContactHistory[];
 
     qso_random: string;
+    cqz: string;
+    ituz: string;
+
+    rig: string;
+    email: string;
+    web: string;
 
     /** Populate from backend QSO. */
     createFromQSO(this: QsoState, qso: types.Qso): void;
@@ -213,6 +229,7 @@ export const qsoState: QsoState = $state({
     name: '',
     qth: '',
     comment: '',
+    notes: '',
     qso_date: '',
     time_on: '',
     time_off: '',
@@ -236,6 +253,14 @@ export const qsoState: QsoState = $state({
 
     qso_random: '',
     tx_pwr: '',
+    rx_pwr: '',
+
+    cqz: '',
+    ituz: '',
+
+    rig: '',
+    email: '',
+    web: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
     cat_identity: '',
@@ -302,6 +327,7 @@ export const qsoState: QsoState = $state({
         base.name = this.name;
         base.qth = this.qth;
         base.comment = this.comment;
+        base.notes = this.notes;
 
         base.rst_sent = this.rst_sent;
         base.rst_rcvd = this.rst_rcvd;
@@ -347,6 +373,14 @@ export const qsoState: QsoState = $state({
 
         base.qso_random = this.qso_random;
         base.tx_pwr = this.tx_pwr;
+        base.rx_pwr = this.rx_pwr;
+
+        base.cqz = this.cqz;
+        base.ituz = this.ituz;
+
+        base.rig = this.rig;
+        base.email = this.email;
+        base.web = this.web;
 
         // NOTE: CAT-only fields are intentionally *not* persisted back to the backend,
         // as they represent live rig state rather than stored QSO data.
