@@ -28,6 +28,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
 
     target.country_name = '';
     target.ant_path = 'S';
+    target.tx_pwr = '34';
 
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
@@ -206,9 +207,9 @@ export const qsoState: QsoState = $state({
 
     // Core QSO fields (aligned with types.Qso / DB schema)
     call: '',
-    rst_sent: '59',
-    rst_rcvd: '59',
-    mode: 'USB',
+    rst_sent: '',
+    rst_rcvd: '',
+    mode: '',
     name: '',
     qth: '',
     comment: '',
@@ -226,14 +227,14 @@ export const qsoState: QsoState = $state({
     short_path_distance: '',
     long_path_bearing: '',
     long_path_distance: '',
-    ant_path: 'S', // Default is the short-path
+    ant_path: '', // Default is the short-path
 
     remote_time: '',
     remote_offset: '',
 
     contact_history: [],
 
-    qso_random: 'Y',
+    qso_random: '',
     tx_pwr: '',
 
     // CAT-only, UI-facing fields (mirrors of `catState` for the current rig snapshot)
@@ -332,10 +333,6 @@ export const qsoState: QsoState = $state({
 
         base.freq = dottedKHzToShortMHz(base.freq);
         base.freq_rx = dottedKHzToShortMHz(base.freq_rx);
-        // base.freq = this.freq;
-        // base.freq_rx = this.freq_rx;
-        // base.band = this.band;
-        // base.band_rx = this.band_rx;
 
         base.country = this.country_name;
         base.ant_path = this.ant_path;

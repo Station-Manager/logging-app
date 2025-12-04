@@ -33,7 +33,6 @@
             resetAction();
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
-//            console.log("Logged QSO:", sessionState);
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
         }

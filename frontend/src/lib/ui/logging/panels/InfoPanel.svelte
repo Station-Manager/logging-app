@@ -7,7 +7,6 @@
     import SessionPanel from "$lib/ui/logging/panels/SessionPanel.svelte";
 
     let selected = $state(WORKED_TAB_TITLE);
-
 </script>
 
 <div class="flex flex-col h-[370px]">

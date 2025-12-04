@@ -2,7 +2,6 @@
     import {configStore} from '$lib/stores/config-store';
     import {qsoState} from "$lib/states/qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
-    import {catState} from "$lib/states/cat-state.svelte";
 
     let isValid = $state(true);
     let isRandomQso: boolean = $derived.by((): boolean => {
@@ -10,28 +9,8 @@
     });
     let multiplierOn: boolean = $state($configStore.use_power_multiplier);
 
-    let txPower: number = $derived.by((): number => {
-        let power: number = parseInt(catState.txPower);
-        if (Number.isNaN(power)) {
-            power = $configStore.default_tx_power;
-        }
-        if (multiplierOn) {
-            power = power * $configStore.power_multiplier;
-        }
-        return power;
-    });
-
     const toggleRandonQso = (): void => {
         qsoState.qso_random = isRandomQso ? 'N' : 'Y';
-    }
-
-    const onblurTxPower = (event: Event): void => {
-        const target = event.currentTarget as HTMLInputElement;
-        let value = parseInt(target.value)
-        if (txPower !== value) {
-            $configStore.default_tx_power = value;
-        }
-
     }
 </script>
 
@@ -106,8 +85,6 @@
             <label class="block text-sm/5 font-semibold" for="tx_pwr">TX Power</label>
             <div class="flex items-center w-[142px]">
                 <input
-                        bind:value={txPower}
-                        onblur={onblurTxPower}
                         class="mr-2 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                         type="text"
                         id="tx_pwr"
