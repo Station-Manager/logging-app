@@ -38,6 +38,9 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.rig = '';
     target.web = '';
 
+    target.contact_history = [];
+    target.qso_random = 'Y';
+
     // CAT-only, UI-facing defaults (no CAT available yet)
     target.cat_identity = '';
     target.cat_vfoa_freq = '14.320.000';
