@@ -34,7 +34,7 @@
     }
 </script>
 
-<div class="flex flex-row space-x-4">
+<div class="flex flex-row space-x-4 px-5">
     <div class="flex flex-col mt-3 w-1/2">
         <div class="flex flex-row space-x-4">
             <div>

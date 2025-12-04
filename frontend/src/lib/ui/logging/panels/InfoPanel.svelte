@@ -5,17 +5,16 @@
     import DetailsPanel from "$lib/ui/logging/panels/DetailsPanel.svelte";
     import StationPanel from "$lib/ui/logging/panels/StationPanel.svelte";
     import SessionPanel from "$lib/ui/logging/panels/SessionPanel.svelte";
-
-    let selected = $state(WORKED_TAB_TITLE);
+    import {appState} from "$lib/states/app-state.svelte";
 </script>
 
 <div class="flex flex-col h-[370px]">
-    <InfoPanelHeader bind:activePanel={selected}/>
-    {#if selected === WORKED_TAB_TITLE}
+    <InfoPanelHeader/>
+    {#if appState.activePanel === WORKED_TAB_TITLE}
         <WorkedPanel/>
-    {:else if selected === DETAILS_TAB_TITLE}
+    {:else if appState.activePanel === DETAILS_TAB_TITLE}
         <DetailsPanel/>
-    {:else if selected === STATION_TAB_TITLE}
+    {:else if appState.activePanel === STATION_TAB_TITLE}
         <StationPanel/>
     {:else}
         <SessionPanel/>

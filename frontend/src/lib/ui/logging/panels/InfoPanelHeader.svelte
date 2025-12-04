@@ -7,26 +7,19 @@
     } from "$lib/ui/logging/panels/constants";
     import {qsoState} from "$lib/states/qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
+    import {appState} from "$lib/states/app-state.svelte";
 
     const baseCss = "flex gap-x-2";
     const selectedBtn = "cursor-default text-indigo-600 font-semibold";
     const unselectedBtn = "cursor-pointer text-gray-500 font-semibold hover:text-gray-700";
 
-    interface Props {
-        activePanel: string;
-    }
-
-    let {
-        activePanel = $bindable()
-    }: Props = $props();
-
     const btnClass = (value: string) =>
         `${baseCss} ${selected === value ? selectedBtn : unselectedBtn}`;
 
-    let selected = $state(activePanel);
+    let selected = $derived(appState.activePanel);
 
     const clickHandler = (value: string):void => {
-        selected = activePanel = value;
+        appState.activePanel = value;
     }
 </script>
 

@@ -3,6 +3,8 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {NewQso} from "$lib/wailsjs/go/facade/Service";
     import {qsoState} from "$lib/states/qso-state.svelte";
+    import {appState} from "$lib/states/app-state.svelte";
+    import {WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
 
     interface Props {
         id: string;
@@ -59,6 +61,7 @@
             const qso = await NewQso(value);
             qsoState.createFromQSO(qso);
             qsoState.startTimer();
+            appState.activePanel = WORKED_TAB_TITLE;
         } catch (e: unknown) {
             // Any error here is serious and means we cannot continue: either there is something wrong with the
             // provided callsign or the backend is not available.
