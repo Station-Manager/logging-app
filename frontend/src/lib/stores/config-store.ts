@@ -1,4 +1,4 @@
-import { writable, type Writable, get } from 'svelte/store';
+import { writable, type Writable } from 'svelte/store';
 import { types } from '$lib/wailsjs/go/models';
 import { FetchUiConfig } from '$lib/wailsjs/go/facade/Service';
 import { LogError } from '$lib/wailsjs/runtime';
@@ -34,14 +34,4 @@ export const loadConfig = async (): Promise<void> => {
         const errMsg: string = e instanceof Error ? e.message : String(e);
         LogError(`Error loading config: ${errMsg}`);
     }
-};
-
-export const getDefaultMode = (): string => {
-    const cfg = get(configStore);
-    return cfg.default_mode === '' ? 'USB' : cfg.default_mode;
-};
-
-export const getDefaultFreq = (): string => {
-    const cfg = get(configStore);
-    return cfg.default_freq === '' ? '14.320.000' : cfg.default_freq;
 };

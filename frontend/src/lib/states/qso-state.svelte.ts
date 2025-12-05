@@ -6,7 +6,6 @@ import {
     formatCatKHzToDottedMHz,
     frequencyToBandFromDottedMHz,
 } from '$lib/utils/frequency';
-import { getDefaultFreq, getDefaultMode } from '$lib/stores/config-store';
 
 export interface QsoTimerState {
     elapsed: number;
@@ -26,7 +25,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.call = '';
     target.rst_sent = '59';
     target.rst_rcvd = '59';
-    target.mode = safeCall(getDefaultMode, 'USB');
+    target.mode = 'USB';
     target.name = '';
     target.qth = '';
     target.comment = '';
@@ -53,16 +52,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.contact_history = [];
     target.qso_random = 'Y';
 
-    target.cat_vfoa_freq = safeCall(getDefaultFreq, '14.320.000');
-    // CAT-only, UI-facing defaults (no CAT available yet)
-    // target.cat_identity = catState.identity ?? '';
-    // target.cat_vfoa_freq = formatCatKHzToDottedMHz(catState.vfoaFreq);
-    // target.cat_vfob_freq = formatCatKHzToDottedMHz(catState.vfobFreq);
-    // target.cat_select = catState.select ?? '';
-    // target.cat_split = catState.split ?? '';
-    // target.cat_main_mode = catState.mainMode ?? '';
-    // target.cat_sub_mode = catState.subMode ?? '';
-    // target.cat_tx_power = catState.txPower ?? '';
+    target.cat_vfoa_freq = '';
 }
 
 // Helper to map backend QSO fields into the mutable QsoState instance.
@@ -469,12 +459,3 @@ export const qsoState: QsoState = $state({
 
 // Immediately initialize defaults for the shared qsoState instance.
 resetQsoStateDefaults(qsoState);
-
-function safeCall<T>(fn: (() => T) | undefined, fallback: T): T {
-    try {
-        const v = fn ? fn() : undefined;
-        return (v === undefined || v === null) ? fallback : (v as T);
-    } catch {
-        return fallback;
-    }
-}
