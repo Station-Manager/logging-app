@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable, type Writable, get } from 'svelte/store';
 import { types } from '$lib/wailsjs/go/models';
 import { FetchUiConfig } from '$lib/wailsjs/go/facade/Service';
 import { LogError } from '$lib/wailsjs/runtime';
@@ -23,17 +23,25 @@ export const configStore: Writable<types.UiConfig> = writable(new types.UiConfig
 export const loadConfig = async (): Promise<void> => {
     try {
         const cfg: types.UiConfig | null | undefined = await FetchUiConfig();
-        if (!cfg) {
+        let activeCfg = cfg;
+        if (!activeCfg) {
             const msg = 'UiConfig fetch returned null or undefined; using defaults.';
             LogError(msg);
-            // Backend guarantees non-null config; fall back to an empty instance
-            // which also satisfies the non-null contract.
-            configStore.set(new types.UiConfig());
-        } else {
-            configStore.set(cfg);
+            activeCfg = new types.UiConfig();
         }
+        configStore.set(activeCfg);
     } catch (e: unknown) {
         const errMsg: string = e instanceof Error ? e.message : String(e);
         LogError(`Error loading config: ${errMsg}`);
     }
+};
+
+export const getDefaultMode = (): string => {
+    const cfg = get(configStore);
+    return cfg.default_mode === '' ? 'USB' : cfg.default_mode;
+};
+
+export const getDefaultFreq = (): string => {
+    const cfg = get(configStore);
+    return cfg.default_freq === '' ? '14.320.000' : cfg.default_freq;
 };

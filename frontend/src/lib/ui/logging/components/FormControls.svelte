@@ -18,10 +18,12 @@
         if (elem) elem.focus();
     }
 
-    const canLog = $derived(() => isValidCallsignForLog(qsoState.call));
+    const canLog = (): boolean => {
+        return isValidCallsignForLog(qsoState.call)
+    };
 
     const logContact = async (): Promise<void> => {
-        if (!canLog) {
+        if (!canLog()) {
             const elem = document.getElementById('call') as HTMLInputElement;
             if (elem) {
                 elem.focus();
