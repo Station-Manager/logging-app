@@ -3,6 +3,13 @@ import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date'
 import { catState } from '$lib/states/cat-state.svelte';
 import { dottedKHzToShortMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
 
+export interface QsoTimerState {
+    elapsed: number;
+    running: boolean;
+}
+
+export const qsoTimerState: QsoTimerState = $state({ elapsed: 0, running: false });
+
 let elapsedIntervalID: number | null = null;
 
 // Helper to reset a QsoState instance to its initial defaults for a new QSO.
@@ -195,6 +202,7 @@ export interface QsoState extends CatDrivenFields {
     startTimer(this: QsoState): void;
     stopTimer(this: QsoState): void;
     resetTimer(this: QsoState): void;
+    isTimerRunning(this: QsoState): boolean;
 }
 
 /**
@@ -413,6 +421,9 @@ export const qsoState: QsoState = $state({
             // confusion around `this` binding inside the interval callback.
             qsoState.time_off = getTimeUTC();
         }, 60_000); // every minute
+
+        // Mark the timer as running so subscribers know.
+        qsoTimerState.running = true;
     },
 
     // stopTimer: stop any running elapsed-time timer but keep the last
@@ -422,6 +433,7 @@ export const qsoState: QsoState = $state({
             clearInterval(elapsedIntervalID);
             elapsedIntervalID = null;
         }
+        qsoTimerState.running = false;
     },
 
     // resetTimer: stop any running timer and reset the timing-related fields
@@ -436,6 +448,10 @@ export const qsoState: QsoState = $state({
         this.qso_date = date;
         this.time_on = time;
         this.time_off = time;
+    },
+
+    isTimerRunning(this: QsoState): boolean {
+        return elapsedIntervalID !== null;
     },
 });
 
