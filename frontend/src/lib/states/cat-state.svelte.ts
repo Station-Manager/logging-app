@@ -1,5 +1,11 @@
 import { tags } from '$lib/wailsjs/go/models';
 
+export interface IsCatEnabled {
+    isEnabled: boolean;
+}
+
+export const isCatEnabled: IsCatEnabled = $state({ isEnabled: false });
+
 export interface CatState {
     identity: string;
     vfoaFreq: string;
@@ -43,5 +49,6 @@ export const catState: CatState = $state({
                 this[field] = String(value);
             }
         }
+        isCatEnabled.isEnabled = true;
     },
 });

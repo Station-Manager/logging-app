@@ -1,7 +1,11 @@
 import { types } from '$lib/wailsjs/go/models';
 import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
-import { dottedKHzToShortMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
+import {
+    dottedKHzToShortMHz,
+    formatCatKHzToDottedMHz,
+    frequencyToBandFromDottedMHz,
+} from '$lib/utils/frequency';
 
 export interface QsoTimerState {
     elapsed: number;
@@ -49,14 +53,14 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.qso_random = 'Y';
 
     // CAT-only, UI-facing defaults (no CAT available yet)
-    target.cat_identity = '';
-    target.cat_vfoa_freq = '14.320.000';
-    target.cat_vfob_freq = '';
-    target.cat_select = '';
-    target.cat_split = '';
-    target.cat_main_mode = '';
-    target.cat_sub_mode = '';
-    target.cat_tx_power = '';
+    target.cat_identity = catState.identity ?? '';
+    target.cat_vfoa_freq = formatCatKHzToDottedMHz(catState.vfoaFreq);
+    target.cat_vfob_freq = formatCatKHzToDottedMHz(catState.vfobFreq);
+    target.cat_select = catState.select ?? '';
+    target.cat_split = catState.split ?? '';
+    target.cat_main_mode = catState.mainMode ?? '';
+    target.cat_sub_mode = catState.subMode ?? '';
+    target.cat_tx_power = catState.txPower ?? '';
 }
 
 // Helper to map backend QSO fields into the mutable QsoState instance.

@@ -10,6 +10,7 @@
     import {qsoState, type CatForQsoPayload} from "$lib/states/qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
+    import {formatCatKHzToDottedMHz} from "$lib/utils/frequency";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}
@@ -21,7 +22,6 @@
             // First update our CAT snapshot
             catState.update(status);
 
-            console.log('CAT status updated:', catState);
             // Then map the latest CAT state into the subset of QSO fields driven by CAT.
             const payload: CatForQsoPayload = {
                 // ADIF-aligned fields (these may be persisted if user saves the QSO)
@@ -32,8 +32,8 @@
 
                 // CAT-only, UI-facing mirrors
                 cat_identity: catState.identity,
-                cat_vfoa_freq: catState.vfoaFreq,
-                cat_vfob_freq: catState.vfobFreq,
+                cat_vfoa_freq: formatCatKHzToDottedMHz(catState.vfoaFreq),
+                cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
                 cat_select: catState.select,
                 cat_split: catState.split,
                 cat_main_mode: catState.mainMode,

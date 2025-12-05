@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {isCatEnabled} from "$lib/states/cat-state.svelte";
+
     interface Props {
         id: string;
         label: string;
@@ -27,6 +29,7 @@
     <label for={id} class={labelCss}>{label}</label>
     <div class={divCss}>
         <select
+                disabled={isCatEnabled.isEnabled}
                 bind:value={value}
                 id={id}
                 class={inputCss}
