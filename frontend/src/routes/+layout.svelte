@@ -36,7 +36,7 @@
                 // cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
                 // cat_select: catState.select,
                 // cat_split: catState.split,
-                // cat_main_mode: catState.mainMode,
+                cat_main_mode: catState.mainMode,
                 // cat_sub_mode: catState.subMode,
                 // cat_tx_power: catState.txPower,
             };
