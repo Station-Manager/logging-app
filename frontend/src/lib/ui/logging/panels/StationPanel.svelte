@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {configStore} from '$lib/stores/config-store';
+    import {configState} from '$lib/states/config-state.svelte';
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
 
@@ -7,7 +7,7 @@
     let isRandomQso: boolean = $derived.by((): boolean => {
         return qsoState.qso_random === 'Y';
     });
-    let multiplierOn: boolean = $state($configStore.use_power_multiplier);
+    let multiplierOn: boolean = $state(configState.use_power_multiplier);
 
     const toggleRandonQso = (): void => {
         qsoState.qso_random = isRandomQso ? 'N' : 'Y';
@@ -22,7 +22,7 @@
             </label>
             <div class="mt-2 w-[140px]">
                 <input
-                        bind:value={$configStore.logbook.callsign}
+                        bind:value={configState.logbook.callsign}
                         type="text"
                         id="station_callsign"
                         class="uppercase block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 {isValid ? '' : 'outline-red-600 focus:outline-red-600'}"
@@ -39,7 +39,7 @@
             </label>
             <div class="mt-2 w-[140px]">
                 <input
-                        bind:value={$configStore.owners_callsign}
+                        bind:value={configState.owners_callsign}
                         type="text"
                         id="owner_callsign"
                         class="uppercase block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 {isValid ? '' : 'outline-red-600 focus:outline-red-600'}"

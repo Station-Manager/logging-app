@@ -131,6 +131,7 @@ export const qsoState: QsoState = $state({
             this.rst_rcvd = '59';
             this.rst_sent = '59';
         }
+        this.qso_random = configState.default_random_qso.toString();
     },
     fromQso(this: QsoState, qso: types.Qso): void {
         console.log('fromQso', qso);

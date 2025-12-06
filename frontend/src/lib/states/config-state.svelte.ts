@@ -6,6 +6,8 @@ export interface ConfigState {
     logbook: types.Logbook;
     owners_callsign: string;
     rig_name: string;
+    use_power_multiplier: boolean;
+    default_random_qso: boolean;
     load(this: ConfigState, cfg: types.UiConfig): void;
 }
 export const configState: ConfigState = $state({
@@ -14,6 +16,8 @@ export const configState: ConfigState = $state({
     logbook: new types.Logbook(),
     owners_callsign: '',
     rig_name: '',
+    use_power_multiplier: false,
+    default_random_qso: true,
 
     load(this: ConfigState, cfg: types.UiConfig): void {
         this.default_freq = cfg.default_freq;
@@ -21,5 +25,7 @@ export const configState: ConfigState = $state({
         this.logbook = cfg.logbook;
         this.owners_callsign = cfg.owners_callsign;
         this.rig_name = cfg.rig_name;
+        this.use_power_multiplier = cfg.use_power_multiplier;
+        this.default_random_qso = cfg.default_is_random_qso;
     },
 });
