@@ -1,14 +1,20 @@
-import { configState } from '$lib/states/config-state.svelte';
-import { types } from '$lib/wailsjs/go/models';
+import {configState} from '$lib/states/config-state.svelte';
+import {types} from '$lib/wailsjs/go/models';
+import {formatCatKHzToDottedMHz, formatDottedKHzToDottedMHz} from '$lib/utils/frequency';
+
+const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
+    cat_vfoa_freq: 'cat_vfoa_freq',
+    cat_vfob_freq: 'cat_vfob_freq',
+};
 
 export interface QsoTimerState {
     elapsed: number;
     running: boolean;
 }
 
-export const qsoTimerState: QsoTimerState = $state({ elapsed: 0, running: false });
+export const qsoTimerState: QsoTimerState = $state({elapsed: 0, running: false});
 
-export type CatForQsoPayload = Partial<Pick<QsoState, 'cat_vfoa_freq'>>;
+export type CatForQsoPayload = Partial<Pick<QsoState, 'cat_vfoa_freq' | 'cat_vfob_freq'>>;
 
 export interface CatDrivenFields {
     cat_vfoa_freq: string;
@@ -132,6 +138,24 @@ export const qsoState: QsoState = $state({
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
         console.log('updateFromCAT', data);
         if (!data) return;
+
+        (Object.entries(data) as Array<[keyof CatForQsoPayload, string | undefined]>).forEach(
+            ([key, value]) => {
+                if (value === undefined) return;
+                const catKey = CAT_MAPPINGS[key];
+                if (!catKey) return;
+                switch (catKey) {
+                    case 'cat_vfoa_freq':
+                    case 'cat_vfob_freq':
+                        value = value.includes('.')
+                            ? formatDottedKHzToDottedMHz(value)
+                            : formatCatKHzToDottedMHz(value);
+                        break;
+                }
+                this[catKey] = value;
+                console.log('>>', value);
+            }
+        );
 
         this.cat_enabled = true;
     },

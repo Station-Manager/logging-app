@@ -22,7 +22,8 @@
                 />
             {:else}
                 <VfoBox label='VFO-A'/>
-                <VfoInput id='vfoa' bind:value={qsoState.cat_vfoa_freq}
+                <VfoInput id='vfoa'
+                          bind:value={qsoState.cat_vfoa_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq)}/>
             {/if}
@@ -31,12 +32,14 @@
             {#if isSplit}
                 <VfoBox label='VFO-B' action='TX' isSplit bgColorTopCss='bg-red-800/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfob' bind:value={qsoState.cat_vfob_freq}
+                <VfoInput id='vfob'
+                          bind:value={qsoState.cat_vfob_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq)}/>
             {:else}
                 <VfoBox label='VFO-B' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfob' bind:value={qsoState.cat_vfob_freq}
+                <VfoInput id='vfob'
+                          bind:value={qsoState.cat_vfob_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq)}/>
             {/if}
@@ -46,24 +49,28 @@
             {#if isSplit}
                 <VfoBox label='VFO-B' isSplit bgColorTopCss='bg-green-600/80'
                         bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfob' bind:value={qsoState.cat_vfob_freq}
+                <VfoInput id='vfob'
+                          bind:value={qsoState.cat_vfob_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq)}/>
             {:else}
                 <VfoBox label='VFO-B'/>
-                <VfoInput id='vfob' bind:value={qsoState.cat_vfob_freq}
+                <VfoInput id='vfob'
+                          bind:value={qsoState.cat_vfob_freq}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq)}/>
             {/if}
         </div>
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}
                 <VfoBox label='VFO-A' isSplit bgColorTopCss='bg-red-800/80' bgColorBottomCss='bg-blue-700/90'/>
-                <VfoInput id='vfoa' bind:value={qsoState.cat_vfoa_freq}
+                <VfoInput id='vfoa'
+                          bind:value={qsoState.cat_vfoa_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq)}/>
             {:else}
                 <VfoBox label='VFO-A' bgColorCss='bg-gray-500/80'/>
-                <VfoInput id='vfoa' bind:value={qsoState.cat_vfoa_freq}
+                <VfoInput id='vfoa'
+                          bind:value={qsoState.cat_vfoa_freq}
                           disabled={isCatEnabled.isEnabled}
                           band={frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq)}/>
             {/if}

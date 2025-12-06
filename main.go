@@ -126,8 +126,8 @@ func main() {
 		Mac:          nil,
 		Linux:        nil,
 		Experimental: nil,
-		Debug:        options.Debug{
-			//			OpenInspectorOnStartup: isDevelopment(),
+		Debug: options.Debug{
+			OpenInspectorOnStartup: isDevelopment(),
 		},
 		DragAndDrop: nil,
 	}

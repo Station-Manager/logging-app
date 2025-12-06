@@ -32,7 +32,8 @@
 
                 // CAT-only, UI-facing mirrors
                 // cat_identity: catState.identity,
-                cat_vfoa_freq: formatCatKHzToDottedMHz(catState.vfoaFreq),
+                cat_vfoa_freq: catState.vfoaFreq,
+                cat_vfob_freq: catState.vfobFreq,
                 // cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
                 // cat_select: catState.select,
                 // cat_split: catState.split,
@@ -44,6 +45,7 @@
             // qsoState.setDefaults($configStore);
             // console.log('+layout mounted', $state.snapshot(defaultInputs), $configStore);
             qsoState.updateFromCAT(payload);
+            console.log($state.snapshot(qsoState));
         });
     }
 
