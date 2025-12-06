@@ -3,7 +3,7 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {LogQso, CurrentSessionQsoSlice, TotalQsosByLogbookId} from "$lib/wailsjs/go/facade/Service";
     import {types} from "$lib/wailsjs/go/models";
-    import {configStore} from "$lib/stores/config-store";
+    import {configState} from "$lib/states/config-state.svelte";
     import {showToast} from "$lib/utils/toast";
     import {isValidCallsignForLog} from "$lib/constants/callsign";
     import {sessionState} from "$lib/states/session-state.svelte";
@@ -33,14 +33,14 @@
         }
         try {
             const qso: types.Qso = qsoState.toQso();
-            qso.logbook_id = $configStore.logbook.id
+            qso.logbook_id = configState.logbook.id
             await LogQso(qso);
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
 
             if ($isContestMode){
                 contestTimers.reset();
-                contestState.totalQsos = await TotalQsosByLogbookId($configStore.logbook.id);
+                contestState.totalQsos = await TotalQsosByLogbookId(configState.logbook.id);
             }
 
         } catch (e: unknown) {

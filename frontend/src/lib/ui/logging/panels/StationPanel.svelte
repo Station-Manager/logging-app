@@ -14,7 +14,8 @@
         if (multiplierOn) {
             pwr = pwr * configState.power_multiplier;
         }
-        return pwr.toString() + "w";
+//        qsoState.tx_pwr = pwr.toString();
+        return pwr.toString();
     });
 
     let isValid = $state(true);

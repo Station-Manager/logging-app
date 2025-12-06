@@ -1,6 +1,7 @@
 import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
 import { formatCatKHzToDottedMHz } from '$lib/utils/frequency';
+import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -15,6 +16,8 @@ export interface QsoTimerState {
 
 export const qsoTimerState: QsoTimerState = $state({ elapsed: 0, running: false });
 
+let elapsedIntervalID: number | null = null;
+
 export type CatForQsoPayload = Partial<
     Pick<QsoState, 'cat_vfoa_freq' | 'cat_vfob_freq' | 'cat_main_mode'>
 >;
@@ -26,6 +29,7 @@ export interface CatDrivenFields {
 }
 
 export interface QsoState extends CatDrivenFields {
+    original?: types.Qso;
     call: string;
     qso_date: string;
     time_on: string;
@@ -79,6 +83,7 @@ export interface QsoState extends CatDrivenFields {
 }
 
 export const qsoState: QsoState = $state({
+    original: undefined,
     call: '',
     qso_date: '',
     time_on: '',
@@ -124,20 +129,43 @@ export const qsoState: QsoState = $state({
                 this.cat_main_mode = configState.default_mode;
             }
         }
-        if (this.cat_main_mode === 'CW-U' || this.cat_main_mode === 'CW-L') {
-            this.rst_rcvd = '599';
-            this.rst_sent = '599';
-        } else {
-            this.rst_rcvd = '59';
-            this.rst_sent = '59';
-        }
-        this.qso_random = configState.default_random_qso.toString();
+        rstHelper(this);
+        randomQsoHelper(this);
+        this.call = '';
+        this.name = '';
+        this.qth = '';
+        this.comment = '';
+        this.notes = '';
+        this.qso_date = getDateUTC();
+        this.time_on = getTimeUTC();
+        this.time_off = getTimeUTC();
     },
     fromQso(this: QsoState, qso: types.Qso): void {
-        console.log('fromQso', qso);
+        if (!qso) return;
+        this.original = qso;
+        this.call = qso.call;
+        this.name = qso.name ?? '';
+        this.qth = qso.qth ?? '';
+        rstHelper(this);
+        randomQsoHelper(this);
     },
     toQso(this: QsoState): types.Qso {
-        console.log('toQso');
+        const base = this.original ? types.Qso.createFrom(this.original) : new types.Qso({});
+        base.call = this.call;
+        base.name = this.name;
+        base.qth = this.qth;
+        base.comment = this.comment;
+        base.notes = this.notes;
+
+        base.rst_sent = this.rst_sent;
+        base.rst_rcvd = this.rst_rcvd;
+
+        base.mode = this.mode;
+
+        base.qso_date = this.qso_date;
+        base.time_on = this.time_on;
+        base.time_off = this.time_off;
+
         return new types.Qso({});
     },
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
@@ -161,15 +189,62 @@ export const qsoState: QsoState = $state({
         this.cat_enabled = true;
     },
     startTimer(this: QsoState): void {
-        console.log('startTimer');
+        // If a timer is already active, don't start another.
+        if (elapsedIntervalID !== null) {
+            return;
+        }
+
+        // Ensure we have an initial end time; if it's empty, initialize it
+        // to "now" so UI has an immediate value.
+        if (!this.time_off) {
+            this.time_off = getTimeUTC();
+        }
+
+        // Store interval id in a module-scope variable so we can reliably clear it.
+        elapsedIntervalID = window.setInterval(() => {
+            // Always write through the shared qsoState instance to avoid any
+            // confusion around `this` binding inside the interval callback.
+            qsoState.time_off = getTimeUTC();
+        }, 60_000); // every minute
+
+        // Mark the timer as running so subscribers know.
+        qsoTimerState.running = true;
     },
     stopTimer(this: QsoState): void {
-        console.log('stopTimer');
+        if (elapsedIntervalID !== null) {
+            clearInterval(elapsedIntervalID);
+            elapsedIntervalID = null;
+        }
+        qsoTimerState.running = false;
     },
     resetTimer(this: QsoState): void {
-        console.log('resetTimer');
+        // Ensure no interval continues running.
+        this.stopTimer();
+
+        const date = getDateUTC();
+        const time = getTimeUTC();
+
+        this.qso_date = date;
+        this.time_on = time;
+        this.time_off = time;
     },
     isTimerRunning(this: QsoState): boolean {
-        return false;
+        return elapsedIntervalID !== null;
     },
 });
+
+const rstHelper = (qso: QsoState): void => {
+    if (!qso) return;
+    if (qso.cat_main_mode === 'CW-U' || qso.cat_main_mode === 'CW-L') {
+        qso.rst_rcvd = '599';
+        qso.rst_sent = '599';
+    } else {
+        qso.rst_rcvd = '59';
+        qso.rst_sent = '59';
+    }
+};
+
+const randomQsoHelper = (qso: QsoState): void => {
+    if (!qso) return;
+    qso.qso_random = configState.default_random_qso ? 'Y' : 'N';
+};

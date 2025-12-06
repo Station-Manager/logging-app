@@ -40,7 +40,7 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 
 	if err = s.calulatedBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
 		// Not a serious error, we can still continue.
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to calculate bearing and distance between stations")
+		s.LoggerService.WarnWith().Err(err).Msg("Failed to calculate bearing and distance between stations")
 	}
 
 	qso := &types.Qso{
