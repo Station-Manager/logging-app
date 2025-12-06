@@ -23,28 +23,11 @@
 
             // Then map the latest CAT state into the subset of QSO fields driven by CAT.
             const payload: CatForQsoPayload = {
-                // ADIF-aligned fields (these may be persisted if user saves the QSO)
-                //freq: catState.vfoaFreq,
-                //freq_rx: catState.vfobFreq,
-                //mode: catState.mainMode,
-                // band / band_rx can be added when you have a freq->band mapping available
-
-                // CAT-only, UI-facing mirrors
-                // cat_identity: catState.identity,
                 cat_vfoa_freq: catState.vfoaFreq,
                 cat_vfob_freq: catState.vfobFreq,
-                // cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
-                // cat_select: catState.select,
-                // cat_split: catState.split,
                 cat_main_mode: catState.mainMode,
-                // cat_sub_mode: catState.subMode,
-                // cat_tx_power: catState.txPower,
             };
-
-            // qsoState.setDefaults($configStore);
-            // console.log('+layout mounted', $state.snapshot(defaultInputs), $configStore);
             qsoState.updateFromCAT(payload);
-            console.log($state.snapshot(qsoState));
         });
     }
 
