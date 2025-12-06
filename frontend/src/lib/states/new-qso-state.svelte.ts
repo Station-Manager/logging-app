@@ -2,6 +2,7 @@ import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
 import { formatCatKHzToDottedMHz } from '$lib/utils/frequency';
 import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+import {catState} from "$lib/states/cat-state.svelte";
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -140,6 +141,14 @@ export const qsoState: QsoState = $state({
         this.time_on = getTimeUTC();
         this.time_off = getTimeUTC();
     },
+    /**
+     * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
+     * from the backend.
+     *
+     * @param {QsoState} this - The current instance of QsoState.
+     * @param {types.Qso} qso - The QSO data object containing information to populate the QsoState instance.
+     * @return {void} This method does not return a value.
+     */
     fromQso(this: QsoState, qso: types.Qso): void {
         if (!qso) return;
         this.original = qso;
@@ -149,6 +158,12 @@ export const qsoState: QsoState = $state({
         rstHelper(this);
         randomQsoHelper(this);
     },
+    /**
+     * Transforms the current QsoState instance into a Qso object. This is called when the user clicks the "Log Contact"
+     * before passing the QSO data to the backend.
+     *
+     * @return {types.Qso} A new Qso object created from the current state of the QsoState instance.
+     */
     toQso(this: QsoState): types.Qso {
         const base = this.original ? types.Qso.createFrom(this.original) : new types.Qso({});
         base.call = this.call;
@@ -162,11 +177,29 @@ export const qsoState: QsoState = $state({
 
         base.mode = this.mode;
 
+        if (catState.select === 'VFOA' || catState.select === '') {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfoa_freq;
+            } else {
+                base.freq = qsoState.cat_vfoa_freq;
+                base.freq_rx = qsoState.cat_vfob_freq;
+            }
+        } else {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfob_freq;
+            } else {
+                base.freq = qsoState.cat_vfob_freq;
+                base.freq_rx = qsoState.cat_vfoa_freq;
+            }
+        }
+
         base.qso_date = this.qso_date;
         base.time_on = this.time_on;
         base.time_off = this.time_off;
 
-        return new types.Qso({});
+        console.log(">>", base);
+
+        return base;
     },
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
         if (!data) return;
