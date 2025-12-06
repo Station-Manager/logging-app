@@ -8,6 +8,7 @@ export interface ConfigState {
     rig_name: string;
     use_power_multiplier: boolean;
     default_random_qso: boolean;
+    power_multiplier: number;
     load(this: ConfigState, cfg: types.UiConfig): void;
 }
 export const configState: ConfigState = $state({
@@ -18,6 +19,7 @@ export const configState: ConfigState = $state({
     rig_name: '',
     use_power_multiplier: false,
     default_random_qso: true,
+    power_multiplier: 1,
 
     load(this: ConfigState, cfg: types.UiConfig): void {
         this.default_freq = cfg.default_freq;
@@ -27,5 +29,6 @@ export const configState: ConfigState = $state({
         this.rig_name = cfg.rig_name;
         this.use_power_multiplier = cfg.use_power_multiplier;
         this.default_random_qso = cfg.default_is_random_qso;
+        this.power_multiplier = cfg.power_multiplier;
     },
 });

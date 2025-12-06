@@ -2,12 +2,25 @@
     import {configState} from '$lib/states/config-state.svelte';
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
+    import {catState} from "$lib/states/cat-state.svelte";
+
+    let multiplierOn: boolean = $state(configState.use_power_multiplier);
+
+    let txPower = $derived.by(() => {
+        let pwr = parseInt(catState.txPower);
+        if (isNaN(pwr)) {
+            return '?';
+        }
+        if (multiplierOn) {
+            pwr = pwr * configState.power_multiplier;
+        }
+        return pwr.toString() + "w";
+    });
 
     let isValid = $state(true);
     let isRandomQso: boolean = $derived.by((): boolean => {
         return qsoState.qso_random === 'Y';
     });
-    let multiplierOn: boolean = $state(configState.use_power_multiplier);
 
     const toggleRandonQso = (): void => {
         qsoState.qso_random = isRandomQso ? 'N' : 'Y';
@@ -85,6 +98,7 @@
             <label class="block text-sm/5 font-medium" for="tx_pwr">TX Power</label>
             <div class="flex items-center w-[142px]">
                 <input
+                        bind:value={txPower}
                         class="mr-2 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                         type="text"
                         id="tx_pwr"
