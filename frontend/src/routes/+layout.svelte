@@ -7,7 +7,7 @@
     import {EventsOn} from "$lib/wailsjs/runtime/runtime";
     import {events} from "$lib/wailsjs/go/models";
     import {catState} from "$lib/states/cat-state.svelte";
-    import {qsoState, type CatForQsoPayload} from "$lib/states/qso-state.svelte";
+    import {qsoState, type CatForQsoPayload} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
     import {formatCatKHzToDottedMHz} from "$lib/utils/frequency";
@@ -31,16 +31,18 @@
                 // band / band_rx can be added when you have a freq->band mapping available
 
                 // CAT-only, UI-facing mirrors
-                cat_identity: catState.identity,
+                // cat_identity: catState.identity,
                 cat_vfoa_freq: formatCatKHzToDottedMHz(catState.vfoaFreq),
-                cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
-                cat_select: catState.select,
-                cat_split: catState.split,
-                cat_main_mode: catState.mainMode,
-                cat_sub_mode: catState.subMode,
-                cat_tx_power: catState.txPower,
+                // cat_vfob_freq: formatCatKHzToDottedMHz(catState.vfobFreq),
+                // cat_select: catState.select,
+                // cat_split: catState.split,
+                // cat_main_mode: catState.mainMode,
+                // cat_sub_mode: catState.subMode,
+                // cat_tx_power: catState.txPower,
             };
 
+            // qsoState.setDefaults($configStore);
+            // console.log('+layout mounted', $state.snapshot(defaultInputs), $configStore);
             qsoState.updateFromCAT(payload);
         });
     }
@@ -53,6 +55,7 @@
         } catch (e: unknown) {
             handleAsyncError(e, '+layout.svelte->onMount')
         }
+
     });
 
     onDestroy((): void => {

@@ -41,10 +41,10 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(hamnut.ServiceName, reflect.TypeOf((*hamnut.Service)(nil))); err != nil {
-		return errors.New(op).Err(err)
+		return errors.New(op).Err(err).Msg("hamnut")
 	}
 	if err := container.Register(qrz.ServiceName, reflect.TypeOf((*qrz.Service)(nil))); err != nil {
-		return errors.New(op).Err(err)
+		return errors.New(op).Err(err).Msg("qrz")
 	}
 
 	if err := container.Build(); err != nil {

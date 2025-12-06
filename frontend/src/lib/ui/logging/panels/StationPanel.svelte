@@ -1,6 +1,6 @@
 <script lang="ts">
     import {configStore} from '$lib/stores/config-store';
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
 
     let isValid = $state(true);

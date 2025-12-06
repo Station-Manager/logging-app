@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const SHORT_PATH = 'S';
     const LONG_PATH = 'L';

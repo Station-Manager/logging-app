@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {qsoState, resetQsoStateDefaults} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {LogQso, CurrentSessionQsoSlice, TotalQsosByLogbookId} from "$lib/wailsjs/go/facade/Service";
     import {types} from "$lib/wailsjs/go/models";
@@ -13,7 +13,7 @@
 
     const resetAction = (): void => {
         qsoState.stopTimer();
-        resetQsoStateDefaults(qsoState);
+        qsoState.reset();
         const elem = document.getElementById('call') as HTMLInputElement;
         if (elem) elem.focus();
     }

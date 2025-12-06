@@ -2,7 +2,7 @@
     import VfoBox from "$lib/ui/logging/components/VfoBox.svelte";
     import VfoInput from "$lib/ui/logging/components/VfoInput.svelte";
     import {catState, isCatEnabled} from "$lib/states/cat-state.svelte";
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
 
     let isSplit = $derived(catState.split === 'ON');

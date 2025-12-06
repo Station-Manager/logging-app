@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {qsoState, qsoTimerState} from "$lib/states/qso-state.svelte";
+    import {qsoState, qsoTimerState} from "$lib/states/new-qso-state.svelte";
 
     let cannotStart = $derived.by(() => {
         return qsoTimerState.running || qsoState.call === '';

@@ -5,7 +5,7 @@
         loggingModeStore,
         isContestMode,
     } from "$lib/stores/logging-mode-store";
-    import {configStore} from "$lib/stores/config-store";
+    import {configState} from "$lib/states/config-state.svelte";
     import {getSessionElapsedTime, sessionState} from "$lib/states/session-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
     import {STATION_PANEL} from "$lib/ui/logging/panels/constants";
@@ -59,14 +59,14 @@
         {#if $isContestMode}
         <div class="flex">
             <div class="w-16">Station:</div>
-            <div class="font-bold">{$configStore.logbook.callsign}</div>
+            <div class="font-bold">{configState.logbook.callsign}</div>
         </div>
         <div class="flex">
             <div class="w-16">Operator:</div>
-            {#if $configStore.owners_callsign !== $configStore.logbook.callsign}
+            {#if configState.owners_callsign !== configState.logbook.callsign}
                 <button onclick={operatorField} class="text-left font-bold {operatorCallsign === '' ? 'border border-red-500' : ''} min-w-14 cursor-pointer rounded-sm" title="Set operator">{operatorCallsign}</button>
             {:else}
-                <div class="text-left font-bold">{$configStore.logbook.callsign}</div>
+                <div class="text-left font-bold">{configState.logbook.callsign}</div>
             {/if}
         </div>
         {/if}
@@ -86,11 +86,11 @@
     <div class="flex flex-col text-xs font-semibold w-[200px]">
         <div class="flex flex-row items-center">
             <div class="w-[60px]">Logbook:</div>
-            <div class="w-[110px]">{$configStore.logbook.name}</div>
+            <div class="w-[110px]">{configState.logbook.name}</div>
         </div>
         <div class="flex flex-row items-center">
             <div class="w-[60px]">Rig:</div>
-            <div class="w-[110px]">{$configStore.rig_name}</div>
+            <div class="w-[110px]">{configState.rig_name}</div>
         </div>
     </div>
     <div class="flex text-sm font-semibold w-[180px]">

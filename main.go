@@ -34,19 +34,19 @@ var assets embed.FS
 func main() {
 	workingDir, err := utils.WorkingDir()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "failed to determine working directory: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to determine working directory: %v\n", errors.Root(err))
 		os.Exit(ExitWorkingDir)
 	}
 
 	if err = initializeContainer(workingDir); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "failed to initialize container: %v\n", err)
-		_, _ = fmt.Fprintf(os.Stderr, "container initialization failed: %s\n", errors.Root(err))
+		_, _ = fmt.Fprintf(os.Stderr, "failed to initialize container: %v\n", errors.Root(err))
+		_, _ = fmt.Fprintf(os.Stderr, "container initialization failed: %s\n", err)
 		os.Exit(ExitContainerInit)
 	}
 
 	facade, err := getFacadeService()
 	if err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "failed to get facade service: %v\n", err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to get facade service: %v\n", errors.Root(err))
 		os.Exit(ExitFacadeService)
 	}
 
@@ -126,8 +126,8 @@ func main() {
 		Mac:          nil,
 		Linux:        nil,
 		Experimental: nil,
-		Debug: options.Debug{
-			OpenInspectorOnStartup: isDevelopment(),
+		Debug:        options.Debug{
+			//			OpenInspectorOnStartup: isDevelopment(),
 		},
 		DragAndDrop: nil,
 	}

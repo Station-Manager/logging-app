@@ -5,7 +5,6 @@
         id: string;
         label: string;
         value: string;
-        selected: string;
         list: { key: string; value: string }[];
         labelCss?: string;
         divCss?: string;
@@ -16,7 +15,6 @@
         id,
         label,
         value = $bindable(),
-        selected = $bindable(),
         list,
         labelCss = 'block text-sm/5 font-medium',
         divCss = 'mt-2 grid grid-cols-1',
@@ -32,10 +30,9 @@
                 disabled={isCatEnabled.isEnabled}
                 bind:value={value}
                 id={id}
-                class={inputCss}
-        >
+                class={inputCss}>
             {#each list as mode (mode.key)}
-                <option value={mode.value} selected="{selected === mode.value}">{mode.value}</option>
+                <option value={mode.value} selected={value === mode.value}>{mode.value}</option>
             {/each}
         </select>
         <svg class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" data-slot="icon">

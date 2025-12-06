@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {OpenInBrowser} from "$lib/wailsjs/go/facade/Service"
 

@@ -35,6 +35,8 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		DefaultTxPower:     requiredCfg.DefaultTxPower,
 		UsePowerMultiplier: requiredCfg.UsePowerMultiplier,
 		PowerMultiplier:    requiredCfg.PowerMultiplier,
+		DefaultFreq:        requiredCfg.DefaultFreq,
+		DefaultMode:        requiredCfg.DefaultMode,
 	}, nil
 }
 

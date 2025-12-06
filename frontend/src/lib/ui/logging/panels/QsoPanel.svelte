@@ -1,7 +1,7 @@
 <script lang="ts">
     import Callsign from "$lib/ui/logging/components/Callsign.svelte";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import Mode from "$lib/ui/logging/components/Mode.svelte";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
@@ -35,8 +35,7 @@
             <Mode
                     id="mode"
                     label="Mode"
-                    bind:value={qsoState.mode}
-                    selected={qsoState.cat_main_mode}
+                    bind:value={qsoState.cat_main_mode}
                     list={$catStateValues.getMainModes()}
             />
             <Vfos/>

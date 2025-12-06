@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {qsoState} from "$lib/states/qso-state.svelte.js";
+    import {qsoState} from "$lib/states/new-qso-state.svelte.js";
 
     const disabledCss: string = 'disabled:outline-orange-500 disabled:outline-2 disabled:bg-orange-200';
 
@@ -18,7 +18,7 @@
     }: Props = $props();
 
     let ticking: boolean = $derived.by(() => {
-        return disabled && qsoState.timeOff !== qsoState.timeOn;
+        return disabled && qsoState.time_off !== qsoState.time_on;
     });
 
 </script>

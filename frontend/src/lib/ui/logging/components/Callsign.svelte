@@ -2,7 +2,7 @@
     import {CALLSIGN_PATTERN, isValidCallsignLength} from "$lib/constants/callsign";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {NewQso} from "$lib/wailsjs/go/facade/Service";
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
     import {WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
 
@@ -59,7 +59,7 @@
 
         try {
             const qso = await NewQso(value);
-            qsoState.createFromQSO(qso);
+            qsoState.fromQso(qso);
             qsoState.startTimer();
             appState.activePanel = WORKED_TAB_TITLE;
         } catch (e: unknown) {

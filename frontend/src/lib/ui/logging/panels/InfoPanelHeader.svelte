@@ -5,7 +5,7 @@
         STATION_PANEL,
         WORKED_TAB_TITLE
     } from "$lib/ui/logging/panels/constants";
-    import {qsoState} from "$lib/states/qso-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
 

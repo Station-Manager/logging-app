@@ -7,6 +7,11 @@ import {
     frequencyToBandFromDottedMHz,
 } from '$lib/utils/frequency';
 
+export const defaultInputs: { defFreq: string; defMode: string } = $state({
+    defFreq: '',
+    defMode: '',
+});
+
 export interface QsoTimerState {
     elapsed: number;
     running: boolean;
@@ -52,7 +57,7 @@ export function resetQsoStateDefaults(target: QsoState): void {
     target.contact_history = [];
     target.qso_random = 'Y';
 
-    target.cat_vfoa_freq = '';
+    target.cat_vfoa_freq = defaultInputs.defFreq;
 }
 
 // Helper to map backend QSO fields into the mutable QsoState instance.
@@ -195,6 +200,8 @@ export interface QsoState extends CatDrivenFields {
     /** Build a QSO instance suitable for sending back to the backend. */
     toQso(this: QsoState): types.Qso;
 
+    setDefaults(this: QsoState, cfg: types.UiConfig): void;
+
     startTimer(this: QsoState): void;
     stopTimer(this: QsoState): void;
     resetTimer(this: QsoState): void;
@@ -284,13 +291,11 @@ export const qsoState: QsoState = $state({
 
         // Keep a snapshot of the full backend model for later comparisons / reset.
         this.original = qso;
-
         applyQsoToState(this, qso);
     },
 
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
         if (!data) return;
-
         const mappings: { [K in keyof CatForQsoPayload]: K } = {
             freq: 'freq',
             freq_rx: 'freq_rx',
@@ -329,6 +334,11 @@ export const qsoState: QsoState = $state({
             return;
         }
         applyQsoToState(this, this.original);
+    },
+
+    setDefaults(this: QsoState, cfg: types.UiConfig) {
+        defaultInputs.defFreq = cfg.default_freq;
+        defaultInputs.defMode = cfg.default_mode;
     },
 
     toQso(this: QsoState): types.Qso {
