@@ -10,7 +10,6 @@
     import {qsoState, type CatForQsoPayload} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
-    import {formatCatKHzToDottedMHz} from "$lib/utils/frequency";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}
