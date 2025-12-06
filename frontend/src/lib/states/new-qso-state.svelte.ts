@@ -1,8 +1,8 @@
 import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
-import { formatCatKHzToDottedMHz } from '$lib/utils/frequency';
+import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
 import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
-import {catState} from "$lib/states/cat-state.svelte";
+import { catState } from '$lib/states/cat-state.svelte';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -175,21 +175,34 @@ export const qsoState: QsoState = $state({
         base.rst_sent = this.rst_sent;
         base.rst_rcvd = this.rst_rcvd;
 
-        base.mode = this.mode;
-
-        if (catState.select === 'VFOA' || catState.select === '') {
-            if (catState.split === 'OFF' || catState.split === '') {
-                base.freq = qsoState.cat_vfoa_freq;
-            } else {
-                base.freq = qsoState.cat_vfoa_freq;
-                base.freq_rx = qsoState.cat_vfob_freq;
-            }
+        if (qsoState.cat_enabled) {
+            base.mode = catState.mainMode;
         } else {
-            if (catState.split === 'OFF' || catState.split === '') {
-                base.freq = qsoState.cat_vfob_freq;
+            base.mode = this.mode;
+        }
+
+        if (qsoState.cat_enabled) {
+            console.log('select', catState.select);
+            if (catState.select === 'VFO-A') {
+                if (catState.split === 'OFF' || catState.split === '') {
+                    base.freq = qsoState.cat_vfoa_freq;
+                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                } else {
+                    base.freq = qsoState.cat_vfoa_freq;
+                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                    base.freq_rx = qsoState.cat_vfob_freq;
+                    base.band = frequencyToBandFromCat(catState.vfobFreq);
+                }
             } else {
-                base.freq = qsoState.cat_vfob_freq;
-                base.freq_rx = qsoState.cat_vfoa_freq;
+                if (catState.split === 'OFF' || catState.split === '') {
+                    base.freq = qsoState.cat_vfob_freq;
+                    base.band = frequencyToBandFromCat(catState.vfobFreq);
+                } else {
+                    base.freq = qsoState.cat_vfob_freq;
+                    base.band = frequencyToBandFromCat(catState.vfobFreq);
+                    base.freq_rx = qsoState.cat_vfoa_freq;
+                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                }
             }
         }
 
@@ -197,8 +210,8 @@ export const qsoState: QsoState = $state({
         base.time_on = this.time_on;
         base.time_off = this.time_off;
 
-        console.log(">>", base);
-
+        console.log('Freq:', base.freq);
+        console.log('Freq Rx:', base.freq_rx);
         return base;
     },
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
@@ -212,6 +225,8 @@ export const qsoState: QsoState = $state({
                 switch (catKey) {
                     case 'cat_vfoa_freq':
                     case 'cat_vfob_freq':
+                        //TODO: Should we do this conversion here or at the UI?
+                        // The issue is that the cat shadowed field is now different from the actual cat field!
                         value = formatCatKHzToDottedMHz(value);
                         break;
                 }

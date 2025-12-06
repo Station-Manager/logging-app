@@ -135,6 +135,9 @@ func (s *Service) LogQso(qso types.Qso) error {
 	// Set the current session ID
 	qso.SessionID = s.sessionID
 
+	s.normalizeQsoFields(&qso)
+	s.LoggerService.DebugWith().Str("freq", qso.Freq).Msg("QSO data normalized")
+
 	// Insert the QSO into the database
 	_, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {
