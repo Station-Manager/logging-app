@@ -108,6 +108,7 @@ export const qsoState: QsoState = $state({
     ccode: '',
     ant_path: '',
     short_path_distance: '',
+    short_path_bearing: '',
     long_path_distance: '',
     remote_time: '',
     remote_offset: '',
@@ -155,6 +156,8 @@ export const qsoState: QsoState = $state({
         this.qth = qso.qth ?? '';
         this.email = qso.email ?? '';
         this.web = qso.web ?? '';
+        this.country_name = qso.country ?? '';
+        this.ccode = qso.country_details.ccode ?? '';
         rstHelper(this);
         randomQsoHelper(this);
     },
@@ -209,6 +212,7 @@ export const qsoState: QsoState = $state({
         base.qso_date = this.qso_date;
         base.time_on = this.time_on;
         base.time_off = this.time_off;
+        base.rx_pwr = this.rx_pwr;
 
         return base;
     },

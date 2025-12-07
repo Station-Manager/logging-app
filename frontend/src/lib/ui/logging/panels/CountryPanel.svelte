@@ -13,7 +13,7 @@
         if (qsoState.ccode === ''){
             return `/flags/unknown.svg`;
         }
-        return `flags/${qsoState.ccode.toLowerCase()}.svg`;
+        return `/flags/${qsoState.ccode.toLowerCase()}.svg`;
     });
 
     const toggleAntPath = (event: Event):void => {
@@ -55,6 +55,9 @@
                     <span>{qsoState.long_path_distance} km</span>
                 {/if}
             {/if}
+            </div>
+            <div>
+                Bearing Data
             </div>
             <div class="flex flex-row h-10 w-full space-x-3 justify-center -mt-1">
                 <div class="flex items-center">
