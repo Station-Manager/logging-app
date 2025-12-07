@@ -1,7 +1,7 @@
 import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
 import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
-import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+import {extractRemoteTime, getDateUTC, getTimeUTC} from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
@@ -110,6 +110,7 @@ export const qsoState: QsoState = $state({
     short_path_distance: '',
     short_path_bearing: '',
     long_path_distance: '',
+    log_path_bearing: '',
     remote_time: '',
     remote_offset: '',
 
@@ -141,6 +142,10 @@ export const qsoState: QsoState = $state({
         this.qso_date = getDateUTC();
         this.time_on = getTimeUTC();
         this.time_off = getTimeUTC();
+        this.country_name = '';
+        this.ccode = '';
+        this.remote_time = '';
+        this.remote_offset = '';
     },
     /**
      * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
@@ -158,6 +163,8 @@ export const qsoState: QsoState = $state({
         this.web = qso.web ?? '';
         this.country_name = qso.country ?? '';
         this.ccode = qso.country_details.ccode ?? '';
+        this.remote_time = extractRemoteTime(qso.country_details.local_time);
+        this.remote_offset = qso.country_details.time_offset ?? '';
         rstHelper(this);
         randomQsoHelper(this);
     },
