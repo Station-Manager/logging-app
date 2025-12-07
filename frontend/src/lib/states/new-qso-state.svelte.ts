@@ -145,8 +145,6 @@ export const qsoState: QsoState = $state({
      * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
      * from the backend.
      *
-     * @param {QsoState} this - The current instance of QsoState.
-     * @param {types.Qso} qso - The QSO data object containing information to populate the QsoState instance.
      * @return {void} This method does not return a value.
      */
     fromQso(this: QsoState, qso: types.Qso): void {
