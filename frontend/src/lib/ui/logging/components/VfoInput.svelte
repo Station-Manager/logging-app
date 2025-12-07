@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {formatCatKHzToDottedMHz, frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
+    import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
 
     interface Props {
         id: string;

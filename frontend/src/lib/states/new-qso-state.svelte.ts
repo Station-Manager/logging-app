@@ -1,8 +1,8 @@
-import {configState} from '$lib/states/config-state.svelte';
-import {types} from '$lib/wailsjs/go/models';
-import {formatCatKHzToDottedMHz, frequencyToBandFromCat} from '$lib/utils/frequency';
-import {getDateUTC, getTimeUTC} from '$lib/utils/time-date';
-import {catState} from '$lib/states/cat-state.svelte';
+import { configState } from '$lib/states/config-state.svelte';
+import { types } from '$lib/wailsjs/go/models';
+import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
+import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
+import { catState } from '$lib/states/cat-state.svelte';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -15,7 +15,7 @@ export interface QsoTimerState {
     running: boolean;
 }
 
-export const qsoTimerState: QsoTimerState = $state({elapsed: 0, running: false});
+export const qsoTimerState: QsoTimerState = $state({ elapsed: 0, running: false });
 
 let elapsedIntervalID: number | null = null;
 
@@ -153,6 +153,8 @@ export const qsoState: QsoState = $state({
         this.call = qso.call;
         this.name = qso.name ?? '';
         this.qth = qso.qth ?? '';
+        this.email = qso.email ?? '';
+        this.web = qso.web ?? '';
         rstHelper(this);
         randomQsoHelper(this);
     },
@@ -240,11 +242,8 @@ export const qsoState: QsoState = $state({
             return;
         }
 
-        // Ensure we have an initial end time; if it's empty, initialize it
-        // to "now" so UI has an immediate value.
-        if (!this.time_off) {
-            this.time_off = getTimeUTC();
-        }
+        qsoState.time_on = getTimeUTC();
+        qsoState.time_off = qsoState.time_on;
 
         // Store interval id in a module-scope variable so we can reliably clear it.
         elapsedIntervalID = window.setInterval(() => {
@@ -262,6 +261,8 @@ export const qsoState: QsoState = $state({
             elapsedIntervalID = null;
         }
         qsoTimerState.running = false;
+        qsoState.time_on = getTimeUTC();
+        qsoState.time_off = qsoState.time_on;
     },
     resetTimer(this: QsoState): void {
         // Ensure no interval continues running.
