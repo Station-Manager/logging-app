@@ -1,7 +1,7 @@
 import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
 import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
-import {extractRemoteTime, getDateUTC, getTimeUTC} from '$lib/utils/time-date';
+import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
@@ -52,7 +52,9 @@ export interface QsoState extends CatDrivenFields {
     ccode: string;
     ant_path: string;
     short_path_distance: string;
+    short_path_bearing: string;
     long_path_distance: string;
+    long_path_bearing: string;
     remote_time: string;
     remote_offset: string;
 
@@ -110,7 +112,7 @@ export const qsoState: QsoState = $state({
     short_path_distance: '',
     short_path_bearing: '',
     long_path_distance: '',
-    log_path_bearing: '',
+    long_path_bearing: '',
     remote_time: '',
     remote_offset: '',
 
@@ -165,6 +167,11 @@ export const qsoState: QsoState = $state({
         this.ccode = qso.country_details.ccode ?? '';
         this.remote_time = extractRemoteTime(qso.country_details.local_time);
         this.remote_offset = qso.country_details.time_offset ?? '';
+        this.long_path_distance = qso.country_details.long_path_distance ?? '';
+        this.long_path_bearing = qso.country_details.long_path_bearing ?? '';
+        this.short_path_distance = qso.country_details.short_path_distance ?? '';
+        this.short_path_bearing = qso.country_details.short_path_bearing ?? '';
+
         rstHelper(this);
         randomQsoHelper(this);
     },
@@ -220,6 +227,15 @@ export const qsoState: QsoState = $state({
         base.time_on = this.time_on;
         base.time_off = this.time_off;
         base.rx_pwr = this.rx_pwr;
+
+        // Note: the backend set the ant_path to 'S' as a default.
+        if (this.ant_path === 'S') {
+            base.ant_az = this.short_path_bearing;
+            base.distance = this.short_path_distance;
+        } else {
+            base.ant_az = this.long_path_bearing;
+            base.distance = this.long_path_distance;
+        }
 
         return base;
     },
