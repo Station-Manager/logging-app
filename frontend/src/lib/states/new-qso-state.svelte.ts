@@ -1,8 +1,8 @@
-import { configState } from '$lib/states/config-state.svelte';
-import { types } from '$lib/wailsjs/go/models';
-import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
-import { getDateUTC, getTimeUTC } from '$lib/utils/time-date';
-import { catState } from '$lib/states/cat-state.svelte';
+import {configState} from '$lib/states/config-state.svelte';
+import {types} from '$lib/wailsjs/go/models';
+import {formatCatKHzToDottedMHz, frequencyToBandFromCat} from '$lib/utils/frequency';
+import {getDateUTC, getTimeUTC} from '$lib/utils/time-date';
+import {catState} from '$lib/states/cat-state.svelte';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -15,7 +15,7 @@ export interface QsoTimerState {
     running: boolean;
 }
 
-export const qsoTimerState: QsoTimerState = $state({ elapsed: 0, running: false });
+export const qsoTimerState: QsoTimerState = $state({elapsed: 0, running: false});
 
 let elapsedIntervalID: number | null = null;
 
@@ -181,28 +181,28 @@ export const qsoState: QsoState = $state({
             base.mode = this.mode;
         }
 
-        if (qsoState.cat_enabled) {
-            console.log('select', catState.select);
-            if (catState.select === 'VFO-A') {
-                if (catState.split === 'OFF' || catState.split === '') {
-                    base.freq = qsoState.cat_vfoa_freq;
-                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
-                } else {
-                    base.freq = qsoState.cat_vfoa_freq;
-                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
-                    base.freq_rx = qsoState.cat_vfob_freq;
-                    base.band = frequencyToBandFromCat(catState.vfobFreq);
-                }
+        // We use the catState object here as it has the 'real-time' cat values. The qsoObject has the shadowed values, and
+        // particularly the 'freq' fields are formatted for display to the user. This way of doing things allows us to
+        // bind values directly to/from the UI so that we capture values entered by the user even when CAT is disabled.
+        if (catState.select === 'VFO-A' || catState.select === '') {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfoa_freq;
+                base.band = frequencyToBandFromCat(catState.vfoaFreq);
             } else {
-                if (catState.split === 'OFF' || catState.split === '') {
-                    base.freq = qsoState.cat_vfob_freq;
-                    base.band = frequencyToBandFromCat(catState.vfobFreq);
-                } else {
-                    base.freq = qsoState.cat_vfob_freq;
-                    base.band = frequencyToBandFromCat(catState.vfobFreq);
-                    base.freq_rx = qsoState.cat_vfoa_freq;
-                    base.band = frequencyToBandFromCat(catState.vfoaFreq);
-                }
+                base.freq = qsoState.cat_vfoa_freq;
+                base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                base.freq_rx = qsoState.cat_vfob_freq;
+                base.band = frequencyToBandFromCat(catState.vfobFreq);
+            }
+        } else {
+            if (catState.split === 'OFF' || catState.split === '') {
+                base.freq = qsoState.cat_vfob_freq;
+                base.band = frequencyToBandFromCat(catState.vfobFreq);
+            } else {
+                base.freq = qsoState.cat_vfob_freq;
+                base.band = frequencyToBandFromCat(catState.vfobFreq);
+                base.freq_rx = qsoState.cat_vfoa_freq;
+                base.band = frequencyToBandFromCat(catState.vfoaFreq);
             }
         }
 
@@ -210,8 +210,6 @@ export const qsoState: QsoState = $state({
         base.time_on = this.time_on;
         base.time_off = this.time_off;
 
-        console.log('Freq:', base.freq);
-        console.log('Freq Rx:', base.freq_rx);
         return base;
     },
     updateFromCAT(this: QsoState, data: CatForQsoPayload): void {
@@ -225,8 +223,10 @@ export const qsoState: QsoState = $state({
                 switch (catKey) {
                     case 'cat_vfoa_freq':
                     case 'cat_vfob_freq':
-                        //TODO: Should we do this conversion here or at the UI?
-                        // The issue is that the cat shadowed field is now different from the actual cat field!
+                        // We do this formatting here because this value is displayed to the user. If we don't format it
+                        // here, we will have to do it at the UI level, which means that the value cannot be bound
+                        // as it comes from a function rather than the catState object. Therefore, any value entered by
+                        // the user will not be reflected in the catState object.
                         value = formatCatKHzToDottedMHz(value);
                         break;
                 }
