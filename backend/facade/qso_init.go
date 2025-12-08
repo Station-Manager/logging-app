@@ -8,7 +8,7 @@ import (
 )
 
 // initializeQso initializes a QSO object by populating its sections such as logging station, contacted station, and country details.
-// It performs operations to calculate necessary details like bearing and distance, and merges retrieved data into the final QSO object.
+// It performs operations to calculate the necessary details like bearing and distance, and merges retrieved data into the final QSO object.
 // If an error occurs during critical initialization steps, it returns an error.
 func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	const op errors.Op = "facade.Service.initializeQso"
@@ -115,12 +115,24 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 
 	parsedCallsign := s.parseCallsign(callsign)
 
-	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
-	if err != nil {
-		return types.Country{}, errors.New(op).Err(err)
+	dbCountry, err := s.DatabaseService.FetchCountryByCallsign(parsedCallsign)
+	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
+		// This is a major database problem, but we can continue without the country details.
+		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to fetch country details for callsign %s", parsedCallsign)
 	}
 
-	return country, nil
+	s.LoggerService.DebugWith().Str("callsign", parsedCallsign).Msg("Country details fetched from database")
+
+	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
+	if err != nil {
+		return dbCountry, errors.New(op).Err(err)
+	}
+
+	if dbCountry != country {
+		dbCountry = country
+	}
+
+	return dbCountry, nil
 }
 
 func (s *Service) initQsoDetailsSection() types.QsoDetails {
