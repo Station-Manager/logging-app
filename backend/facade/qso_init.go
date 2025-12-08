@@ -110,11 +110,14 @@ func (s *Service) initContactedStationSection(callsign string) (*types.Contacted
 	return &contactedStation, nil
 }
 
+// initCountrySection initializes and retrieves country information based on the provided callsign.
+// It fetches data from multiple sources, logs relevant information, and handles possible lookup errors.
 func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 	const op errors.Op = "facade.Service.initCountrySection"
 
 	parsedCallsign := s.parseCallsign(callsign)
 
+	// Check the local database first.
 	dbCountry, err := s.DatabaseService.FetchCountryByCallsign(parsedCallsign)
 	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		// This is a major database problem, but we can continue without the country details.

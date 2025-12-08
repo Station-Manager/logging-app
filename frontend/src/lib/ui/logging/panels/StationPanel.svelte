@@ -9,12 +9,11 @@
     let txPower = $derived.by(() => {
         let pwr = parseInt(catState.txPower);
         if (isNaN(pwr)) {
-            return '?';
+            return configState.default_power.toString();
         }
         if (multiplierOn) {
             pwr = pwr * configState.power_multiplier;
         }
-//        qsoState.tx_pwr = pwr.toString();
         return pwr.toString();
     });
 
