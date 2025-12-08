@@ -1,6 +1,6 @@
 import { configState } from '$lib/states/config-state.svelte';
 import { types } from '$lib/wailsjs/go/models';
-import { formatCatKHzToDottedMHz, frequencyToBandFromCat } from '$lib/utils/frequency';
+import { formatCatKHzToDottedMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
 import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
 
@@ -193,12 +193,7 @@ export const qsoState: QsoState = $state({
         base.rst_sent = this.rst_sent;
         base.rst_rcvd = this.rst_rcvd;
 
-        //TODO: can this be simplified to this.cat_main_mode whether cat is enabled or not?
-        if (qsoState.cat_enabled) {
-            base.mode = catState.mainMode;
-        } else {
-            base.mode = this.cat_main_mode;
-        }
+        base.mode = this.cat_main_mode;
 
         // We use the catState object here as it has the 'real-time' cat values. The qsoObject has the shadowed values, and
         // particularly the 'freq' fields are formatted for display to the user. This way of doing things allows us to
@@ -206,22 +201,22 @@ export const qsoState: QsoState = $state({
         if (catState.select === 'VFO-A' || catState.select === '') {
             if (catState.split === 'OFF' || catState.split === '') {
                 base.freq = qsoState.cat_vfoa_freq;
-                base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
             } else {
                 base.freq = qsoState.cat_vfoa_freq;
-                base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
                 base.freq_rx = qsoState.cat_vfob_freq;
-                base.band = frequencyToBandFromCat(catState.vfobFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
             }
         } else {
             if (catState.split === 'OFF' || catState.split === '') {
                 base.freq = qsoState.cat_vfob_freq;
-                base.band = frequencyToBandFromCat(catState.vfobFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
             } else {
                 base.freq = qsoState.cat_vfob_freq;
-                base.band = frequencyToBandFromCat(catState.vfobFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
                 base.freq_rx = qsoState.cat_vfoa_freq;
-                base.band = frequencyToBandFromCat(catState.vfoaFreq);
+                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
             }
         }
 
