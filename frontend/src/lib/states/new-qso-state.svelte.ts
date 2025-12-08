@@ -167,6 +167,7 @@ export const qsoState: QsoState = $state({
         this.ccode = qso.country_details.ccode ?? '';
         this.remote_time = extractRemoteTime(qso.country_details.local_time);
         this.remote_offset = qso.country_details.time_offset ?? '';
+        this.ant_path = qso.ant_path ?? 'S';
         this.long_path_distance = qso.country_details.long_path_distance ?? '';
         this.long_path_bearing = qso.country_details.long_path_bearing ?? '';
         this.short_path_distance = qso.country_details.short_path_distance ?? '';
@@ -192,10 +193,11 @@ export const qsoState: QsoState = $state({
         base.rst_sent = this.rst_sent;
         base.rst_rcvd = this.rst_rcvd;
 
+        //TODO: can this be simplified to this.cat_main_mode whether cat is enabled or not?
         if (qsoState.cat_enabled) {
             base.mode = catState.mainMode;
         } else {
-            base.mode = this.mode;
+            base.mode = this.cat_main_mode;
         }
 
         // We use the catState object here as it has the 'real-time' cat values. The qsoObject has the shadowed values, and
