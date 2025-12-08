@@ -223,6 +223,7 @@ export const qsoState: QsoState = $state({
         base.qso_date = this.qso_date;
         base.time_on = this.time_on;
         base.time_off = this.time_off;
+        base.tx_pwr = this.tx_pwr;
         base.rx_pwr = this.rx_pwr;
 
         // Note: the backend set the ant_path to 'S' as a default.

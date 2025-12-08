@@ -10,6 +10,20 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {contestState} from "$lib/states/contest-state.svelte";
+    import {catState} from "$lib/states/cat-state.svelte";
+
+    // We must calculate the power value here, because it depends on the panel which displays the value
+    // is not guaranteed to be loaded into the DOM.
+    const calculateTxPwr = (): number => {
+        let pwr = parseInt(catState.txPower);
+        if (isNaN(pwr)) {
+            pwr = configState.default_power;
+        }
+        if (configState.use_power_multiplier) {
+            pwr = pwr * configState.power_multiplier;
+        }
+        return pwr;
+    }
 
     const resetAction = (): void => {
         qsoState.stopTimer();
@@ -32,6 +46,7 @@
             return;
         }
         try {
+            qsoState.tx_pwr = calculateTxPwr().toString();
             const qso: types.Qso = qsoState.toQso();
             qso.logbook_id = configState.logbook.id
             await LogQso(qso);
