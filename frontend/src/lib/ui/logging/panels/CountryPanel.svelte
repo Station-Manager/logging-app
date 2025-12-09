@@ -44,13 +44,13 @@
                 <div class="text-center text-gray-500">No distance data</div>
             {:else}
                 {#if qsoState.ant_path === SHORT_PATH}
-                    <span class="text-red-600">{qsoState.short_path_distance} km</span>
+                    <span class="text-red-600 font-semibold">{qsoState.short_path_distance} km</span>
                 {:else}
                     <span>{qsoState.short_path_distance} km</span>
                 {/if}
                 /
                 {#if qsoState.ant_path === LONG_PATH}
-                    <span class="text-red-600">{qsoState.long_path_distance} km</span>
+                    <span class="text-red-600 font-semibold">{qsoState.long_path_distance} km</span>
                 {:else}
                     <span>{qsoState.long_path_distance} km</span>
                 {/if}
@@ -61,13 +61,13 @@
                     <span class="text-xs text-gray-500">No bearing data</span>
                 {:else}
                     {#if qsoState.ant_path === SHORT_PATH}
-                        <span class="text-red-600">{qsoState.short_path_bearing}&deg;</span>
+                        <span class="text-red-600 font-semibold">{qsoState.short_path_bearing}&deg;</span>
                     {:else}
                         <span>{qsoState.short_path_bearing}&deg;</span>
                     {/if}
                     /
                     {#if qsoState.ant_path === LONG_PATH}
-                        <span class="text-red-600">{qsoState.long_path_bearing}&deg;</span>
+                        <span class="text-red-600 font-semibold">{qsoState.long_path_bearing}&deg;</span>
                     {:else}
                         <span>{qsoState.long_path_bearing}&deg;</span>
                     {/if}
