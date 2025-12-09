@@ -124,7 +124,9 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to fetch country details for callsign %s", parsedCallsign)
 	}
 
-	s.LoggerService.DebugWith().Str("callsign", parsedCallsign).Msg("Country details fetched from database")
+	if err != nil {
+		dbCountry.IsNewEntity = true
+	}
 
 	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
 	if err != nil {
