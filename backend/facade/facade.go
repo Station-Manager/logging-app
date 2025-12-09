@@ -151,8 +151,13 @@ func (s *Service) LogQso(qso types.Qso) error {
 	// match the current QSO's contacted station. The ContactedStation object is loaded when
 	// the QSO is initialized.
 	if err = s.insertOrUpdateContactedStation(qso.ContactedStation); err != nil {
+		// This is a serious error, but not fatal, so log and carry on.
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert or update contacted station.")
-		return errors.Root(err)
+	}
+
+	if err = s.insertOrUpdateCountry(qso.CountryDetails); err != nil {
+		// This is a serious error, but not fatal, so log and carry on.
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert or update country.")
 	}
 
 	return nil

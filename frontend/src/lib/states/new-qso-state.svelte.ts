@@ -148,6 +148,7 @@ export const qsoState: QsoState = $state({
         this.ccode = '';
         this.remote_time = '';
         this.remote_offset = '';
+        this.contact_history = [];
     },
     /**
      * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
@@ -172,6 +173,7 @@ export const qsoState: QsoState = $state({
         this.long_path_bearing = qso.country_details.long_path_bearing ?? '';
         this.short_path_distance = qso.country_details.short_path_distance ?? '';
         this.short_path_bearing = qso.country_details.short_path_bearing ?? '';
+        this.contact_history = qso.contact_history ?? [];
 
         rstHelper(this);
         randomQsoHelper(this);

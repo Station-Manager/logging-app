@@ -113,3 +113,15 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 
 	return nil
 }
+
+func (s *Service) insertOrUpdateCountry(country types.Country) error {
+	const op errors.Op = "facade.Service.insertOrUpdateCountry"
+
+	s.LoggerService.DebugWith().Interface("country", country).Msg("Inserting or updating country.")
+
+	if _, err := s.DatabaseService.UpsertCountry(country); err != nil {
+		return errors.New(op).Err(err)
+	}
+
+	return nil
+}
