@@ -1,7 +1,6 @@
 package facade
 
 import (
-	"database/sql"
 	stderr "errors"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
@@ -88,14 +87,14 @@ func (s *Service) initContactedStationSection(callsign string) (*types.Contacted
 	parsedCallsign := s.parseCallsign(callsign)
 
 	contactedStation, err := s.DatabaseService.FetchContactedStationByCallsign(parsedCallsign)
-	if err != nil && !stderr.Is(err, sql.ErrNoRows) {
+	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		// There is something seriously wrong with the database, so we can't continue.
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to fetch contacted station with callsign %s", parsedCallsign)
 		return nil, errors.New(op).Err(err)
 	}
 
 	// New contact, so we must look up the details from somewhere else: online services.
-	if stderr.Is(err, sql.ErrNoRows) {
+	if stderr.Is(err, errors.ErrNotFound) {
 		contactedStation, err = s.lookupCallsignOnline(parsedCallsign)
 		if err != nil {
 			// This is not a show-stopper, so we can continue without the contacted station details.
@@ -152,7 +151,7 @@ func (s *Service) getContactHistory(station types.ContactedStation) ([]types.Con
 	const op errors.Op = "facade.Service.fetchWorkedHistory"
 
 	callsign := s.parseCallsign(station.Call)
-	history, err := s.DatabaseService.ContactHistory(callsign)
+	history, err := s.DatabaseService.FetchQsoSliceByCallsign(callsign)
 	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		return nil, errors.New(op).Err(err)
 	}

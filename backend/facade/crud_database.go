@@ -1,11 +1,9 @@
 package facade
 
 import (
-	"database/sql"
 	stderr "errors"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
-	"strings"
 )
 
 // openAndLoadFromDatabase initializes the database connection, applies migrations, loads the default
@@ -35,7 +33,7 @@ func (s *Service) openAndLoadFromDatabase() error {
 	s.CurrentLogbook = logbook
 
 	// Generate a new session id
-	s.sessionID, err = s.DatabaseService.GenerateNewSessionID()
+	s.sessionID, err = s.DatabaseService.InsertSession()
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to generate new session ID.")
@@ -48,36 +46,37 @@ func (s *Service) openAndLoadFromDatabase() error {
 // contactedStationExistsByCallsign checks if a contacted station exists in the database using the given callsign.
 // The callsign is trimmed, uppercased, and validated before querying.
 // Returns a boolean indicating existence and an error if any operation fails.
-func (s *Service) contactedStationExistsByCallsign(callsign string) (bool, error) {
-	const op errors.Op = "facade.Service.contactedStationExistsByCallsign"
-	if !s.initialized.Load() {
-		err := errors.New(op).Msg(errMsgServiceNotInit)
-		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
-		return false, errors.Root(err)
-	}
-
-	if !s.started.Load() {
-		err := errors.New(op).Msg(errMsgServiceNotStarted)
-		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
-		return false, errors.Root(err)
-	}
-
-	callsign = strings.ToUpper(strings.TrimSpace(callsign))
-
-	if len(callsign) < 3 {
-		return false, errors.New(op).Msg(errMsgInvalidCallsign)
-	}
-
-	parsedCallsign := s.parseCallsign(callsign)
-
-	exists, err := s.DatabaseService.ContactedStationExistsByCallsign(parsedCallsign)
-	if err != nil {
-		return false, errors.New(op).Err(err)
-	}
-
-	return exists, nil
-}
-
+//
+//	func (s *Service) contactedStationExistsByCallsign(callsign string) (bool, error) {
+//		const op errors.Op = "facade.Service.contactedStationExistsByCallsign"
+//		if !s.initialized.Load() {
+//			err := errors.New(op).Msg(errMsgServiceNotInit)
+//			s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+//			return false, errors.Root(err)
+//		}
+//
+//		if !s.started.Load() {
+//			err := errors.New(op).Msg(errMsgServiceNotStarted)
+//			s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+//			return false, errors.Root(err)
+//		}
+//
+//		callsign = strings.ToUpper(strings.TrimSpace(callsign))
+//
+//		if len(callsign) < 3 {
+//			return false, errors.New(op).Msg(errMsgInvalidCallsign)
+//		}
+//
+//		parsedCallsign := s.parseCallsign(callsign)
+//
+//		exists, err := s.DatabaseService.ContactedStationExistsByCallsign(parsedCallsign)
+//		if err != nil {
+//			return false, errors.New(op).Err(err)
+//		}
+//
+//		return exists, nil
+//	}
+//
 // insertOrUpdateContactedStation checks if a contacted station exists in the database and inserts or updates it accordingly.
 // It fetches the station by callsign, inserts if not found, or updates it if differences are detected.
 // Returns an error if database operations fail.
@@ -86,7 +85,7 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 
 	// Does a Contacted Station record exist for this callsign?
 	model, err := s.DatabaseService.FetchContactedStationByCallsign(station.Call)
-	if err != nil && !stderr.Is(err, sql.ErrNoRows) {
+	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		return errors.New(op).Err(err)
 	}
 
@@ -117,10 +116,25 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 func (s *Service) insertOrUpdateCountry(country types.Country) error {
 	const op errors.Op = "facade.Service.insertOrUpdateCountry"
 
-	s.LoggerService.DebugWith().Interface("country", country).Msg("Inserting or updating country.")
-
-	if _, err := s.DatabaseService.UpsertCountry(country); err != nil {
+	model, err := s.DatabaseService.FetchCountryByName(country.Name)
+	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		return errors.New(op).Err(err)
+	}
+
+	if stderr.Is(err, errors.ErrNotFound) {
+		model.ID, err = s.DatabaseService.InsertCountry(country)
+		if err != nil {
+			return errors.New(op).Err(err)
+		}
+		return nil
+	}
+
+	if model != country {
+		country.ID = model.ID
+		err = s.DatabaseService.UpdateCountry(country)
+		if err != nil {
+			return errors.New(op).Err(err)
+		}
 	}
 
 	return nil

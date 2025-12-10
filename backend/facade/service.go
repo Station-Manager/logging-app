@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
-	"github.com/Station-Manager/database"
+	"github.com/Station-Manager/database/sqlite"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
@@ -25,12 +25,12 @@ type runState struct {
 }
 
 type Service struct {
-	ConfigService       *config.Service   `di.inject:"configservice"`
-	LoggerService       *logging.Service  `di.inject:"loggingservice"`
-	DatabaseService     *database.Service `di.inject:"databaseservice"`
-	CatService          *cat.Service      `di.inject:"catservice"`
-	HamnutLookupService *hamnut.Service   `di.inject:"hamnutlookupservice"`
-	QrzLookupService    *qrz.Service      `di.inject:"qrzlookupservice"`
+	ConfigService       *config.Service  `di.inject:"configservice"`
+	LoggerService       *logging.Service `di.inject:"loggingservice"`
+	DatabaseService     *sqlite.Service  `di.inject:"sqliteservice"`
+	CatService          *cat.Service     `di.inject:"catservice"`
+	HamnutLookupService *hamnut.Service  `di.inject:"hamnutlookupservice"`
+	QrzLookupService    *qrz.Service     `di.inject:"qrzlookupservice"`
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
@@ -200,7 +200,7 @@ func (s *Service) Stop() error {
 	}
 
 	// Soft-delete the session ID
-	if err := s.DatabaseService.SoftDeleteSessionID(s.sessionID); err != nil {
+	if err := s.DatabaseService.SoftDeleteSessionByID(s.sessionID); err != nil {
 		// Not a show-stopper, just log the error
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to soft-delete session ID")
 	}

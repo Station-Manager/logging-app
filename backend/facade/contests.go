@@ -39,7 +39,7 @@ func (s *Service) TotalQsosByLogbookId(logbookId int64) (int64, error) {
 		return 0, errors.Root(err)
 	}
 
-	count, err := s.DatabaseService.QsoCountByLogbookId(logbookId)
+	count, err := s.DatabaseService.FetchQsoCountByLogbookId(logbookId)
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to get QSO count by logbook ID")

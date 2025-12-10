@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
-	"github.com/Station-Manager/database"
+	"github.com/Station-Manager/database/sqlite"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
@@ -31,7 +31,7 @@ func initializeContainer(workingDir string) error {
 	if err := container.Register(logging.ServiceName, reflect.TypeOf((*logging.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
-	if err := container.Register(database.ServiceName, reflect.TypeOf((*database.Service)(nil))); err != nil {
+	if err := container.Register(sqlite.ServiceName, reflect.TypeOf((*sqlite.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(facade.ServiceName, reflect.TypeOf((*facade.Service)(nil))); err != nil {
@@ -41,10 +41,10 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(hamnut.ServiceName, reflect.TypeOf((*hamnut.Service)(nil))); err != nil {
-		return errors.New(op).Err(err).Msg("hamnut")
+		return errors.New(op).Err(err)
 	}
 	if err := container.Register(qrz.ServiceName, reflect.TypeOf((*qrz.Service)(nil))); err != nil {
-		return errors.New(op).Err(err).Msg("qrz")
+		return errors.New(op).Err(err)
 	}
 
 	if err := container.Build(); err != nil {

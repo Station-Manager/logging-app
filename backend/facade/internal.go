@@ -94,6 +94,8 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 	return nil
 }
 
+// normalizeQsoFields ensures that the required fields of the types.Qso object are in a format acceptable to the
+// backed (database).
 func (s *Service) normalizeQsoFields(qso *types.Qso) {
 	if strings.Count(qso.Freq, ".") > 1 {
 		if idx := strings.LastIndex(qso.Freq, "."); idx > 0 {
@@ -106,5 +108,4 @@ func (s *Service) normalizeQsoFields(qso *types.Qso) {
 		}
 	}
 
-	//TODO: Perhasp some validation here?
 }

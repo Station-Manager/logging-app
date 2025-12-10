@@ -177,7 +177,7 @@ func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
 		return nil, errors.Root(err)
 	}
 
-	list, err := s.DatabaseService.FetchQsosBySessionId(s.sessionID, true, false)
+	list, err := s.DatabaseService.FetchQsoSliceBySessionID(s.sessionID)
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch QSOs by session ID.")
