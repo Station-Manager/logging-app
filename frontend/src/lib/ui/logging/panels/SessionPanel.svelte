@@ -20,7 +20,7 @@
 </script>
 
 <div class="cursor-default flex flex-col">
-    <div class="flex flex-row border-b border-b-gray-300 font-semibold h-[32px] items-center px-5">
+    <div class="flex flex-row border-b border-b-gray-300 font-semibold h-[32px] items-center px-4">
         <div class={callsignCss}>Callsign</div>
         <div class={nameCss}>Name</div>
         <div class={freqCss}>Freq</div>
@@ -32,9 +32,9 @@
         <div class={countryCss}>Country</div>
         <div class="w-[130px]">Distance</div>
     </div>
-    <div class="relative h-[264px] overflow-y-scroll pt-1 flex flex-col text-sm px-5">
+    <div class="flex flex-col overflow-y-scroll h-[298px] px-4">
         {#each sessionState.list as entry (entry.id)}
-            <div class="flex flex-row odd:bg-white even:bg-gray-300">
+            <div class="flex flex-row even:bg-gray-300 text-sm h-[22px] p-0.5 rounded-xs">
                 <div class={callsignCss}>{entry.call}</div>
                 <div class={nameCss} title="{entry.name}">{entry.name}</div>
                 <div class={freqCss}>{entry.freq}</div>
