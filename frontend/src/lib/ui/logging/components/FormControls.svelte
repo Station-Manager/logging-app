@@ -11,6 +11,7 @@
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {contestState} from "$lib/states/contest-state.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
+    import {shortcut} from "@svelte-put/shortcut";
 
     // We must calculate the power value here, because it depends on the panel which displays the value
     // is not guaranteed to be loaded into the DOM.
@@ -81,3 +82,11 @@
             title="ESC">Clear
     </button>
 </div>
+<svelte:window
+        use:shortcut={{
+        trigger: [
+            {key: 'Escape', callback: resetAction},
+            {key: 's', modifier: 'ctrl', callback: logContact},
+        ],
+    }}
+></svelte:window>
