@@ -1,5 +1,6 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte";
+    import {formatDate, formatTime} from "$lib/utils/time-date";
 </script>
 
 <div class="cursor-default flex flex-col">
@@ -17,9 +18,9 @@
     <div class="flex flex-col overflow-y-scroll h-[298px] px-4">
         {#each qsoState.contact_history as entry (entry.id)}
             <div class="flex flex-row even:bg-gray-300 text-sm h-[22px] p-0.5 rounded-xs">
-                <div class="w-[120px] text-left">{entry.qso_date}</div>
+                <div class="w-[120px] text-left">{formatDate(entry.qso_date)}</div>
                 <div class="w-[120px] text-left">{entry.call}</div>
-                <div class="w-[80px] text-left">{entry.time_on}</div>
+                <div class="w-[80px] text-left">{formatTime(entry.time_on)}</div>
                 <div class="w-[80px] text-left">{entry.freq}</div>
                 <div class="w-[68px] text-left">{entry.band}</div>
                 <div class="w-[68px] text-left">{entry.mode}</div>

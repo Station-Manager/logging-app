@@ -54,6 +54,13 @@ export function extractRemoteTime(timestamp?: string): string {
     return `${hour}:${minute}`;
 }
 
+/**
+ * Formats a provided time string in the format HHMM into a readable "HH:MM" format.
+ *
+ * @param {string | undefined} timeStr - A string representing time in "HHMM" format. If undefined, an empty string is returned.
+ * @return {string} The formatted time string in "HH:MM" format. Returns an empty string if the input is undefined.
+ * @throws Will throw an error if the provided string does not have a length of exactly 4 characters.
+ */
 export function formatTime(timeStr: string | undefined): string {
     if (timeStr === undefined) {
         return '';
@@ -77,4 +84,23 @@ export function formatTimeSecondsToHHColonMMColonSS(seconds: number): string {
         .toString()
         .padStart(2, '0');
     return `${h}:${m}:${s}`;
+}
+
+/**
+ * Formats a date string in the format 'YYYYMMDD' into 'YYYY-MM-DD'.
+ *
+ * @param {string | undefined} dateStr - The input date string in 'YYYYMMDD' format. If undefined, an empty string will be returned.
+ * @return {string} The formatted date string in 'YYYY-MM-DD' format. Throws an error if the input string length is invalid.
+ */
+export function formatDate(dateStr: string | undefined): string {
+    if (dateStr === undefined) {
+        return '';
+    }
+    if (dateStr.length !== 8) {
+        throw new Error('Invalid date string length');
+    }
+    const year: string = dateStr.slice(0, 4);
+    const month: string = dateStr.slice(4, 6);
+    const day: string = dateStr.slice(6, 8);
+    return `${year}-${month}-${day}`;
 }
