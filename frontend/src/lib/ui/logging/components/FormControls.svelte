@@ -13,6 +13,8 @@
     import {catState} from "$lib/states/cat-state.svelte";
     import {shortcut} from "@svelte-put/shortcut";
 
+    let isLogging: boolean = $state(false);
+
     // We must calculate the power value here, because it depends on the panel which displays the value
     // is not guaranteed to be loaded into the DOM.
     const calculateTxPwr = (): number => {
@@ -29,6 +31,7 @@
     const resetAction = (): void => {
         qsoState.stopTimer();
         qsoState.reset();
+        isLogging = false;
         const elem = document.getElementById('call') as HTMLInputElement;
         if (elem) elem.focus();
     }
@@ -46,6 +49,8 @@
             }
             return;
         }
+        if (isLogging) return; // Prevent double-clicks
+        isLogging = true;
         try {
             qsoState.tx_pwr = calculateTxPwr().toString();
             const qso: types.Qso = qsoState.toQso();
