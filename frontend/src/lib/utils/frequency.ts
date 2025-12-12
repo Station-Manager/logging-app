@@ -15,7 +15,7 @@ export const BandNames = [
 export type BandName = (typeof BandNames)[number];
 
 // Minimum CAT frequency string length (Yaesu-style: 9 digits kHz, zero-padded)
-export const FREQ_MIN_LENGTH = 9;
+export const FREQ_MIN_CAT_LENGTH = 9;
 
 interface BandRange {
     band: BandName;
@@ -48,7 +48,7 @@ const BAND_RANGES: BandRange[] = [
 export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | null {
     if (!freqKHz) return null;
     const trimmed = freqKHz.trim();
-    if (trimmed.length < FREQ_MIN_LENGTH) return null;
+    if (trimmed.length < FREQ_MIN_CAT_LENGTH) return null;
     if (!/^\d+$/.test(trimmed)) return null;
 
     const value = Number(trimmed);
@@ -57,6 +57,27 @@ export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | n
     // Value is kHz; divide by 1_000 to get MHz.
     // because value is actually kHz * 1000
     return value / 1_000_000;
+}
+
+export function parseDatabaseFreqToDottedKhz(freq: string): string {
+    // Format validated plain kHz string into dotted thousands of groups for UI.
+    if (!freq) return '';
+    const trimmed = freq.trim();
+    if (!/^[0-9]+$/.test(trimmed)) return '';
+    if (trimmed.length < 7 || trimmed.length > 8) return '';
+    const value = Number(trimmed);
+    if (!Number.isFinite(value) || value <= 0) return '';
+
+    const chars = trimmed.split('');
+    const parts: string[] = [];
+    while (chars.length > 3) {
+        parts.unshift(chars.splice(chars.length - 3, 3).join(''));
+    }
+    if (chars.length) {
+        parts.unshift(chars.join(''));
+    }
+
+    return parts.join('.');
 }
 
 /**
