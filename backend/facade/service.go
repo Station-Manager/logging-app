@@ -2,17 +2,19 @@ package facade
 
 import (
 	"context"
+	"sync"
+	"sync/atomic"
+
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
 	"github.com/Station-Manager/database/sqlite"
+	"github.com/Station-Manager/email"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/lookup/qrz"
 	"github.com/Station-Manager/types"
-	"sync"
-	"sync/atomic"
 )
 
 const (
@@ -31,6 +33,7 @@ type Service struct {
 	CatService          *cat.Service     `di.inject:"catservice"`
 	HamnutLookupService *hamnut.Service  `di.inject:"hamnutlookupservice"`
 	QrzLookupService    *qrz.Service     `di.inject:"qrzlookupservice"`
+	EmailService        *email.Service   `di.inject:"emailservice"`
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook

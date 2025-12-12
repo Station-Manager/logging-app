@@ -2,6 +2,7 @@ package facade
 
 import (
 	stderr "errors"
+
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -66,7 +67,7 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 	}
 
 	// Do this before the comparison to ensure the ID is set, and the comparison doesn't fail because of it.
-	station.ID = model.ID
+	station.CSID = model.CSID
 
 	if model != station {
 		s.LoggerService.DebugWith().Str("callsign", station.Call).Msg("Contacted station exists in database, but needs updating.")

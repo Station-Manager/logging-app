@@ -13,7 +13,7 @@ This section lists the exit codes of the application.
 # Development Environment
 This section describes the development environment for the application.
 
-- Go version: 1.25.3
-- Wails version: 2.11.0
-- npm version: latest
+The main item here is the `.env` file. This file contains the environment `SM_WORKING_DIR` which is the absolute path
+to the directory in which the application is located. This directory all contains the subdirectory `db` where the sqlite
+database file is located.
 

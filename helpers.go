@@ -1,17 +1,19 @@
 package main
 
 import (
+	"reflect"
+	"strings"
+
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
 	"github.com/Station-Manager/database/sqlite"
+	"github.com/Station-Manager/email"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/logging-app/backend/facade"
 	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/lookup/qrz"
-	"reflect"
-	"strings"
 )
 
 // initializeContainer initializes the dependency injection container with required services and configurations.
@@ -44,6 +46,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(qrz.ServiceName, reflect.TypeOf((*qrz.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(email.ServiceName, reflect.TypeOf((*email.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 

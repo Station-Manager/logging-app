@@ -9,6 +9,11 @@
     import {sessionState} from "$lib/states/session-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
     import {configState} from "$lib/states/config-state.svelte";
+    import {handleAsyncError} from "$lib/utils/error-handler";
+    import {showToast} from "$lib/utils/toast";
+    import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
+
+    const emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const baseCss = "flex gap-x-2";
     const selectedBtn = "cursor-default text-indigo-600 font-semibold";
@@ -19,14 +24,45 @@
 
     let selected = $derived(appState.activePanel);
     let disableFwdByEmail = $derived(sessionState.list.length === 0);
+    let sending = $state(false);
 
-    const clickHandler = (value: string): void => {
+    const tabSelectClickHandler = (value: string): void => {
         appState.activePanel = value;
     }
+    const sendEmailClickHandler = async (): void => {
+        if (sending) return;
+
+        const recipientAddress = configState.default_fwd_email;
+        if (!recipientAddress || recipientAddress.length === 0) {
+            const target = document.getElementById("fwd_session_by_email");
+            if (target) target.focus();
+            return;
+        }
+
+        if (emailPattern.test(recipientAddress) == false) {
+            const target = document.getElementById("fwd_session_by_email") as HTMLInputElement;
+            if (target) {
+                target.focus();
+                target.select();
+            }
+            return;
+        }
+
+        try {
+            sending = true;
+            showToast.INFOSTICKY("Sending "+sessionState.list.length+" QSOs by email...");
+            await ForwardSessionQsosByEmail(sessionState.list, recipientAddress);
+            showToast.SUCCESS("Email sent successfully.");
+        } catch(e: unknown) {
+            handleAsyncError(e, "Sending session QSOs by email failed.")
+        }
+        sending = false;
+    }
+
 </script>
 
 <div class="flex flex-row items-center h-[40px] border-b border-gray-300 gap-x-10 px-6">
-    <button type="button" onclick={() => clickHandler(WORKED_TAB_TITLE)} value={WORKED_TAB_TITLE}
+    <button type="button" onclick={() => tabSelectClickHandler(WORKED_TAB_TITLE)} value={WORKED_TAB_TITLE}
             class="{btnClass(WORKED_TAB_TITLE)} w-[150px]">
         <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -34,7 +70,7 @@
         </svg>
         <span>{WORKED_TAB_TITLE} ({qsoState.contact_history.length})</span>
     </button>
-    <button type="button" onclick={() => clickHandler(DETAILS_TAB_TITLE)} value={DETAILS_TAB_TITLE}
+    <button type="button" onclick={() => tabSelectClickHandler(DETAILS_TAB_TITLE)} value={DETAILS_TAB_TITLE}
             class="{btnClass(DETAILS_TAB_TITLE)} w-[120px]">
         <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -42,7 +78,7 @@
         </svg>
         <span>{DETAILS_TAB_TITLE}</span>
     </button>
-    <button type="button" onclick={() => clickHandler(STATION_PANEL)} value={STATION_PANEL}
+    <button type="button" onclick={() => tabSelectClickHandler(STATION_PANEL)} value={STATION_PANEL}
             class="{btnClass(STATION_PANEL)} w-[120px]">
         <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -51,7 +87,7 @@
         </svg>
         <span>{STATION_PANEL}</span>
     </button>
-    <button type="button" onclick={() => clickHandler(SESSION_TAB_TITLE)} value={SESSION_TAB_TITLE}
+    <button type="button" onclick={() => tabSelectClickHandler(SESSION_TAB_TITLE)} value={SESSION_TAB_TITLE}
             class="{btnClass(SESSION_TAB_TITLE)} w-[178px]">
         <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round"
@@ -72,6 +108,7 @@
             </div>
             <div class="w-[20px]">
                 <button
+                        onclick={sendEmailClickHandler}
                         disabled={disableFwdByEmail}
                         type="button"
                         aria-label="Send email"

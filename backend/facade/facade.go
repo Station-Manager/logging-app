@@ -215,3 +215,46 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 
 	return nil
 }
+
+func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail string) error {
+	const op errors.Op = "facade.Service.ForwardSessionQsosByEmail"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return errors.Root(err)
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return errors.Root(err)
+	}
+
+	if len(slice) == 0 {
+		err := errors.New(op).Msg("No QSOs to forward")
+		s.LoggerService.ErrorWith().Err(err).Msg("No QSOs to forward")
+		return errors.Root(err)
+	}
+
+	recipientEmail = strings.TrimSpace(recipientEmail)
+	if len(recipientEmail) < 7 {
+		err := errors.New(op).Msg("Invalid recipient email address")
+		s.LoggerService.ErrorWith().Err(err).Msg("Invalid recipient email address")
+		return errors.Root(err)
+	}
+
+	mail, err := s.EmailService.BuildEmailWithADIFAttachment("", "", "", []string{recipientEmail}, slice)
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to build email with ADIF attachment")
+		return errors.Root(err)
+	}
+
+	if err = s.EmailService.Send(mail); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to send email")
+		return errors.Root(err)
+	}
+
+	return nil
+}

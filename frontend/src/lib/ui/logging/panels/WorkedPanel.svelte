@@ -9,7 +9,7 @@
         <div class="w-[114px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Date</div>
         <div class="w-[116px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Call</div>
         <div class="w-[48px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Time</div>
-        <div class="w-[74px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Freq</div>
+        <div class="w-[80px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Freq</div>
         <div class="w-[64px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Band</div>
         <div class="w-[68px] text-left hover:bg-gray-300 px-1 mr-1 rounded-xs">Mode</div>
         <div class="w-[60px] text-left">Sent</div>
@@ -22,7 +22,7 @@
                 <div class="w-[120px] text-left">{formatDate(entry.qso_date)}</div>
                 <div class="w-[120px] text-left">{entry.call}</div>
                 <div class="w-[50px] text-left">{formatTime(entry.time_on)}</div>
-                <div class="w-[80px] text-left">{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
+                <div class="w-[86px] text-left">{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
                 <div class="w-[68px] text-left">{entry.band}</div>
                 <div class="w-[68px] text-left">{entry.mode}</div>
                 <div class="w-[60px] text-left">{entry.rst_sent}</div>
