@@ -1,10 +1,14 @@
 package facade
 
 import (
+	"context"
 	stderr "errors"
+	"time"
 
+	"github.com/Station-Manager/database/sqlite/adapters"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
+	"github.com/aarondl/sqlboiler/v4/boil"
 )
 
 // openAndLoadFromDatabase initializes the database connection, applies migrations, loads the default
@@ -103,6 +107,40 @@ func (s *Service) insertOrUpdateCountry(country types.Country) error {
 		if err != nil {
 			return errors.New(op).Err(err)
 		}
+	}
+
+	return nil
+}
+
+func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
+	const op errors.Op = "facade.Service.markQsoSliceAsForwardedByEmail"
+
+	tx, txCancel, err := s.DatabaseService.BeginTxContext(context.Background())
+	if err != nil {
+		return errors.New(op).Err(err)
+	}
+	defer txCancel()
+
+	for _, qso := range slice {
+		qso.SmFwrdByEmailStatus = "Y"
+		qso.SmFwrdByEmailDate = time.Now().UTC().Format("20060102")
+
+		model, qerr := adapters.QsoTypeToModel(qso)
+		if qerr != nil {
+			qerr = errors.New(op).Err(qerr).Err(qerr)
+			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to convert QSO type to model.")
+			continue
+		}
+
+		if _, qerr = model.Update(context.Background(), tx, boil.Infer()); qerr != nil {
+			qerr = errors.New(op).Err(qerr).Err(err)
+			s.LoggerService.ErrorWith().Err(err).Msg("Failed to update model")
+		}
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return errors.New(op).Err(err)
 	}
 
 	return nil

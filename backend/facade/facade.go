@@ -256,5 +256,11 @@ func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail st
 		return errors.Root(err)
 	}
 
+	if err = s.markQsoSliceAsForwardedByEmail(slice); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to mark QSOs as forwarded by email")
+		return errors.Root(err)
+	}
+
 	return nil
 }
