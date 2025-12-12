@@ -1,12 +1,13 @@
 package facade
 
 import (
+	"net/url"
+	"strings"
+
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"net/url"
-	"strings"
 )
 
 // FetchUiConfig retrieves the UI configuration object. It returns an error if the service is not initialized, or the underlying
@@ -37,6 +38,7 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		PowerMultiplier:    requiredCfg.PowerMultiplier,
 		DefaultFreq:        requiredCfg.DefaultFreq,
 		DefaultMode:        requiredCfg.DefaultMode,
+		DefaultFwdEmail:    requiredCfg.DefaultFwdEmail,
 	}, nil
 }
 

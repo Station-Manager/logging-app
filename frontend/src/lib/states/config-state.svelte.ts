@@ -10,6 +10,7 @@ export interface ConfigState {
     use_power_multiplier: boolean;
     default_random_qso: boolean;
     power_multiplier: number;
+    default_fwd_email: string;
     load(this: ConfigState, cfg: types.UiConfig): void;
 }
 export const configState: ConfigState = $state({
@@ -22,6 +23,7 @@ export const configState: ConfigState = $state({
     default_random_qso: true,
     power_multiplier: 1,
     default_power: 5,
+    default_fwd_email: '',
 
     load(this: ConfigState, cfg: types.UiConfig): void {
         this.default_freq = cfg.default_freq;
@@ -33,5 +35,6 @@ export const configState: ConfigState = $state({
         this.default_random_qso = cfg.default_is_random_qso;
         this.power_multiplier = cfg.power_multiplier;
         this.default_power = cfg.default_tx_power;
+        this.default_fwd_email = cfg.default_fwd_email;
     },
 });
