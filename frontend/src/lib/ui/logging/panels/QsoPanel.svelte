@@ -12,6 +12,9 @@
     import FormControls from "$lib/ui/logging/components/FormControls.svelte";
     import Vfos from "$lib/ui/logging/components/Vfos.svelte";
     import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
+    import {
+        isContestMode
+    } from "$lib/stores/logging-mode-store";
 </script>
 
 <div class="flex flex-row h-[281px]">
@@ -22,16 +25,11 @@
                     label="Callsign"
                     value={qsoState.call}
             />
-            <Rst
-                    id="rst_sent"
-                    label="RST Sent"
-                    bind:value={qsoState.rst_sent}
-            />
-            <Rst
-                    id="rst_rcvd"
-                    label="RST Rcvd"
-                    bind:value={qsoState.rst_rcvd}
-            />
+            {#if $isContestMode}
+                {@render contextLogging()}
+            {:else}
+                {@render normalLogging()}
+            {/if}
             <Mode
                     id="mode"
                     label="Mode"
@@ -86,3 +84,63 @@
         <CountryPanel/>
     </div>
 </div>
+
+{#snippet normalLogging()}
+    <Rst
+            id="rst_sent"
+            label="RST Sent"
+            bind:value={qsoState.rst_sent}
+    />
+    <Rst
+            id="rst_rcvd"
+            label="RST Rcvd"
+            bind:value={qsoState.rst_rcvd}
+    />
+{/snippet}
+
+{#snippet contextLogging()}
+    <div class="flex flex-row mt-4 gap-x-1">
+        <div class="flex flex-col">
+            <Rst
+                    id="rst_sent"
+                    label="RST Sent"
+                    labelCss="block text-xs font-medium"
+                    divCss="w-[60px]"
+                    inputCss="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                    bind:value={qsoState.rst_sent}
+            />
+            <Rst
+                    id="rst_rcvd"
+                    label="RST Rcvd"
+                    labelCss="block text-xs font-medium mt-1"
+                    divCss="w-[60px]"
+                    inputCss="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                    bind:value={qsoState.rst_rcvd}
+            />
+        </div>
+        <div class="flex flex-col">
+            <div>
+                <label for="stx_sent" class="block text-xs font-medium">Sent (STX)</label>
+                <div class="w-[70px]">
+                    <input
+                            type="text"
+                            id="stx_sent"
+                            class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"
+                    />
+                </div>
+            </div>
+            <div>
+                <label for="srx_rcvd" class="block text-xs font-medium mt-1">Rcvd (SRX)</label>
+                <div class="w-[70px]">
+                    <input
+                            type="text"
+                            id="srx_rcvd"
+                            class="outline-gray-300 uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+{/snippet}
