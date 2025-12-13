@@ -61,15 +61,23 @@
         try {
             qsoState.tx_pwr = calculateTxPwr().toString();
             const qso: types.Qso = qsoState.toQso();
-            qso.logbook_id = configState.logbook.id
-            await LogQso(qso);
-            showToast.SUCCESS("QSO logged.");
-            sessionState.update(await CurrentSessionQsoSlice());
+            qso.logbook_id = configState.logbook.id;
 
             if ($isContestMode){
                 contestTimers.reset();
                 contestState.totalQsos = await TotalQsosByLogbookId(configState.logbook.id);
+                const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
+                if (stxElem) {
+                    qso.stx = stxElem.value;
+                    // This will auto-update the stx_sent field in the UI
+                    contestState.increment();
+                }
             }
+
+            await LogQso(qso);
+            showToast.SUCCESS("QSO logged.");
+            sessionState.update(await CurrentSessionQsoSlice());
+
 
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');

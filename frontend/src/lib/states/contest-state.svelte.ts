@@ -3,7 +3,7 @@ export interface ContestState {
     totalQsos: number;
     currentStx: string;
     setCurrent(stx: string): void;
-    getNext(): string;
+    increment(): string;
 }
 
 export const contestState: ContestState = $state<ContestState>({
@@ -23,13 +23,12 @@ export const contestState: ContestState = $state<ContestState>({
         this.currentStx = next;
     },
     // Get the next STX value
-    getNext(this: ContestState): string {
-        const stx: string = this.currentStx;
+    increment(this: ContestState): string {
         if (this.isIncremental) {
             this.currentStx = doIncrement(this.currentStx);
         }
-        return stx;
-    }
+        return this.currentStx;
+    },
 });
 
 const doIncrement = (cur: string): string => {
@@ -39,5 +38,5 @@ const doIncrement = (cur: string): string => {
     }
     const nextStr = next.toString();
     const width = Math.max(cur.length, nextStr.length);
-    return nextStr.padStart(width, "0");
-}
+    return nextStr.padStart(width, '0');
+};

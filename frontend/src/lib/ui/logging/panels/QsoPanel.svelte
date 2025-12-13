@@ -13,6 +13,9 @@
     import Vfos from "$lib/ui/logging/components/Vfos.svelte";
     import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
     import {isContestMode} from "$lib/stores/logging-mode-store";
+    import {contestState} from "$lib/states/contest-state.svelte";
+
+    let stx: string = $derived(contestState.currentStx);
 
     const onBlurContestMode = (event: Event): void => {
         const target = event.currentTarget as HTMLInputElement;
@@ -138,7 +141,7 @@
                 <label for="stx_sent" class="block text-xs font-medium">Sent (STX)</label>
                 <div class="w-[70px]">
                     <input
-                            bind:value={qsoState.stx}
+                            bind:value={stx}
                             type="text"
                             id="stx_sent"
                             class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
