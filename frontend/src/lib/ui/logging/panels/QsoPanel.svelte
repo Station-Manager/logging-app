@@ -38,6 +38,12 @@
             }
         }
     }
+
+    const stxChangeHandler = (event: Event): void => {
+        const target = event.currentTarget as HTMLInputElement;
+        if (!target) return;
+        contestState.setCurrent(target.value);
+    }
 </script>
 
 <div class="flex flex-row h-[281px]">
@@ -147,6 +153,7 @@
                             class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                             autocomplete="off"
                             onblur={onBlurContestMode}
+                            onchange={stxChangeHandler}
                     />
                 </div>
             </div>
