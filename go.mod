@@ -14,7 +14,7 @@ require (
 	github.com/Station-Manager/lookup v0.0.8
 	github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467
 	github.com/Station-Manager/types v0.0.59
-	github.com/Station-Manager/utils v0.0.3
+	github.com/Station-Manager/utils v0.0.4
 	github.com/aarondl/sqlboiler/v4 v4.19.5
 	github.com/go-playground/validator/v10 v10.29.0
 	github.com/wailsapp/wails/v2 v2.11.0
