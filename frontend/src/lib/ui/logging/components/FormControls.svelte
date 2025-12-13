@@ -69,7 +69,7 @@
                 const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
                 if (stxElem) {
                     qso.stx = stxElem.value;
-                    // This will auto-update the stx_sent field in the UI
+                    // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
                     contestState.increment();
                 }
             }
