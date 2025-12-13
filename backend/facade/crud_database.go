@@ -3,11 +3,11 @@ package facade
 import (
 	"context"
 	stderr "errors"
-	"time"
 
 	"github.com/Station-Manager/database/sqlite/adapters"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
+	"github.com/Station-Manager/utils"
 	"github.com/aarondl/sqlboiler/v4/boil"
 )
 
@@ -115,6 +115,11 @@ func (s *Service) insertOrUpdateCountry(country types.Country) error {
 func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 	const op errors.Op = "facade.Service.markQsoSliceAsForwardedByEmail"
 
+	if len(slice) == 0 {
+		s.LoggerService.DebugWith().Msg("No QSOs to mark as forwarded by email.")
+		return nil
+	}
+
 	tx, txCancel, err := s.DatabaseService.BeginTxContext(context.Background())
 	if err != nil {
 		return errors.New(op).Err(err)
@@ -123,7 +128,7 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 
 	for _, qso := range slice {
 		qso.SmFwrdByEmailStatus = "Y"
-		qso.SmFwrdByEmailDate = time.Now().UTC().Format("20060102")
+		qso.SmFwrdByEmailDate = utils.DateNowAsYYYYMMDD()
 
 		model, qerr := adapters.QsoTypeToModel(qso)
 		if qerr != nil {
@@ -135,6 +140,8 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		if _, qerr = model.Update(context.Background(), tx, boil.Infer()); qerr != nil {
 			qerr = errors.New(op).Err(qerr).Err(err)
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to update model")
+			_ = tx.Rollback()
+			return qerr
 		}
 	}
 
@@ -142,6 +149,8 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		_ = tx.Rollback()
 		return errors.New(op).Err(err)
 	}
+
+	s.LoggerService.DebugWith().Msg("Marked QSOs as forwarded by email.")
 
 	return nil
 }

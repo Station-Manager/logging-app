@@ -15,6 +15,7 @@ import (
 	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/lookup/qrz"
 	"github.com/Station-Manager/types"
+	"github.com/go-playground/validator/v10"
 )
 
 const (
@@ -49,6 +50,8 @@ type Service struct {
 
 	initOnce sync.Once
 	mu       sync.Mutex
+
+	validate *validator.Validate
 }
 
 // Initialize sets up the Service instance by verifying required dependencies and initializing its state.
@@ -84,6 +87,11 @@ func (s *Service) Initialize() error {
 
 		if s.QrzLookupService == nil {
 			initErr = errors.New(op).Msg(errMsgNilQrzService)
+			return
+		}
+
+		if err := s.initializeValidation(); err != nil {
+			initErr = errors.New(op).Err(err)
 			return
 		}
 

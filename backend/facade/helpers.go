@@ -1,6 +1,8 @@
 package facade
 
 import (
+	"unicode"
+
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -29,4 +31,14 @@ func mergeIntoQso(qso *types.Qso, country types.Country, history []types.Contact
 	qso.CountryDetails = country
 
 	return nil
+}
+
+// isAllNumbers checks if a string contains only numeric digits.
+func isAllNumbers(s string) bool {
+	for _, r := range s {
+		if !unicode.IsDigit(r) {
+			return false
+		}
+	}
+	return len(s) > 0
 }

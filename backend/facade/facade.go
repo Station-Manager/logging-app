@@ -137,6 +137,12 @@ func (s *Service) LogQso(qso types.Qso) error {
 	// Set the current session ID
 	qso.SessionID = s.sessionID
 
+	if err := s.validate.Struct(qso); err != nil {
+		err = errors.New(op).Err(err).Msg("QSO Validation failed")
+		s.LoggerService.ErrorWith().Err(err).Msg("QSO Validation failed")
+		return errors.Root(err)
+	}
+
 	// Insert the QSO into the database
 	_, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {

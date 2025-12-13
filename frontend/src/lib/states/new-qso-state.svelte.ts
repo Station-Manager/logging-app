@@ -3,6 +3,7 @@ import { types } from '$lib/wailsjs/go/models';
 import { formatCatKHzToDottedMHz, frequencyToBandFromDottedMHz } from '$lib/utils/frequency';
 import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
+import { getModeBySubmode } from '$lib/utils/mode';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -195,7 +196,8 @@ export const qsoState: QsoState = $state({
         base.rst_sent = this.rst_sent;
         base.rst_rcvd = this.rst_rcvd;
 
-        base.mode = this.cat_main_mode;
+        base.mode = getModeBySubmode(this.cat_main_mode);
+        base.submode = this.cat_main_mode;
 
         // We use the catState object here as it has the 'real-time' cat values. The qsoObject has the shadowed values, and
         // particularly the 'freq' fields are formatted for display to the user. This way of doing things allows us to
@@ -221,6 +223,10 @@ export const qsoState: QsoState = $state({
                 base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
             }
         }
+
+        // Sanitize the freq and freq_rx
+        base.freq = base.freq.replace(/[^0-9]/g, '');
+        base.freq_rx = base.freq_rx.replace(/[^0-9]/g, '');
 
         base.qso_date = this.qso_date;
         base.time_on = this.time_on;

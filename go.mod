@@ -5,17 +5,18 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.6
 	github.com/Station-Manager/config v0.0.28
-	github.com/Station-Manager/database v0.0.32
-	github.com/Station-Manager/email v0.0.1
-	github.com/Station-Manager/enums v0.0.1
+	github.com/Station-Manager/database v0.0.35
+	github.com/Station-Manager/email v0.0.3
+	github.com/Station-Manager/enums v0.0.2
 	github.com/Station-Manager/errors v0.0.11
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.8
 	github.com/Station-Manager/lookup v0.0.8
 	github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467
-	github.com/Station-Manager/types v0.0.56
+	github.com/Station-Manager/types v0.0.59
 	github.com/Station-Manager/utils v0.0.3
 	github.com/aarondl/sqlboiler/v4 v4.19.5
+	github.com/go-playground/validator/v10 v10.29.0
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 
@@ -31,11 +32,10 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ericlagergren/decimal v0.0.0-20240411145413-00de7ca16731 // indirect
 	github.com/friendsofgo/errors v0.9.2 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.11 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-playground/validator/v10 v10.29.0 // indirect
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/godbus/dbus/v5 v5.2.0 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
