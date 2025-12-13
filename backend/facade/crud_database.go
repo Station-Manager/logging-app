@@ -112,6 +112,8 @@ func (s *Service) insertOrUpdateCountry(country types.Country) error {
 	return nil
 }
 
+// markQsoSliceAsForwardedByEmail marks a slice of QSOs as forwarded by email, updating their status and date in the database.
+// Returns an error if the transaction fails or if a QSO model update is unsuccessful.
 func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 	const op errors.Op = "facade.Service.markQsoSliceAsForwardedByEmail"
 

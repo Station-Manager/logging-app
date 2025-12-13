@@ -168,6 +168,7 @@ func (s *Service) LogQso(qso types.Qso) error {
 	return nil
 }
 
+// CurrentSessionQsoSlice retrieves the list of QSOs associated with the current session ID from the database.
 func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
 	const op errors.Op = "facade.Service.CurrentSessionQsoSlice"
 	if !s.initialized.Load() {
@@ -192,6 +193,7 @@ func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
 	return list, nil
 }
 
+// OpenInBrowser opens the specified URL in the default web browser using the service's context.
 func (s *Service) OpenInBrowser(urlStr string) error {
 	const op errors.Op = "facade.Service.OpenInBrowser"
 	if !s.initialized.Load() {
@@ -222,6 +224,8 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 	return nil
 }
 
+// ForwardSessionQsosByEmail forwards a slice of QSOs to the specified email address as an ADIF attachment.
+// Returns an error if the service is uninitialized, not started, input is invalid, or operation fails.
 func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail string) error {
 	const op errors.Op = "facade.Service.ForwardSessionQsosByEmail"
 	if !s.initialized.Load() {

@@ -1,10 +1,13 @@
 <script lang="ts">
     import {CALLSIGN_PATTERN, isValidCallsignLength} from "$lib/constants/callsign";
     import {handleAsyncError} from "$lib/utils/error-handler";
-    import {NewQso} from "$lib/wailsjs/go/facade/Service";
+    import {NewQso, IsContestDuplicate} from "$lib/wailsjs/go/facade/Service";
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
     import {WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
+    import {isContestMode} from "$lib/stores/logging-mode-store";
+    import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
+    import {showToast} from "$lib/utils/toast";
 
     interface Props {
         id: string;
@@ -58,6 +61,16 @@
         }
 
         try {
+            if ($isContestMode) {
+                const dup: boolean = await IsContestDuplicate(value.toUpperCase(), frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq));
+                if (dup) {
+                    inputElement.focus();
+                    inputElement.select();
+                    showToast.WARN("Duplicate. Please check.", 2500);
+                    return;
+                }
+            }
+
             const qso = await NewQso(value);
             qsoState.fromQso(qso);
             qsoState.startTimer();

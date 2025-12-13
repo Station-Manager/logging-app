@@ -2,6 +2,7 @@ package facade
 
 import "github.com/Station-Manager/errors"
 
+// IsContestDuplicate checks if a contest entry with the given callsign and band already exists in the current logbook.
 func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
 	const op errors.Op = "facade.Service.IsContestDuplicate"
 	if !s.initialized.Load() {
@@ -16,9 +17,22 @@ func (s *Service) IsContestDuplicate(callsign, band string) (bool, error) {
 		return false, err
 	}
 
-	return false, nil
+	s.LoggerService.DebugWith().Str("callsign", callsign).Str("band", band).Msg("Checking for contest duplicates")
+
+	exists, err := s.DatabaseService.IsContestDuplicateByLogbookID(s.CurrentLogbook.ID, callsign, band)
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to check for contest duplicates")
+		return false, errors.Root(err)
+	}
+
+	s.LoggerService.DebugWith().Bool("exists", exists).Msg("Contest duplicate check complete")
+
+	return exists, nil
 }
 
+// TotalQsosByLogbookId retrieves the total number of QSOs for the specified logbook ID.
+// Returns the count of QSOs and an error if the service is not initialized, started, or the logbook ID is invalid.
 func (s *Service) TotalQsosByLogbookId(logbookId int64) (int64, error) {
 	const op errors.Op = "facade.Service.TotalQsosByLogbookId"
 	if !s.initialized.Load() {
