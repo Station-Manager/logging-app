@@ -15,20 +15,24 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {contestState} from "$lib/states/contest-state.svelte";
 
+    let lastKey: string | null = null;
     let stx: string = $derived(contestState.currentStx);
 
     const onBlurContestMode = (event: Event): void => {
         const target = event.currentTarget as HTMLInputElement;
         if (!target) return;
+        const tabbed = lastKey === 'Tab';
+        lastKey = null;
+        if (!tabbed) return;
 
         switch (target.id) {
             case 'srx_rcvd': {
                 if (target.value.length < 1) {
                     target.classList.add('outline-red-500', 'outline-2');
                 }
-                const logBtn = document.getElementById('log-contact-btn');
-                if (!logBtn) return;
-                logBtn.focus();
+                // const logBtn = document.getElementById('log-contact-btn');
+                // if (!logBtn) return;
+                // logBtn.focus();
                 break;
             }
             case 'stx_sent': {
@@ -140,6 +144,7 @@
                             class="outline-gray-300 uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                             autocomplete="off"
                             onblur={onBlurContestMode}
+                            onkeydown={(e) => lastKey = e.key}
                     />
                 </div>
             </div>

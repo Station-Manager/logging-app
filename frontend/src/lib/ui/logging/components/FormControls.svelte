@@ -56,6 +56,7 @@
             }
             return;
         }
+
         if (isLogging) return; // Prevent double-clicks
         isLogging = true;
         try {
@@ -66,6 +67,17 @@
             if ($isContestMode){
                 contestTimers.reset();
                 contestState.totalQsos = await TotalQsosByLogbookId(configState.logbook.id);
+                const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
+                if (srxElem) {
+                    if (srxElem.value.length === 0) {
+                        showToast.ERROR("Invalid SRX value.");
+                        srxElem.classList.remove('outline-gray-300', 'outline-1');
+                        srxElem.classList.add('outline-red-500', 'outline-2');
+                        isLogging = false;
+                        return;
+                    }
+                }
+                // Increment only when we know we are able to log the QSO
                 const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
                 if (stxElem) {
                     qso.stx = stxElem.value;
@@ -77,8 +89,6 @@
             await LogQso(qso);
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
-
-
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
         }

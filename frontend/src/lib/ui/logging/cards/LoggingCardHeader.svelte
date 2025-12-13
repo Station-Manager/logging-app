@@ -14,6 +14,7 @@
     import {contestState} from "$lib/states/contest-state.svelte";
 
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
+
     const modeChange = (event: Event): void => {
         const select = event.target as HTMLSelectElement;
         loggingModeStore.set(select.value as LoggingModeKey);
@@ -21,6 +22,11 @@
             contestTimers.start();
         } else {
             contestTimers.stop();
+        }
+        const elem = document.getElementById('call') as HTMLInputElement;
+        if (elem) {
+            elem.focus();
+            elem.select();
         }
     }
 
