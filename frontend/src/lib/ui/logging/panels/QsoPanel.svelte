@@ -12,9 +12,29 @@
     import FormControls from "$lib/ui/logging/components/FormControls.svelte";
     import Vfos from "$lib/ui/logging/components/Vfos.svelte";
     import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
-    import {
-        isContestMode
-    } from "$lib/stores/logging-mode-store";
+    import {isContestMode} from "$lib/stores/logging-mode-store";
+
+    const onBlurContestMode = (event: Event): void => {
+        const target = event.currentTarget as HTMLInputElement;
+        if (!target) return;
+
+        switch (target.id) {
+            case 'srx_rcvd': {
+                if (target.value.length < 1) {
+                    target.classList.add('outline-red-500', 'outline-2');
+                }
+                const logBtn = document.getElementById('log-contact-btn');
+                if (!logBtn) return;
+                logBtn.focus();
+                break;
+            }
+            case 'stx_sent': {
+                const nextElem = document.getElementById('srx_rcvd');
+                if (nextElem) nextElem.focus();
+                break;
+            }
+        }
+    }
 </script>
 
 <div class="flex flex-row h-[281px]">
@@ -99,7 +119,35 @@
 {/snippet}
 
 {#snippet contextLogging()}
-    <div class="flex flex-row mt-4 gap-x-1">
+    <div class="flex flex-row-reverse mt-4 gap-x-1">
+        <div class="flex flex-col-reverse">
+            <div>
+                <label for="srx_rcvd" class="block text-xs font-medium mt-1">Rcvd (SRX)</label>
+                <div class="w-[70px]">
+                    <input
+                            bind:value={qsoState.srx}
+                            type="text"
+                            id="srx_rcvd"
+                            class="outline-gray-300 uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"
+                            onblur={onBlurContestMode}
+                    />
+                </div>
+            </div>
+            <div>
+                <label for="stx_sent" class="block text-xs font-medium">Sent (STX)</label>
+                <div class="w-[70px]">
+                    <input
+                            bind:value={qsoState.stx}
+                            type="text"
+                            id="stx_sent"
+                            class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"
+                            onblur={onBlurContestMode}
+                    />
+                </div>
+            </div>
+        </div>
         <div class="flex flex-col">
             <Rst
                     id="rst_sent"
@@ -117,30 +165,6 @@
                     inputCss="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                     bind:value={qsoState.rst_rcvd}
             />
-        </div>
-        <div class="flex flex-col">
-            <div>
-                <label for="stx_sent" class="block text-xs font-medium">Sent (STX)</label>
-                <div class="w-[70px]">
-                    <input
-                            type="text"
-                            id="stx_sent"
-                            class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                            autocomplete="off"
-                    />
-                </div>
-            </div>
-            <div>
-                <label for="srx_rcvd" class="block text-xs font-medium mt-1">Rcvd (SRX)</label>
-                <div class="w-[70px]">
-                    <input
-                            type="text"
-                            id="srx_rcvd"
-                            class="outline-gray-300 uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                            autocomplete="off"
-                    />
-                </div>
-            </div>
         </div>
     </div>
 {/snippet}

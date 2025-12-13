@@ -32,6 +32,13 @@
         qsoState.stopTimer();
         qsoState.reset();
         isLogging = false;
+        if ($isContestMode) {
+            const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
+            if (srxElem) {
+                srxElem.classList.remove('outline-red-500', 'outline-2');
+                srxElem.classList.add('outline-gray-300', 'outline-1');
+            }
+        }
         const elem = document.getElementById('call') as HTMLInputElement;
         if (elem) elem.focus();
     }
@@ -74,6 +81,7 @@
 
 <div class="flex w-[230px] justify-end gap-x-3">
     <button
+            id="log-contact-btn"
             onclick={logContact}
             type="button"
             disabled={!canLog}
