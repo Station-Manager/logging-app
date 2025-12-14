@@ -28,6 +28,21 @@
         return pwr;
     }
 
+    /**
+     * Resets the current QSO state and associated UI elements.
+     *
+     * This function is responsible for stopping the QSO timer, resetting the state,
+     * and updating the UI to its initial state. Additionally, it handles specific resets
+     * for contest mode by modifying class styles of relevant elements. Once the reset
+     * is complete, it ensures focus is set to the primary input field.
+     *
+     * Effects:
+     * - Stops the QSO timer.
+     * - Resets the QSO state to its initial values.
+     * - Updates the logging state to inactive.
+     * - Adjusts the styles of the contest-related input field if contest mode is active.
+     * - Sets focus to the input field for entering callsigns.
+     */
     const resetAction = (): void => {
         qsoState.stopTimer();
         qsoState.reset();
@@ -47,6 +62,88 @@
         return isValidCallsignForLog(qsoState.call)
     };
 
+    /**
+     * Updates the QSO (contact log) state with the necessary values derived from
+     * configuration, session, and contest states. Handles validation and state adjustments
+     * when the application is in contest mode.
+     *
+     * Functionality:
+     * - Updates the `tx_pwr` property of `qsoState` using a calculated transmission power value.
+     * - Sets the `operator` property of `qsoState` based on the current session's operator value
+     *   if it is non-empty.
+     * - Assigns the owner's callsign to the `owner_callsign` property of `qsoState`.
+     * - In contest mode:
+     *   - Validates the "SRX received" field in the UI and shows an error message if invalid,
+     *     along with updating input styles to indicate the error.
+     *   - Sets the `stx` property of `qsoState` using the "STX sent" field value.
+     *   - Automatically updates the contest's STX counter if logging is successful.
+     *
+     * Error Handling:
+     * - Displays an error toast and updates the UI input field styling when the SRX value in
+     *   contest mode is invalid.
+     *
+     * Side Effects:
+     * - Modifies `qsoState` with updated QSO-related information.
+     * - May stop the logging process (`isLogging = false`) if validation fails in contest mode.
+     * - Updates UI elements and contest state in contest mode based on successful data processing.
+     *
+     * Parameters: None
+     *
+     * Returns: None
+     */
+    const updateQsoState = (): void => {
+        qsoState.tx_pwr = calculateTxPwr().toString();
+        if (sessionState.operator.trim() !== "") {
+            qsoState.operator = sessionState.operator;
+        }
+        qsoState.owner_callsign = configState.owners_callsign;
+
+        if ($isContestMode) {
+            const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
+            if (srxElem) {
+                if (srxElem.value.length < 1) {
+                    showToast.ERROR("Invalid SRX value.");
+                    srxElem.classList.remove('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
+                    srxElem.classList.add('outline-red-500', 'outline-2', 'focus:outline-red-600');
+                    srxElem.focus();
+                    isLogging = false;
+                    return;
+                }
+            }
+            // Increment only when we know we are able to log the QSO
+            const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
+            if (stxElem) {
+                qsoState.stx = stxElem.value;
+                // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
+                contestState.increment();
+            }
+        }
+    }
+
+    /**
+     * Asynchronously logs a QSO (contact) entry into the logbook. Handles various
+     * states and errors during the process to ensure a consistent logging operation.
+     *
+     * Function Behavior:
+     * - If logging is not allowed (`canLog()` returns false), focuses and selects the
+     *   "call" input field and exits.
+     * - Prevents duplicate log attempts by checking and setting a locking mechanism (`isLogging`).
+     * - Updates the QSO state and retrieves the QSO object to be logged.
+     * - Assigns the current logbook id to the QSO and performs the log operation via `LogQso`.
+     * - Displays a success message upon successful logging and updates necessary states
+     *   including session and contest states if applicable.
+     * - Resets contest timers and fetches the updated total QSOs for the logbook in contest mode.
+     * - Catches and handles any errors occurring during the logging process, ensuring appropriate
+     *   debugging information is available.
+     * - Resets the action state after completion.
+     *
+     * This function ensures the proper flow of the logging process, updating related states
+     * and handling errors to provide a smooth user experience.
+     *
+     * @async
+     * @function logContact
+     * @returns {Promise<void>} A promise that resolves when the contact has been successfully logged.
+     */
     const logContact = async (): Promise<void> => {
         if (!canLog()) {
             const elem = document.getElementById('call') as HTMLInputElement;
@@ -60,36 +157,11 @@
         if (isLogging) return; // Prevent double-clicks
         isLogging = true;
 
+        updateQsoState();
+
         try {
-            qsoState.tx_pwr = calculateTxPwr().toString();
             const qso: types.Qso = qsoState.toQso();
             qso.logbook_id = configState.logbook.id;
-
-            if ($isContestMode) {
-                const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
-                if (srxElem) {
-                    if (srxElem.value.length < 1) {
-                        showToast.ERROR("Invalid SRX value.");
-                        srxElem.classList.remove('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
-                        srxElem.classList.add('outline-red-500', 'outline-2', 'focus:outline-red-600');
-                        srxElem.focus();
-                        isLogging = false;
-                        return;
-                    }
-                }
-                // Increment only when we know we are able to log the QSO
-                const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
-                if (stxElem) {
-                    qso.stx = stxElem.value;
-                    // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
-                    contestState.increment();
-                }
-
-                if (sessionState.operatorCall.trim() !== "") {
-                    qsoState.operator = sessionState.operatorCall;
-                    qsoState.owner_callsign = configState.owners_callsign;
-                }
-            }
 
             await LogQso(qso);
             showToast.SUCCESS("QSO logged.");
