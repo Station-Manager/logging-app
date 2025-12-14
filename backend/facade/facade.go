@@ -28,6 +28,13 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		return nil, err
 	}
 
+	loggingStation, err := s.ConfigService.LoggingStationConfigs()
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch logging station configs.")
+		return nil, err
+	}
+
 	return &types.UiConfig{
 		DefaultRigID:       requiredCfg.DefaultRigID,
 		Logbook:            s.CurrentLogbook,
@@ -39,6 +46,7 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		DefaultFreq:        requiredCfg.DefaultFreq,
 		DefaultMode:        requiredCfg.DefaultMode,
 		DefaultFwdEmail:    requiredCfg.DefaultFwdEmail,
+		OwnersCallsign:     strings.ToUpper(loggingStation.OwnerCallsign),
 	}, nil
 }
 

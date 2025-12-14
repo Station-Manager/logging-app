@@ -61,6 +61,8 @@ export interface QsoState extends CatDrivenFields {
 
     srx: string;
     stx: string;
+    operator: string;
+    owner_callsign: string;
 
     contact_history: types.ContactHistory[];
 
@@ -122,8 +124,11 @@ export const qsoState: QsoState = $state({
 
     contact_history: [],
 
+    // Contest
     srx: '',
     stx: '',
+    operator: '',
+    owner_callsign: '',
 
     cat_enabled: false,
     cat_vfoa_freq: '',
@@ -159,6 +164,8 @@ export const qsoState: QsoState = $state({
 
         this.srx = '';
         this.stx = '';
+        this.operator = '';
+        this.owner_callsign = '';
     },
     /**
      * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
@@ -254,6 +261,8 @@ export const qsoState: QsoState = $state({
 
         base.srx = this.srx;
         base.stx = this.stx;
+        base.operator = this.operator;
+        base.owner_callsign = this.owner_callsign;
 
         return base;
     },

@@ -1,7 +1,7 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
-    import {LogQso, CurrentSessionQsoSlice, TotalQsosByLogbookId} from "$lib/wailsjs/go/facade/Service";
+    import {CurrentSessionQsoSlice, LogQso, TotalQsosByLogbookId} from "$lib/wailsjs/go/facade/Service";
     import {types} from "$lib/wailsjs/go/models";
     import {configState} from "$lib/states/config-state.svelte";
     import {showToast} from "$lib/utils/toast";
@@ -35,8 +35,8 @@
         if ($isContestMode) {
             const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
             if (srxElem) {
-                srxElem.classList.remove('outline-red-500', 'outline-2');
-                srxElem.classList.add('outline-gray-300', 'outline-1');
+                srxElem.classList.remove('outline-red-500', 'outline-2', 'focus:outline-red-600');
+                srxElem.classList.add('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
             }
         }
         const elem = document.getElementById('call') as HTMLInputElement;
@@ -59,20 +59,20 @@
 
         if (isLogging) return; // Prevent double-clicks
         isLogging = true;
+
         try {
             qsoState.tx_pwr = calculateTxPwr().toString();
             const qso: types.Qso = qsoState.toQso();
             qso.logbook_id = configState.logbook.id;
 
-            if ($isContestMode){
-                contestTimers.reset();
-                contestState.totalQsos = await TotalQsosByLogbookId(configState.logbook.id);
+            if ($isContestMode) {
                 const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
                 if (srxElem) {
-                    if (srxElem.value.length === 0) {
+                    if (srxElem.value.length < 1) {
                         showToast.ERROR("Invalid SRX value.");
-                        srxElem.classList.remove('outline-gray-300', 'outline-1');
-                        srxElem.classList.add('outline-red-500', 'outline-2');
+                        srxElem.classList.remove('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
+                        srxElem.classList.add('outline-red-500', 'outline-2', 'focus:outline-red-600');
+                        srxElem.focus();
                         isLogging = false;
                         return;
                     }
@@ -84,11 +84,21 @@
                     // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
                     contestState.increment();
                 }
+
+                if (sessionState.operatorCall.trim() !== "") {
+                    qsoState.operator = sessionState.operatorCall;
+                    qsoState.owner_callsign = configState.owners_callsign;
+                }
             }
 
             await LogQso(qso);
             showToast.SUCCESS("QSO logged.");
             sessionState.update(await CurrentSessionQsoSlice());
+
+            if ($isContestMode) {
+                contestTimers.reset();
+                contestState.totalQsos = await TotalQsosByLogbookId(configState.logbook.id);
+            }
         } catch (e: unknown) {
             handleAsyncError(e, 'FormControls.svelte->logContact()');
         }

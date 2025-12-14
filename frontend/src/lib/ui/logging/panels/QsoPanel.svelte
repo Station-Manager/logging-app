@@ -27,9 +27,9 @@
 
         switch (target.id) {
             case 'srx_rcvd': {
-                if (target.value.length < 1) {
-                    target.classList.add('outline-red-500', 'outline-2');
-                }
+                // if (target.value.length < 1) {
+                //     target.classList.add('outline-red-500', 'outline-2');
+                // }
                 // const logBtn = document.getElementById('log-contact-btn');
                 // if (!logBtn) return;
                 // logBtn.focus();

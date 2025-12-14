@@ -10,6 +10,7 @@
     import {qsoState, type CatForQsoPayload} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
+    import {configState} from "$lib/states/config-state.svelte";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}
@@ -33,6 +34,11 @@
 
     onMount(async (): Promise<void> => {
         sessionState.start();
+        // We set the operator's callsign to be the same as the logbook's callsign. However, the operator's callsign
+        // can be set to a different callsign in contest mode. The station_callsign will always reflect the logbook's callsign.
+        // The owner's callsign is the owner of the physical station (if there is one), which may be different from the
+        // operator and the station's callsign.
+        sessionState.operator = configState.logbook.callsign;
         catStateEventsCancel = registerForCatStateEvents();
         try {
             await Ready();

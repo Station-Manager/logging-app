@@ -69,13 +69,13 @@
             </label>
             <div class="mt-2 w-[140px]">
                 <input
-                        bind:value={sessionState.operatorCall}
+                        bind:value={sessionState.operator}
                         type="text"
                         id="operator_callsign"
                         class="uppercase block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 {isValid ? '' : 'outline-red-600 focus:outline-red-600'}"
                         autocomplete="off"
                         spellcheck="false"
-                        title="Guest Operator's Callsign"
+                        title="Guest Operator's Callsign\nChanged in the config file."
                 />
             </div>
         </div>

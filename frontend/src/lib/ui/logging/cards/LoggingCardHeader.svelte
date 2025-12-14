@@ -23,16 +23,7 @@
         } else {
             contestTimers.stop();
         }
-        const elem = document.getElementById('call') as HTMLInputElement;
-        if (elem) {
-            elem.focus();
-            elem.select();
-        }
     }
-
-    let operatorCallsign: string = $derived.by((): string => {
-        return sessionState.operatorCall.toUpperCase()
-    });
 
     const operatorField = (): void => {
         appState.activePanel = STATION_PANEL
@@ -69,8 +60,10 @@
         </div>
         <div class="flex">
             <div class="w-16">Operator:</div>
-            {#if configState.owners_callsign !== configState.logbook.callsign}
-                <button onclick={operatorField} class="text-left font-bold {operatorCallsign === '' ? 'border border-red-500' : ''} min-w-14 cursor-pointer rounded-sm" title="Set operator">{operatorCallsign}</button>
+            {#if sessionState.operator !== ''}
+                <button
+                        onclick={operatorField}
+                        class="text-left font-bold {sessionState.operator === '' ? 'border border-red-500' : ''} min-w-14 cursor-pointer rounded-sm" title="Set operator">{sessionState.operator.toUpperCase()}</button>
             {:else}
                 <div class="text-left font-bold">{configState.logbook.callsign}</div>
             {/if}

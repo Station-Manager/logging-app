@@ -13,6 +13,7 @@ github.com/Station-Manager/cat v0.0.6/go.mod h1:5CsBnRrJ4WAK5YsysMLdXYZ39XV/ZJEf
 github.com/Station-Manager/config v0.0.28 h1:PEwdtUbb9KmOFDQuuwMpxp/M9sQ/wmpeays8sMuHJxM=
 github.com/Station-Manager/config v0.0.28/go.mod h1:d33tXDLhfkMj4oKBnWjbmgzIbdJkO6NdBdIFHB69Om8=
 github.com/Station-Manager/database v0.0.36 h1:z3WaPhmobA4Xb9cseA0BdOu9dyyN6WE82K1dR+S6E4E=
+github.com/Station-Manager/database v0.0.36/go.mod h1:aKAZjW6XZ4C/fMagCpDgQY/9YAZOEtiGtlMJb3FS82s=
 github.com/Station-Manager/email v0.0.3 h1:YQZ4zK1Cprs/kjssSFjzWH3mqLOA1wFIRySDGvLe2E4=
 github.com/Station-Manager/email v0.0.3/go.mod h1:MRc+wPW+PFP/QCEatsZUsoKTC8LQRSzvyBe3Z5aTDl8=
 github.com/Station-Manager/enums v0.0.2 h1:LQNP6UzR1rvPnA5Cz3LNk1KfKYm1mmwulhvCbb1ap74=
@@ -22,6 +23,7 @@ github.com/Station-Manager/errors v0.0.11/go.mod h1:yedsGkIKLyDEUhkm7VrjwE2Qq6Jd
 github.com/Station-Manager/iocdi v0.0.1 h1:b3IcTZ0xSI+CKlUhWbVClBhkS5roFzNjHvwv33wJ04U=
 github.com/Station-Manager/iocdi v0.0.1/go.mod h1:N2zO4mf6PLkiEg4Us1X9Mj+qKasiQFjpcwJiizUIdwM=
 github.com/Station-Manager/logging v0.0.10 h1:64euCPtKeYEt9ECw37KxKBgMzTtVlOHpmelPInt+JM4=
+github.com/Station-Manager/logging v0.0.10/go.mod h1:2bETONz7G1mwqR4ek0q8XMUkK/hSUsm4dZ0368xD+MI=
 github.com/Station-Manager/lookup v0.0.8 h1:3rpo4CFXi2Kg0DNfxBPHe4iWO/SGxl+2iZ+2bdFwPg0=
 github.com/Station-Manager/lookup v0.0.8/go.mod h1:ICamlYt1tUspItSY59KTnGO98BCbx+Zkx3xVWqUkHn0=
 github.com/Station-Manager/maidenhead v0.0.0-20251125033823-574517955467 h1:Ypw+si9Qw4ZbYOO6Wbvoyc4wUGxlLk3sK7WguvEbKgY=

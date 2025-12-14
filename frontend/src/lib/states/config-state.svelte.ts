@@ -5,6 +5,7 @@ export interface ConfigState {
     default_mode: string;
     default_power: number;
     logbook: types.Logbook;
+    // Actually part of the LoggingStation struct, but is needed by the UI
     owners_callsign: string;
     rig_name: string;
     use_power_multiplier: boolean;
@@ -13,6 +14,7 @@ export interface ConfigState {
     default_fwd_email: string;
     load(this: ConfigState, cfg: types.UiConfig): void;
 }
+
 export const configState: ConfigState = $state({
     default_freq: '',
     default_mode: '',

@@ -1,11 +1,12 @@
 <script lang="ts">
     import {sessionState} from "$lib/states/session-state.svelte";
+    import {parseDatabaseFreqToDottedKhz} from "$lib/utils/frequency";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
     const callsignCss = "w-[90px]";
     const bandCss = "w-[50px]";
-    const freqCss = "w-[70px]";
+    const freqCss = "w-[80px]";
     const rstCss = "w-[50px]";
     const modeCss = "w-[52px]";
     const countryCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
@@ -37,7 +38,7 @@
             <div class="flex flex-row even:bg-gray-300 text-sm h-[22px] p-0.5 rounded-xs">
                 <div class={callsignCss}>{entry.call}</div>
                 <div class={nameCss} title="{entry.name}">{entry.name}</div>
-                <div class={freqCss}>{entry.freq}</div>
+                <div class={freqCss}>{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
                 <div class={bandCss}>{entry.band}</div>
                 <div class={rstCss}>{entry.rst_sent}</div>
                 <div class={rstCss}>{entry.rst_sent}</div>
