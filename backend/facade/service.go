@@ -176,6 +176,7 @@ func (s *Service) Start(ctx context.Context) error {
 	s.currentRun = run
 
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
+	s.launchWorkerThread(run, s.qsoForwarder, "qsoForwarder")
 
 	s.started.Store(true)
 

@@ -4,6 +4,8 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"os"
+
 	"github.com/Station-Manager/enums/events"
 	"github.com/Station-Manager/enums/tags"
 	"github.com/Station-Manager/errors"
@@ -14,7 +16,6 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
-	"os"
 )
 
 const (
@@ -55,13 +56,17 @@ func main() {
 
 	startup := func(ctx context.Context) {
 		if err = facade.Start(ctx); err != nil {
-			panic(err)
+			errors.PrintChain(err)
+			_, _ = fmt.Fprintf(os.Stderr, "failed to start facade service: %v\n", errors.Root(err))
+			os.Exit(ExitFacadeService)
 		}
 	}
 
 	shutdown := func(ctx context.Context) {
 		if err = facade.Stop(); err != nil {
-			panic(err)
+			errors.PrintChain(err)
+			_, _ = fmt.Fprintf(os.Stderr, "failed to stop facade service: %v\n", errors.Root(err))
+			os.Exit(ExitFacadeService)
 		}
 	}
 
@@ -136,6 +141,8 @@ func main() {
 	}
 
 	if err = wails.Run(opts); err != nil {
-		panic(err)
+		errors.PrintChain(err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to run wails: %v\n", errors.Root(err))
+		os.Exit(ExitFacadeService)
 	}
 }
