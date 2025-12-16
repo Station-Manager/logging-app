@@ -1,11 +1,13 @@
 package facade
 
 import (
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/maidenhead"
 	"github.com/Station-Manager/types"
-	"strconv"
-	"strings"
 )
 
 // launchWorkerThread starts a new goroutine for the given worker function and manages its lifecycle using a wait group.
@@ -90,6 +92,18 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 		country.ShortPathDistance = strconv.Itoa(int(location.ShortPathDistanceKm))
 		country.LongPathBearing = strconv.FormatFloat(location.LongPathBearing, 'f', -1, 64)
 		country.LongPathDistance = strconv.Itoa(int(location.LongPathDistanceKm))
+	}
+	return nil
+}
+
+func (s *Service) initializeForwarding() error {
+
+	s.forwarder = &forwarding{
+		pollInterval:    s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second,
+		maxWorkers:      5,
+		queue:           make(chan types.Qso, 10),
+		fetchPending:    nil,
+		sendAndMarkDone: nil,
 	}
 	return nil
 }

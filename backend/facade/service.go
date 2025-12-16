@@ -45,6 +45,8 @@ type Service struct {
 
 	currentRun *runState
 
+	forwarder *forwarding
+
 	initialized atomic.Bool
 	started     atomic.Bool // guarded via atomic operations; Start/Stop also hold mu for a broader state
 
@@ -95,6 +97,11 @@ func (s *Service) Initialize() error {
 			return
 		}
 
+		if err := s.initializeForwarding(); err != nil {
+			initErr = errors.New(op).Err(err)
+			return
+		}
+
 		s.initialized.Store(true)
 	})
 
@@ -131,7 +138,7 @@ func (s *Service) Start(ctx context.Context) error {
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
-		return err
+		return errors.Root(err)
 	}
 
 	s.mu.Lock()
@@ -144,7 +151,7 @@ func (s *Service) Start(ctx context.Context) error {
 	if ctx == nil || ctx.Err() != nil {
 		err := errors.New(op).Msg("Context cannot be nil or cancelled")
 		s.LoggerService.ErrorWith().Msg("Context cannot be nil or cancelled")
-		return err
+		return errors.Root(err)
 	}
 	s.ctx = ctx
 
@@ -152,7 +159,7 @@ func (s *Service) Start(ctx context.Context) error {
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch required configs.")
-		return err
+		return errors.Root(err)
 	}
 	s.requiredCfgs = &reqCfg
 
@@ -160,14 +167,14 @@ func (s *Service) Start(ctx context.Context) error {
 	if err = s.openAndLoadFromDatabase(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open and load from database.")
-		return err
+		return errors.Root(err)
 	}
 
 	// Start the CAT service
 	if err = s.CatService.Start(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start CAT service.")
-		return err
+		return errors.Root(err)
 	}
 
 	run := &runState{
@@ -176,7 +183,15 @@ func (s *Service) Start(ctx context.Context) error {
 	s.currentRun = run
 
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
-	s.launchWorkerThread(run, s.qsoForwarder, "qsoForwarder")
+	//	s.launchWorkerThread(run, s.qsoForwarder, "qsoForwarder")
+
+	if s.forwarder == nil {
+		if err = s.forwarder.start(s.ctx); err != nil {
+			err = errors.New(op).Err(err)
+			s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarder.")
+			return errors.Root(err)
+		}
+	}
 
 	s.started.Store(true)
 
