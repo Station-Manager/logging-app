@@ -18,12 +18,12 @@ func (s *Service) qsoForwarder(shutdown <-chan struct{}) {
 			return
 		case <-readTicker.C:
 			s.LoggerService.DebugWith().Msg("Check for QSOs to be forwareded...")
-			slice, err := s.DatabaseService.FetchQsoSliceNotForwarded()
+			slice, err := s.DatabaseService.FetchPendingUploads()
 			if err != nil {
 				s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch QSOs to be forwarded.")
 				continue
 			}
-			if slice != nil && len(slice) > 0 {
+			if len(slice) > 0 {
 				s.LoggerService.DebugWith().Int("count", len(slice)).Msg("We have something to do...")
 			}
 		}

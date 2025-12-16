@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Station-Manager/enums/cmds"
+	"github.com/Station-Manager/enums/upload"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -152,13 +153,19 @@ func (s *Service) LogQso(qso types.Qso) error {
 	}
 
 	// Insert the QSO into the database
-	_, err := s.DatabaseService.InsertQso(qso)
+	qsoId, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO into database.")
 		return errors.Root(err)
 	}
 	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
+
+	if err = s.DatabaseService.InsertQsoUpload(qsoId, upload.OnlineServiceQRZ); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO upload into database.")
+		return errors.Root(err)
+	}
 
 	// Check if the contacted station exists in the database and insert or update it if it does not
 	// match the current QSO's contacted station. The ContactedStation object is loaded when
