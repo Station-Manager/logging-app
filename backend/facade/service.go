@@ -222,6 +222,7 @@ func (s *Service) Stop() error {
 	}
 
 	if s.forwarder != nil {
+		close(s.forwarder.forwardingQueue)
 		s.forwarder.wg.Wait()
 	}
 
