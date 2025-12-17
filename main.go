@@ -54,6 +54,12 @@ func main() {
 		os.Exit(ExitFacadeService)
 	}
 
+	if err = facade.SetContainer(container); err != nil {
+		errors.PrintChain(err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to set container: %v\n", errors.Root(err))
+		os.Exit(ExitFacadeService)
+	}
+
 	startup := func(ctx context.Context) {
 		if err = facade.Start(ctx); err != nil {
 			errors.PrintChain(err)

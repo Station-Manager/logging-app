@@ -117,8 +117,10 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 	const op errors.Op = "facade.Service.forwardQso"
 
 	if s.container == nil {
-		return errors.New(op).Msg("container is nil")
+		return errors.New(op).Msg("container is nil. Call SetContainer before using the facade.")
 	}
+
+	s.LoggerService.DebugWith().Int64("qso_id", qsoUpload.Qso.ID).Msg("Forwarding QSO to online service")
 
 	//	s.LoggerService.InfoWith().Str("service", qsoUpload.Service).Str("qso", qsoUpload.Qso.Call).Msg("Forwarding QSO to:")
 	// Get the appropriate forwarder from the container based on the service name
