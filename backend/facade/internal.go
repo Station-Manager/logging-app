@@ -97,8 +97,6 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 }
 
 func (s *Service) initializeForwarding() error {
-	const op errors.Op = "facade.Service.initializeForwarding"
-
 	s.forwarder = &forwarding{
 		pollInterval:    30 * time.Second, // Will be updated in Start
 		maxWorkers:      5,
