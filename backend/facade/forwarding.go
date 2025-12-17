@@ -2,78 +2,96 @@ package facade
 
 import (
 	"context"
-	"fmt"
+	"sync"
 	"time"
 
 	"github.com/Station-Manager/errors"
+	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/types"
 )
 
 type forwarding struct {
 	pollInterval    time.Duration
 	maxWorkers      int
-	queue           chan types.Qso
-	fetchPending    func(ctx context.Context) ([]types.QsoUpload, error)
-	sendAndMarkDone func(ctx context.Context, qso types.QsoUpload) error
+	forwardingQueue chan types.QsoUpload
+	fetchPending    func() ([]types.QsoUpload, error)
+	sendAndMarkDone func(qsoUpload types.QsoUpload) error
+	logger          *logging.Service
+	wg              sync.WaitGroup
 }
 
-func (f *forwarding) start(ctx context.Context) error {
+func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error {
 	const op errors.Op = "forwarding.start"
 	if ctx == nil {
 		return errors.New(op).Msg("Context is nil")
 	}
 
+	// Start worker goroutines
 	for i := 0; i < f.maxWorkers; i++ {
-		go f.workerLoop(ctx)
+		go f.workerLoop(ctx, shutdown, i)
 	}
+
+	// Start the polling goroutine
+	go f.pollerLoop(ctx, shutdown)
 
 	return nil
 }
 
-func (f *forwarding) workerLoop(ctx context.Context) {
+func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
+	f.logger.DebugWith().Msg("Starting forwarding poller")
+
+	f.wg.Add(1)
+	defer f.wg.Done()
+
 	for {
 		select {
 		case <-ctx.Done():
+			f.logger.DebugWith().Msg("Context done, shutting down forwarding poller")
 			return
-		case qso, ok := <-f.queue:
-			if !ok {
-				return
+		case <-shutdown:
+			f.logger.DebugWith().Msg("Forwarding poller shutting down")
+			return
+		default:
+			qsoUploads, err := f.fetchPending()
+			if err != nil {
+				f.logger.ErrorWith().Err(err).Msg("Failed to fetch pending uploads")
+				continue
 			}
-			fmt.Println("Forwarding QSO:", qso)
+			for _, qsoUpload := range qsoUploads {
+				f.forwardingQueue <- qsoUpload
+			}
 		}
 	}
 }
 
-// qsoForwarder forwards queued QSOs until a shutdown signal is received.
-// When a QSO is logged locally, it is placed into a queue to be forwarded to
-// any configured external logging services. This function processes that queue and runs as
-// a goroutine.
-func (s *Service) startForwarding(shutdown <-chan struct{}) {
-	const op errors.Op = "facade.Service.startForwarding"
+func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, workerID int) {
+	f.logger.DebugWith().Int("workerID", workerID).Msg("Starting forwarding worker")
 
-	if s.ctx == nil {
-		err := errors.New(op).Msg("Service is not initialized.")
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarding.")
-		return
-	}
-
-	readTicker := time.NewTicker(s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second)
-	defer readTicker.Stop()
+	f.wg.Add(1)
+	defer f.wg.Done()
 
 	for {
 		select {
-		case <-shutdown:
+		case <-ctx.Done():
+			f.logger.DebugWith().Msg("Context done, shutting down forwarding poller")
 			return
-		case <-readTicker.C:
-			s.LoggerService.DebugWith().Msg("Check for QSOs to be forwareded...")
-			slice, err := s.DatabaseService.FetchPendingUploads()
-			if err != nil {
-				s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch QSOs to be forwarded.")
-				continue
+		case <-shutdown:
+			f.logger.DebugWith().Msg("Forwarding poller shutting down")
+			return
+		case qsoUpload, ok := <-f.forwardingQueue:
+			if !ok {
+				return
 			}
-			if len(slice) > 0 {
-				s.LoggerService.DebugWith().Int("count", len(slice)).Msg("We have something to do...")
-			}
+
+			f.logger.DebugWith().
+				Int64("upload_id", qsoUpload.ID).
+				Int64("qso_id", qsoUpload.Qso.ID).
+				Str("callsign", qsoUpload.Qso.Call).
+				Str("service", qsoUpload.Service).
+				Int("workerID", workerID).
+				Msg("Processing QSO upload for forwarding")
+
+			// sendAndMarkDone() here
 		}
 	}
 }

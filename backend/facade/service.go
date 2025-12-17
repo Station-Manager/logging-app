@@ -4,6 +4,7 @@ import (
 	"context"
 	"sync"
 	"sync/atomic"
+	"time"
 
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
@@ -183,10 +184,13 @@ func (s *Service) Start(ctx context.Context) error {
 	s.currentRun = run
 
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
-	//	s.launchWorkerThread(run, s.qsoForwarder, "qsoForwarder")
 
-	if s.forwarder == nil {
-		if err = s.forwarder.start(s.ctx); err != nil {
+	// Update forwarder poll interval from config
+	s.forwarder.pollInterval = s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second
+
+	// Start the forwarder
+	if s.forwarder != nil {
+		if err = s.forwarder.start(s.ctx, run.shutdownChannel); err != nil {
 			err = errors.New(op).Err(err)
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarder.")
 			return errors.Root(err)
@@ -215,6 +219,10 @@ func (s *Service) Stop() error {
 		default:
 			close(run.shutdownChannel)
 		}
+	}
+
+	if s.forwarder != nil {
+		s.forwarder.wg.Wait()
 	}
 
 	if run != nil {
