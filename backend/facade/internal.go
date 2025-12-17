@@ -97,7 +97,7 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 }
 
 func (s *Service) initializeForwarding() error {
-	s.forwarder = &forwarding{
+	s.forwarding = &forwarding{
 		pollInterval:    30 * time.Second, // Will be updated in Start
 		maxWorkers:      5,
 		forwardingQueue: make(chan types.QsoUpload, 10),
@@ -120,7 +120,7 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msg("container is nil")
 	}
 
-	s.LoggerService.InfoWith().Str("service", qsoUpload.Service).Str("qso", qsoUpload.Qso.Call).Msg("Forwarding QSO to:")
+	//	s.LoggerService.InfoWith().Str("service", qsoUpload.Service).Str("qso", qsoUpload.Qso.Call).Msg("Forwarding QSO to:")
 	// Get the appropriate forwarder from the container based on the service name
 	//forwarderBeanID := qsoUpload.Service + "forwarder"
 	//forwarderInterface, err := s.container.ResolveSafe(forwarderBeanID)

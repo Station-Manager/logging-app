@@ -20,6 +20,7 @@ type forwarding struct {
 	wg              sync.WaitGroup
 }
 
+// start initializes and starts the worker and polling goroutines for the forwarding process. Returns an error if context is nil.
 func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error {
 	const op errors.Op = "forwarding.start"
 	if ctx == nil {
@@ -41,14 +42,14 @@ func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error 
 	return nil
 }
 
+// pollerLoop starts a loop that periodically fetches pending QSO uploads and attempts to enqueue them for processing.
 func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
+	defer f.wg.Done()
+
 	f.logger.DebugWith().Msg("Starting forwarding poller")
 
 	ticker := time.NewTicker(f.pollInterval)
 	defer ticker.Stop()
-
-	f.wg.Add(1)
-	defer f.wg.Done()
 
 	for {
 		select {
@@ -82,10 +83,11 @@ func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 	}
 }
 
+// workerLoop runs a worker goroutine to process QSO uploads from the forwarding queue until shutdown or context cancellation.
 func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, workerID int) {
-	f.logger.DebugWith().Int("workerID", workerID).Msg("Starting forwarding worker")
-
 	defer f.wg.Done()
+
+	f.logger.DebugWith().Int("workerID", workerID).Msg("Starting forwarding worker")
 
 	for {
 		select {
@@ -102,8 +104,8 @@ func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, w
 
 			f.logger.DebugWith().
 				Int64("upload_id", qsoUpload.ID).
-				Int64("qso_id", qsoUpload.Qso.ID).
-				Str("callsign", qsoUpload.Qso.Call).
+				//				Int64("qso_id", qsoUpload.Qso.ID).
+				//				Str("callsign", qsoUpload.Qso.Call).
 				Str("service", qsoUpload.Service).
 				Int("workerID", workerID).
 				Msg("Processing QSO upload for forwarding")

@@ -46,7 +46,7 @@ type Service struct {
 
 	currentRun *runState
 
-	forwarder *forwarding
+	forwarding *forwarding
 
 	initialized atomic.Bool
 	started     atomic.Bool // guarded via atomic operations; Start/Stop also hold mu for a broader state
@@ -186,11 +186,11 @@ func (s *Service) Start(ctx context.Context) error {
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
 
 	// Update forwarder poll interval from config
-	s.forwarder.pollInterval = s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second
+	s.forwarding.pollInterval = s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second
 
 	// Start the forwarder
-	if s.forwarder != nil {
-		if err = s.forwarder.start(s.ctx, run.shutdownChannel); err != nil {
+	if s.forwarding != nil {
+		if err = s.forwarding.start(s.ctx, run.shutdownChannel); err != nil {
 			err = errors.New(op).Err(err)
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarder.")
 			return errors.Root(err)
@@ -221,9 +221,9 @@ func (s *Service) Stop() error {
 		}
 	}
 
-	if s.forwarder != nil {
-		close(s.forwarder.forwardingQueue)
-		s.forwarder.wg.Wait()
+	if s.forwarding != nil {
+		close(s.forwarding.forwardingQueue)
+		s.forwarding.wg.Wait()
 	}
 
 	if run != nil {
