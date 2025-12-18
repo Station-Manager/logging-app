@@ -66,8 +66,6 @@ func (s *Service) Initialize() error {
 
 	var initErr error
 	s.initOnce.Do(func() {
-		s.forwarders = make(map[string]fwdrs.Forwarder)
-
 		if s.ConfigService == nil {
 			initErr = errors.New(op).Msg(errMsgNilConfigService)
 			return
@@ -196,6 +194,7 @@ func (s *Service) Start(ctx context.Context) error {
 
 	// Create a map of all the configured forwarders
 	cfgs, _ := s.ConfigService.ForwarderConfigs()
+	s.forwarders = make(map[string]fwdrs.Forwarder, len(cfgs))
 	for _, cfg := range cfgs {
 		name := cfg.Name
 		obj, serr := s.container.ResolveSafe(name)
