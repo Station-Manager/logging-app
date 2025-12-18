@@ -124,6 +124,16 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 
 	s.LoggerService.DebugWith().Int64("qso_id", qsoUpload.Qso.ID).Msg("Forwarding QSO to online service")
 
+	provider, ok := s.forwarders[qsoUpload.Service]
+	if !ok {
+		return errors.New(op).Msgf("no forwarder found for service: %s", qsoUpload.Service)
+	}
+
+	err := provider.Forward(qsoUpload.Qso)
+	if err != nil {
+		return errors.New(op).Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
+	}
+
 	//	s.LoggerService.InfoWith().Str("service", qsoUpload.Service).Str("qso", qsoUpload.Qso.Call).Msg("Forwarding QSO to:")
 	// Get the appropriate forwarder from the container based on the service name
 	//forwarderBeanID := qsoUpload.Service + "forwarder"

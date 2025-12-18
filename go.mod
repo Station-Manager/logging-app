@@ -4,17 +4,17 @@ go 1.25
 
 require (
 	github.com/Station-Manager/cat v0.0.8
-	github.com/Station-Manager/config v0.0.30
-	github.com/Station-Manager/database v0.0.38
+	github.com/Station-Manager/config v0.0.31
+	github.com/Station-Manager/database v0.0.39
 	github.com/Station-Manager/email v0.0.3
 	github.com/Station-Manager/enums v0.0.4
 	github.com/Station-Manager/errors v0.0.11
-	github.com/Station-Manager/forwarding v0.0.0-20251213071522-d831e9813962
+	github.com/Station-Manager/forwarding v0.0.1
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.10
 	github.com/Station-Manager/lookup v0.0.9
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.63
+	github.com/Station-Manager/types v0.0.65
 	github.com/Station-Manager/utils v0.0.4
 	github.com/aarondl/sqlboiler/v4 v4.19.5
 	github.com/go-playground/validator/v10 v10.29.0
@@ -22,7 +22,7 @@ require (
 )
 
 require (
-	github.com/Station-Manager/adif v0.0.0-20251212131632-070884a6f26e // indirect
+	github.com/Station-Manager/adif v0.0.1 // indirect
 	github.com/Station-Manager/serial v0.0.5 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect
@@ -41,7 +41,6 @@ require (
 	github.com/godbus/dbus/v5 v5.2.0 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
 	github.com/golang-migrate/migrate/v4 v4.19.1 // indirect
-	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/jchv/go-winloader v0.0.0-20250406163304-c1995be93bd1 // indirect
