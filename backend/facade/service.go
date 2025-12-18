@@ -11,6 +11,7 @@ import (
 	"github.com/Station-Manager/database/sqlite"
 	"github.com/Station-Manager/email"
 	"github.com/Station-Manager/errors"
+	fwdrs "github.com/Station-Manager/forwarding"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/lookup/hamnut"
@@ -36,6 +37,8 @@ type Service struct {
 	HamnutLookupService *hamnut.Service  `di.inject:"hamnutlookupservice"`
 	QrzLookupService    *qrz.Service     `di.inject:"qrzlookupservice"`
 	EmailService        *email.Service   `di.inject:"emailservice"`
+
+	forwarders map[string]fwdrs.Forwarder
 
 	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
@@ -63,6 +66,8 @@ func (s *Service) Initialize() error {
 
 	var initErr error
 	s.initOnce.Do(func() {
+		s.forwarders = make(map[string]fwdrs.Forwarder)
+
 		if s.ConfigService == nil {
 			initErr = errors.New(op).Msg(errMsgNilConfigService)
 			return
@@ -149,6 +154,10 @@ func (s *Service) Start(ctx context.Context) error {
 		return nil
 	}
 
+	if s.container == nil {
+		return errors.New(op).Msg("Container is nil. Please call SetContainer() before calling Start()")
+	}
+
 	if ctx == nil || ctx.Err() != nil {
 		err := errors.New(op).Msg("Context cannot be nil or cancelled")
 		s.LoggerService.ErrorWith().Msg("Context cannot be nil or cancelled")
@@ -184,6 +193,23 @@ func (s *Service) Start(ctx context.Context) error {
 	s.currentRun = run
 
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
+
+	// Create a map of all the configured forwarders
+	cfgs, _ := s.ConfigService.ForwarderConfigs()
+	for _, cfg := range cfgs {
+		name := cfg.Name
+		obj, serr := s.container.ResolveSafe(name)
+		if serr != nil {
+			s.LoggerService.WarnWith().Err(serr).Str("name", name).Msg("Failed to resolve forwarder service")
+			continue
+		}
+		fwd, ok := obj.(fwdrs.Forwarder)
+		if !ok {
+			return errors.New(op).Msg("Failed to cast Forwarder service")
+		}
+
+		s.forwarders[name] = fwd
+	}
 
 	// Update forwarder poll interval from config
 	s.forwarding.pollInterval = s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second

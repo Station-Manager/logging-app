@@ -97,6 +97,7 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 }
 
 func (s *Service) initializeForwarding() error {
+	// Initialize the internal forwarding service workers
 	s.forwarding = &forwarding{
 		pollInterval:    30 * time.Second, // Will be updated in Start
 		maxWorkers:      5,
@@ -109,6 +110,7 @@ func (s *Service) initializeForwarding() error {
 		},
 		logger: s.LoggerService,
 	}
+
 	return nil
 }
 

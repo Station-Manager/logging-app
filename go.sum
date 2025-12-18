@@ -20,6 +20,8 @@ github.com/Station-Manager/enums v0.0.4 h1:3T1gs1iSDjD/IoQQm7XHJkVHSHKtutdwqDCLY
 github.com/Station-Manager/enums v0.0.4/go.mod h1:8rtOnqO/oYoSbV4njW78qRN4KAXeGow/4iNhZgP8FYc=
 github.com/Station-Manager/errors v0.0.11 h1:I5C57weFS9hDx5j5E3xhQU+CdC1w0tXjdlqUQU3VnjY=
 github.com/Station-Manager/errors v0.0.11/go.mod h1:yedsGkIKLyDEUhkm7VrjwE2Qq6Jdlq0MpwEjdDhBwh0=
+github.com/Station-Manager/forwarding v0.0.0-20251213071522-d831e9813962 h1:2DPs6MxOwgFask3o7dy0NtTE1rc/a1keQs2rSnJ35h8=
+github.com/Station-Manager/forwarding v0.0.0-20251213071522-d831e9813962/go.mod h1:6Z/L+sDjvlRuWcWkwuX32OdMbXayc2//HeizsXgzv5I=
 github.com/Station-Manager/iocdi v0.0.1 h1:b3IcTZ0xSI+CKlUhWbVClBhkS5roFzNjHvwv33wJ04U=
 github.com/Station-Manager/iocdi v0.0.1/go.mod h1:N2zO4mf6PLkiEg4Us1X9Mj+qKasiQFjpcwJiizUIdwM=
 github.com/Station-Manager/logging v0.0.10 h1:64euCPtKeYEt9ECw37KxKBgMzTtVlOHpmelPInt+JM4=

@@ -9,6 +9,7 @@ import (
 	"github.com/Station-Manager/database/sqlite"
 	"github.com/Station-Manager/email"
 	"github.com/Station-Manager/errors"
+	fwdrqrz "github.com/Station-Manager/forwarding/qrz"
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/logging-app/backend/facade"
@@ -49,6 +50,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(email.ServiceName, reflect.TypeOf((*email.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(fwdrqrz.ServiceName, reflect.TypeOf((*fwdrqrz.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 
