@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Station-Manager/enums/upload"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/maidenhead"
 	"github.com/Station-Manager/types"
@@ -129,83 +130,25 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msgf("no forwarder found for service: %s", qsoUpload.Service)
 	}
 
+	errState := ""
+	status := "failed"
 	err := provider.Forward(qsoUpload.Qso)
 	if err != nil {
-		return errors.New(op).Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
+		s.LoggerService.ErrorWith().Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
+		//return errors.New(op).Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
+		//
+		qsoUpload.Attempts++
+		errState = errors.Root(err).Error()
+	} else {
+		qsoUpload.Attempts = 0
+		qsoUpload.LastError = ""
+		status = upload.Uploaded.String()
 	}
 
-	//	s.LoggerService.InfoWith().Str("service", qsoUpload.Service).Str("qso", qsoUpload.Qso.Call).Msg("Forwarding QSO to:")
-	// Get the appropriate forwarder from the container based on the service name
-	//forwarderBeanID := qsoUpload.Service + "forwarder"
-	//forwarderInterface, err := s.container.ResolveSafe(forwarderBeanID)
-	//if err != nil {
-	//	// Increment attempt count and record error
-	//	if updateErr := s.DatabaseService.UpdateQsoUploadStatus(
-	//		qsoUpload.ID,
-	//		"failed",
-	//		qsoUpload.Attempts+1,
-	//		"forwarder not found: "+err.Error(),
-	//	); updateErr != nil {
-	//		s.LoggerService.ErrorWith().Err(updateErr).Msg("Failed to update upload status after forwarder resolution failure")
-	//	}
-	//	return errors.New(op).Err(err).Msgf("failed to resolve forwarder for service: %s", qsoUpload.Service)
-	//}
-	//
-	//forwarder, ok := forwarderInterface.(interface {
-	//	Forward(qso types.Qso, param ...string) error
-	//	IsEnabled() bool
-	//})
-	//if !ok {
-	//	err := errors.New(op).Msgf("resolved bean is not a valid forwarder: %s", forwarderBeanID)
-	//	if updateErr := s.DatabaseService.UpdateQsoUploadStatus(
-	//		qsoUpload.ID,
-	//		"failed",
-	//		qsoUpload.Attempts+1,
-	//		err.Error(),
-	//	); updateErr != nil {
-	//		s.LoggerService.ErrorWith().Err(updateErr).Msg("Failed to update upload status after type assertion failure")
-	//	}
-	//	return err
-	//}
-	//
-	//// Check if forwarder is enabled
-	//if !forwarder.IsEnabled() {
-	//	err := errors.New(op).Msgf("forwarder is disabled: %s", qsoUpload.Service)
-	//	if updateErr := s.DatabaseService.UpdateQsoUploadStatus(
-	//		qsoUpload.ID,
-	//		"disabled",
-	//		qsoUpload.Attempts,
-	//		"forwarder is disabled",
-	//	); updateErr != nil {
-	//		s.LoggerService.ErrorWith().Err(updateErr).Msg("Failed to update upload status to disabled")
-	//	}
-	//	return err
-	//}
-	//
-	//// Forward the QSO
-	//if err := forwarder.Forward(qsoUpload.Qso); err != nil {
-	//	// Increment attempt count and record error
-	//	if updateErr := s.DatabaseService.UpdateQsoUploadStatus(
-	//		qsoUpload.ID,
-	//		"pending",
-	//		qsoUpload.Attempts+1,
-	//		err.Error(),
-	//	); updateErr != nil {
-	//		s.LoggerService.ErrorWith().Err(updateErr).Msg("Failed to update upload status after forward failure")
-	//	}
-	//	return errors.New(op).Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
-	//}
-	//
-	//// Mark as completed
-	//if err := s.DatabaseService.UpdateQsoUploadStatus(
-	//	qsoUpload.ID,
-	//	"completed",
-	//	qsoUpload.Attempts+1,
-	//	"",
-	//); err != nil {
-	//	s.LoggerService.ErrorWith().Err(err).Msg("Failed to mark upload as completed")
-	//	return errors.New(op).Err(err).Msg("failed to mark upload as completed")
-	//}
+	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, status, qsoUpload.Attempts, errState)
+	if uerr != nil {
+		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")
+	}
 
 	return nil
 }
