@@ -1,13 +1,16 @@
-import {types} from "$lib/wailsjs/go/models";
+import { types } from '$lib/wailsjs/go/models';
 
 export interface QsoEditState {
     call: string;
+    freq: string;
+    freq_rx: string;
     qso_date: string;
     time_on: string;
     time_off: string;
     rst_sent: string;
     rst_rcvd: string;
     mode: string;
+    submode: string;
     name: string;
     qth: string;
     comment: string;
@@ -17,19 +20,27 @@ export interface QsoEditState {
 
 export const qsoEditState: QsoEditState = $state({
     call: '',
+    freq: '',
+    freq_rx: '',
     qso_date: '',
     time_on: '',
     time_off: '',
     rst_sent: '',
     rst_rcvd: '',
     mode: '',
+    submode: '',
     name: '',
     qth: '',
     comment: '',
     fromQso(this: QsoEditState, qso: types.Qso): void {
-
+        this.call = qso.call;
+        this.rst_sent = qso.rst_sent;
+        this.rst_rcvd = qso.rst_rcvd;
+        this.submode = qso.submode;
+        this.freq = qso.freq;
+        this.freq_rx = qso.freq_rx;
     },
     toQso(this: QsoEditState): types.Qso {
         return new types.Qso({});
-    }
+    },
 });

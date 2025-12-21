@@ -5,6 +5,16 @@
     import {types} from "$lib/wailsjs/go/models";
     import {GetQsoById} from "$lib/wailsjs/go/facade/Service";
     import {qsoEditState} from "$lib/states/qso-edit-state.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
+    import Callsign from "$lib/ui/logging/components/Callsign.svelte";
+    import Vfos from "$lib/ui/logging/components/Vfos.svelte";
+    import Mode from "$lib/ui/logging/components/Mode.svelte";
+    import {isContestMode} from "$lib/stores/logging-mode-store";
+    import {catStateValues} from "$lib/stores/cat-state-store";
+    import Rst from "$lib/ui/logging/components/Rst.svelte";
+    import {catState, isCatEnabled} from "$lib/states/cat-state.svelte";
+    import VfoInput from "$lib/ui/logging/components/VfoInput.svelte";
+    import VfoBox from "$lib/ui/logging/components/VfoBox.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -17,6 +27,7 @@
     const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 
     let showEditPanel = $state(false);
+    let isSplit = $derived(catState.split === 'ON');
 
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
@@ -68,7 +79,77 @@
 {#if showEditPanel}
 <div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70 p-10">
     <div class="bg-white rounded-lg p-6 h-full w-full">
-        Details
+        <div class="flex flex-col gap-y-3 w-[744px] px-6">
+            <div class="flex flex-row gap-x-4 items-center h-[100px]">
+                <Callsign
+                        id="call"
+                        label="Callsign"
+                        value={qsoEditState.call}
+                />
+                {#if $isContestMode}
+                    {@render contextLogging()}
+                {:else}
+                    {@render normalLogging()}
+                {/if}
+                <Mode
+                        id="mode"
+                        label="Mode"
+                        bind:value={qsoEditState.submode}
+                        list={$catStateValues.getMainModes()}
+                />
+                {@render vfos()}
+            </div>
+        </div>
     </div>
 </div>
 {/if}
+
+{#snippet normalLogging()}
+    <Rst
+            id="rst_sent"
+            label="RST Sent"
+            bind:value={qsoEditState.rst_sent}
+    />
+    <Rst
+            id="rst_rcvd"
+            label="RST Rcvd"
+            bind:value={qsoEditState.rst_rcvd}
+    />
+{/snippet}
+
+{#snippet contextLogging()}
+    <div></div>
+{/snippet}
+
+{#snippet vfos()}
+    <div class="flex flex-col w-[250px] h-[80px] mt-6 gap-y-2">
+        <div class="flex flex-row items-center">
+            <label for="freq" class="">Freq (RX)</label>
+            <div class="w-[116px]">
+                <input
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                        id="freq"
+                        value={qsoEditState.freq_rx}
+                        title="Format: ?#.###.###"
+                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                />
+            </div>
+        </div>
+        <div class="flex flex-row items-center">
+            <label for="freq_rx" class="">Freq (TX)</label>
+            <div class="w-[116px]">
+                <input
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                        id="freq_rx"
+                        value={qsoEditState.freq}
+                        title="Format: ?#.###.###"
+                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                />
+            </div>
+        </div>
+    </div>
+{/snippet}
