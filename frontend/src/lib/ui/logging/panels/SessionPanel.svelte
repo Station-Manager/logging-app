@@ -5,16 +5,12 @@
     import {types} from "$lib/wailsjs/go/models";
     import {GetQsoById} from "$lib/wailsjs/go/facade/Service";
     import {qsoEditState} from "$lib/states/qso-edit-state.svelte";
-    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import Callsign from "$lib/ui/logging/components/Callsign.svelte";
-    import Vfos from "$lib/ui/logging/components/Vfos.svelte";
     import Mode from "$lib/ui/logging/components/Mode.svelte";
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
-    import {catState, isCatEnabled} from "$lib/states/cat-state.svelte";
-    import VfoInput from "$lib/ui/logging/components/VfoInput.svelte";
-    import VfoBox from "$lib/ui/logging/components/VfoBox.svelte";
+    import {catState} from "$lib/states/cat-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -27,7 +23,6 @@
     const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 
     let showEditPanel = $state(false);
-    let isSplit = $derived(catState.split === 'ON');
 
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
