@@ -10,7 +10,6 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
-    import {catState} from "$lib/states/cat-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
