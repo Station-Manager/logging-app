@@ -289,3 +289,31 @@ func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail st
 
 	return nil
 }
+
+func (s *Service) GetQsoById(id int64) (types.Qso, error) {
+	const op errors.Op = "facade.Service.GetQsoById"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return types.Qso{}, errors.Root(err)
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return types.Qso{}, errors.Root(err)
+	}
+
+	if id < 1 {
+		return types.Qso{}, errors.New(op).Msg("Invalid QSO ID")
+	}
+
+	qso, err := s.DatabaseService.FetchQsoById(id)
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch QSO by ID")
+		return types.Qso{}, errors.Root(err)
+	}
+
+	return qso, nil
+}

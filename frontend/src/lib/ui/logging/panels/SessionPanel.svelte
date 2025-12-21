@@ -1,6 +1,10 @@
 <script lang="ts">
     import {sessionState} from "$lib/states/session-state.svelte";
     import {parseDatabaseFreqToDottedKhz} from "$lib/utils/frequency";
+    import {handleAsyncError} from "$lib/utils/error-handler";
+    import {types} from "$lib/wailsjs/go/models";
+    import {GetQsoById} from "$lib/wailsjs/go/facade/Service";
+    import {qsoEditState} from "$lib/states/qso-edit-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -12,10 +16,20 @@
     const countryCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
     const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 
+    let showEditPanel = $state(false);
+
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
         if (!target) {
             return;
+        }
+        const qsoId: number = Number(target.id);
+        try {
+            const qso: types.Qso = await GetQsoById(qsoId);
+            qsoEditState.fromQso(qso);
+            showEditPanel = true;
+        } catch(e: unknown) {
+            handleAsyncError(e, 'SessionPanel.svelte->editSessonQso')
         }
     }
 </script>
@@ -51,3 +65,10 @@
         {/each}
     </div>
 </div>
+{#if showEditPanel}
+<div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70 p-10">
+    <div class="bg-white rounded-lg p-6 h-full w-full">
+        Details
+    </div>
+</div>
+{/if}
