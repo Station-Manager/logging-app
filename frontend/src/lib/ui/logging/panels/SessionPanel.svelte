@@ -101,7 +101,7 @@
                 />
                 {@render vfos()}
             </div>
-            <div class="flex flex-row gap-x-4 -mt-[6px]">
+            <div class="flex flex-row gap-x-4 -mt-1.5">
                 <TextInput
                         id="name"
                         label="Name"
