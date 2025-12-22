@@ -1,6 +1,6 @@
 <script lang="ts">
     import {sessionState} from "$lib/states/session-state.svelte";
-    import {parseDatabaseFreqToDottedKhz} from "$lib/utils/frequency";
+    import {frequencyToBandFromDottedMHz, parseDatabaseFreqToDottedKhz} from "$lib/utils/frequency";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {types} from "$lib/wailsjs/go/models";
     import {GetQsoById} from "$lib/wailsjs/go/facade/Service";
@@ -10,6 +10,13 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
+    import TextInput from "$lib/ui/logging/components/TextInput.svelte";
+    import Comment from "$lib/ui/logging/components/Comment.svelte";
+    import TimerControls from "$lib/ui/logging/components/TimerControls.svelte";
+    import DateInput from "$lib/ui/logging/components/DateInput.svelte";
+    import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
+    import FormControls from "$lib/ui/logging/components/FormControls.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -37,10 +44,15 @@
             handleAsyncError(e, 'SessionPanel.svelte->editSessonQso')
         }
     }
+
+    const cancelAction = (): void => {
+        showEditPanel = false;
+    }
+
 </script>
 
 <div class="cursor-default flex flex-col">
-    <div class="flex flex-row border-b border-b-gray-300 font-semibold h-[32px] items-center px-4">
+    <div class="flex flex-row border-b border-b-gray-300 font-semibold h-8 items-center px-4">
         <div class={callsignCss}>Callsign</div>
         <div class={nameCss}>Name</div>
         <div class={freqCss}>Freq</div>
@@ -71,9 +83,9 @@
     </div>
 </div>
 {#if showEditPanel}
-<div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70 p-10">
-    <div class="bg-white rounded-lg p-6 h-full w-full">
-        <div class="flex flex-col gap-y-3 w-[744px] px-6">
+<div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70">
+    <div class="bg-white rounded-lg py-8 px-14 h-[460px] w-[848px] mt-24 mx-auto">
+        <div class="flex flex-col gap-y-3 w-[744px] h-[340px] px-6">
             <div class="flex flex-row gap-x-4 items-center h-[100px]">
                 <Callsign
                         id="call"
@@ -93,6 +105,57 @@
                 />
                 {@render vfos()}
             </div>
+            <div class="flex flex-row gap-x-4">
+                <TextInput
+                        id="name"
+                        label="Name"
+                        bind:value={qsoEditState.name}
+                />
+                <TextInput
+                        id="qth"
+                        label="Qth"
+                        bind:value={qsoEditState.qth}
+                        overallWidthCss="w-[170px]"
+                />
+                <Comment
+                        id="comment"
+                        label="Comment"
+                        bind:value={qsoEditState.comment}
+                />
+            </div>
+            <div class="flex flex-row gap-x-4 items-center -mt-4">
+                <DateInput
+                        id="qso_date"
+                        label="Date"
+                        bind:value={qsoEditState.qso_date}
+                />
+                <TimeInput
+                        id="time_on"
+                        label="Time On (UTC)"
+                        bind:value={qsoEditState.time_on}
+                        disabled={false}
+                />
+                <TimeInput
+                        id="time_off"
+                        label="Time Off (UTC)"
+                        bind:value={qsoEditState.time_off}
+                        disabled={false}
+                />
+            </div>
+        </div>
+        <div class="flex w-full gap-x-3 justify-end">
+            <button
+                    id="log-contact-btn"
+                    type="button"
+                    class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 px-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    title="Ctrl-s">Update QSO
+            </button>
+            <button
+                    onclick={cancelAction}
+                    type="button"
+                    class="h-9 w-[74px] cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
+                    title="ESC">Cancel
+            </button>
         </div>
     </div>
 </div>
@@ -116,34 +179,36 @@
 {/snippet}
 
 {#snippet vfos()}
-    <div class="flex flex-col w-[250px] h-[80px] mt-6 gap-y-2">
+    <div class="flex flex-col w-[250px] h-20 mt-6 gap-y-2">
         <div class="flex flex-row items-center">
-            <label for="freq" class="">Freq (RX)</label>
+            <label for="freq" class="text-sm/5 font-medium w-[70px]">Freq (RX)</label>
             <div class="w-[116px]">
                 <input
                         type="text"
                         autocomplete="off"
                         spellcheck="false"
                         id="freq"
-                        value={qsoEditState.freq_rx}
+                        value={parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx)}
                         title="Format: ?#.###.###"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
             </div>
+            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(qsoEditState.freq_rx)}</div>
         </div>
         <div class="flex flex-row items-center">
-            <label for="freq_rx" class="">Freq (TX)</label>
+            <label for="freq_rx" class="text-sm/5 font-medium w-[70px]">Freq (TX)</label>
             <div class="w-[116px]">
                 <input
                         type="text"
                         autocomplete="off"
                         spellcheck="false"
                         id="freq_rx"
-                        value={qsoEditState.freq}
+                        value={parseDatabaseFreqToDottedKhz(qsoEditState.freq)}
                         title="Format: ?#.###.###"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
             </div>
+            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(qsoEditState.freq)}</div>
         </div>
     </div>
 {/snippet}

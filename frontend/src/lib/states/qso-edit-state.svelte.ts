@@ -39,6 +39,12 @@ export const qsoEditState: QsoEditState = $state({
         this.submode = qso.submode;
         this.freq = qso.freq;
         this.freq_rx = qso.freq_rx;
+        this.name = qso.name;
+        this.qth = qso.qth;
+        this.comment = qso.comment;
+        this.qso_date = qso.qso_date;
+        this.time_on = qso.time_on;
+        this.time_off = qso.time_off;
     },
     toQso(this: QsoEditState): types.Qso {
         return new types.Qso({});
