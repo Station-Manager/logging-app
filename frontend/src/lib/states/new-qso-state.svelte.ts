@@ -191,6 +191,7 @@ export const qsoState: QsoState = $state({
         this.short_path_distance = qso.country_details.short_path_distance ?? '';
         this.short_path_bearing = qso.country_details.short_path_bearing ?? '';
         this.contact_history = qso.contact_history ?? [];
+        this.rig = qso.rig ?? '';
 
         rstHelper(this);
         randomQsoHelper(this);
@@ -249,6 +250,7 @@ export const qsoState: QsoState = $state({
         base.time_off = this.time_off;
         base.tx_pwr = this.tx_pwr;
         base.rx_pwr = this.rx_pwr;
+        base.rig = this.rig;
 
         // Note: the backend set the ant_path to 'S' as a default.
         if (this.ant_path === 'S') {

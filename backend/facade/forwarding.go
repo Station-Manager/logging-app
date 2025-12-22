@@ -14,8 +14,8 @@ type forwarding struct {
 	pollInterval    time.Duration
 	maxWorkers      int
 	forwardingQueue chan types.QsoUpload
-	fetchPending    func() ([]types.QsoUpload, error)
-	sendAndMarkDone func(qsoUpload types.QsoUpload) error
+	fetchPending    func() ([]types.QsoUpload, error)     // See: s.DatabaseService.FetchPendingUploads()
+	sendAndMarkDone func(qsoUpload types.QsoUpload) error // See: s.forwardQso(qsoUpload)
 	logger          *logging.Service
 	wg              sync.WaitGroup
 }
@@ -54,10 +54,8 @@ func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 	for {
 		select {
 		case <-ctx.Done():
-			f.logger.DebugWith().Msg("Context done, shutting down forwarding poller")
 			return
 		case <-shutdown:
-			f.logger.DebugWith().Msg("Forwarding poller shutting down")
 			return
 		case <-ticker.C:
 			qsoUploads, err := f.fetchPending()
@@ -68,7 +66,7 @@ func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 			for _, qsoUpload := range qsoUploads {
 				select {
 				case f.forwardingQueue <- qsoUpload:
-					// sent successfully
+					// forwarded to the forwarding queue
 				case <-ctx.Done():
 					return
 				case <-shutdown:
@@ -87,28 +85,20 @@ func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, workerID int) {
 	defer f.wg.Done()
 
-	f.logger.DebugWith().Int("workerID", workerID).Msg("Starting forwarding worker")
+	f.logger.InfoWith().Int("workerID", workerID).Msg("Starting forwarding worker")
 
 	for {
 		select {
 		case <-ctx.Done():
-			f.logger.DebugWith().Msg("Context done, shutting down forwarding poller")
+			f.logger.InfoWith().Msg("Context done, shutting down forwarding poller")
 			return
 		case <-shutdown:
-			f.logger.DebugWith().Msg("Forwarding poller shutting down")
+			f.logger.InfoWith().Msg("Forwarding poller shutting down")
 			return
 		case qsoUpload, ok := <-f.forwardingQueue:
 			if !ok {
 				return
 			}
-
-			f.logger.DebugWith().
-				Int64("upload_id", qsoUpload.ID).
-				//				Int64("qso_id", qsoUpload.Qso.ID).
-				//				Str("callsign", qsoUpload.Qso.Call).
-				Str("service", qsoUpload.Service).
-				Int("workerID", workerID).
-				Msg("Processing QSO upload for forwarding")
 
 			if err := f.sendAndMarkDone(qsoUpload); err != nil {
 				f.logger.ErrorWith().Err(err).Msg("Failed to forward QSO")

@@ -150,5 +150,7 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")
 	}
 
+	s.LoggerService.InfoWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Msg("QSO uploaded successfully")
+
 	return nil
 }
