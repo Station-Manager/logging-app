@@ -11,9 +11,9 @@
     import {catStateValues} from "$lib/stores/cat-state-store";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
-    import Comment from "$lib/ui/logging/components/Comment.svelte";
     import DateInput from "$lib/ui/logging/components/DateInput.svelte";
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -81,7 +81,7 @@
 </div>
 {#if showEditPanel}
 <div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70">
-    <div class="bg-white rounded-lg py-8 px-14 h-[460px] w-[848px] mt-24 mx-auto">
+    <div class="bg-white rounded-lg py-8 px-14 h-[460px] w-[856px] mt-24 mx-auto">
         <div class="flex flex-col gap-y-3 w-[744px] h-[340px] px-6">
             <div class="flex flex-row gap-x-4 items-center h-[100px]">
                 <Callsign
@@ -102,7 +102,7 @@
                 />
                 {@render vfos()}
             </div>
-            <div class="flex flex-row gap-x-4">
+            <div class="flex flex-row gap-x-4 -mt-[6px]">
                 <TextInput
                         id="name"
                         label="Name"
@@ -114,13 +114,19 @@
                         bind:value={qsoEditState.qth}
                         overallWidthCss="w-[170px]"
                 />
-                <Comment
-                        id="comment"
-                        label="Comment"
-                        bind:value={qsoEditState.comment}
-                />
+                <div class="w-[280px]">
+                    <label for="comment" class="block text-sm/5 font-medium w-[70px]">Comments</label>
+                    <div class="mt-2">
+                    <textarea
+                            bind:value={qsoEditState.comment}
+                            id="comment"
+                            spellcheck="false"
+                            class="h-16 resize-none w-full rounded-md bg-white px-2 py-1.5 text-sm outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"></textarea>
+                    </div>
+                </div>
             </div>
-            <div class="flex flex-row gap-x-4 items-center -mt-4">
+            <div class="flex flex-row gap-x-4 items-top">
                 <DateInput
                         id="qso_date"
                         label="Date"
@@ -138,6 +144,42 @@
                         bind:value={qsoEditState.time_off}
                         disabled={false}
                 />
+                <div class="w-[280px]">
+                    <label for="notes" class="block text-sm/5 font-medium w-[70px]">Notes</label>
+                    <div class="mt-2">
+                    <textarea
+                            bind:value={qsoEditState.notes}
+                            id="notes"
+                            spellcheck="false"
+                            class="h-16 resize-none w-full rounded-md bg-white px-2 py-1.5 text-sm outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            autocomplete="off"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-row space-x-4 -mt-6">
+                <div>
+                    <label class="block text-sm/5 font-medium" for="rx_pwr">Power</label>
+                    <div class="mt-2 w-[100px]">
+                        <input
+                                bind:value={qsoEditState.rx_pwr}
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                type="text"
+                                id="rx_pwr"
+                                placeholder="RX Power"
+                                autocomplete="off"
+                                title="Contacted Station's Power">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm/5 font-medium" for="rig">Rig</label>
+                    <div class="mt-2 w-[360px]">
+                    <textarea
+                            bind:value={qsoEditState.rig}
+                            class="resize-none w-full rounded-md bg-white px-3 py-1.5 text-sm outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            id="rig"
+                            placeholder="Working conditions"></textarea>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="flex w-full gap-x-3 justify-end">

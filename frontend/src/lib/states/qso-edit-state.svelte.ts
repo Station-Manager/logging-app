@@ -1,4 +1,5 @@
 import { types } from '$lib/wailsjs/go/models';
+import {formatDate, formatTime} from "$lib/utils/time-date";
 
 export interface QsoEditState {
     call: string;
@@ -14,6 +15,10 @@ export interface QsoEditState {
     name: string;
     qth: string;
     comment: string;
+    notes: string;
+    rig: string;
+    rx_pwr: string;
+    tx_pwr: string;
     fromQso(this: QsoEditState, qso: types.Qso): void;
     toQso(this: QsoEditState): types.Qso;
 }
@@ -32,6 +37,10 @@ export const qsoEditState: QsoEditState = $state({
     name: '',
     qth: '',
     comment: '',
+    notes: '',
+    rig: '',
+    rx_pwr: '',
+    tx_pwr: '',
     fromQso(this: QsoEditState, qso: types.Qso): void {
         this.call = qso.call;
         this.rst_sent = qso.rst_sent;
@@ -42,9 +51,12 @@ export const qsoEditState: QsoEditState = $state({
         this.name = qso.name;
         this.qth = qso.qth;
         this.comment = qso.comment;
-        this.qso_date = qso.qso_date;
-        this.time_on = qso.time_on;
-        this.time_off = qso.time_off;
+        this.notes = qso.notes;
+        this.qso_date = formatDate(qso.qso_date);
+        this.time_on = formatTime(qso.time_on);
+        this.time_off = formatTime(qso.time_off);
+        this.rig = qso.rig;
+        this.rx_pwr = qso.rx_pwr;
     },
     toQso(this: QsoEditState): types.Qso {
         return new types.Qso({});
