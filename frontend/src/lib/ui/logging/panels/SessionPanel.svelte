@@ -13,7 +13,6 @@
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
     import DateInput from "$lib/ui/logging/components/DateInput.svelte";
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
-    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
