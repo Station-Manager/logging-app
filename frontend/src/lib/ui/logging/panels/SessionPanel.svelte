@@ -10,13 +10,10 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {catStateValues} from "$lib/stores/cat-state-store";
     import Rst from "$lib/ui/logging/components/Rst.svelte";
-    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
     import Comment from "$lib/ui/logging/components/Comment.svelte";
-    import TimerControls from "$lib/ui/logging/components/TimerControls.svelte";
     import DateInput from "$lib/ui/logging/components/DateInput.svelte";
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
-    import FormControls from "$lib/ui/logging/components/FormControls.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
