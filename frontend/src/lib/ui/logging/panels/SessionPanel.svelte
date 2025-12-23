@@ -63,7 +63,7 @@
 
         //TODO: Validate
         const qso: types.Qso = qsoEditState.toQso();
-
+console.log(qso);
     }
 
     const canLog = (): boolean => {
