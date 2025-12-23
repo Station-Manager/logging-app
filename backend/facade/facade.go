@@ -6,6 +6,7 @@ import (
 
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/enums/upload"
+	"github.com/Station-Manager/enums/upload/action"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -161,12 +162,6 @@ func (s *Service) LogQso(qso types.Qso) error {
 	}
 	s.LoggerService.InfoWith().Str("callsign", qso.Call).Msg("QSO logged successfully")
 
-	if err = s.DatabaseService.InsertQsoUpload(qsoId, upload.OnlineServiceQRZ); err != nil {
-		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO upload into database.")
-		return errors.Root(err)
-	}
-
 	// Check if the contacted station exists in the database and insert or update it if it does not
 	// match the current QSO's contacted station. The ContactedStation object is loaded when
 	// the QSO is initialized.
@@ -178,6 +173,13 @@ func (s *Service) LogQso(qso types.Qso) error {
 	if err = s.insertOrUpdateCountry(qso.CountryDetails); err != nil {
 		// This is a serious error, but not fatal, so log and carry on.
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert or update country.")
+	}
+
+	// The last operation is to add an upload record.
+	if err = s.DatabaseService.InsertQsoUpload(qsoId, action.Insert, upload.OnlineServiceQRZ); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO upload into database.")
+		return errors.Root(err)
 	}
 
 	return nil
@@ -193,6 +195,28 @@ func (s *Service) UpdateQso(qso types.Qso) error {
 	if !s.started.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotStarted)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return errors.Root(err)
+	}
+
+	if qso.ID < 1 {
+		return errors.New(op).Msg("Invalid QSO ID")
+	}
+
+	if err := s.validate.Struct(qso); err != nil {
+		err = errors.New(op).Err(err).Msg("QSO Validation failed")
+		s.LoggerService.ErrorWith().Err(err).Msg("QSO Validation failed")
+		return errors.Root(err)
+	}
+
+	if err := s.DatabaseService.UpdateQso(qso); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to update QSO in database.")
+		return errors.Root(err)
+	}
+
+	if err := s.DatabaseService.InsertQsoUpload(qso.ID, action.Update, upload.OnlineServiceQRZ); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert QSO upload into database.")
 		return errors.Root(err)
 	}
 
