@@ -7,7 +7,7 @@ require (
 	github.com/Station-Manager/config v0.0.31
 	github.com/Station-Manager/database v0.0.39
 	github.com/Station-Manager/email v0.0.3
-	github.com/Station-Manager/enums v0.0.4
+	github.com/Station-Manager/enums v0.0.5
 	github.com/Station-Manager/errors v0.0.11
 	github.com/Station-Manager/forwarding v0.0.1
 	github.com/Station-Manager/iocdi v0.0.1
@@ -17,7 +17,7 @@ require (
 	github.com/Station-Manager/types v0.0.65
 	github.com/Station-Manager/utils v0.0.4
 	github.com/aarondl/sqlboiler/v4 v4.19.5
-	github.com/go-playground/validator/v10 v10.29.0
+	github.com/go-playground/validator/v10 v10.30.0
 	github.com/wailsapp/wails/v2 v2.11.0
 )
 

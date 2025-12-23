@@ -183,6 +183,22 @@ func (s *Service) LogQso(qso types.Qso) error {
 	return nil
 }
 
+func (s *Service) UpdateQso(qso types.Qso) error {
+	const op errors.Op = "facade.Service.UpdateQso"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return errors.Root(err)
+	}
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return errors.Root(err)
+	}
+
+	return nil
+}
+
 // CurrentSessionQsoSlice retrieves the list of QSOs associated with the current session ID from the database.
 func (s *Service) CurrentSessionQsoSlice() ([]types.Qso, error) {
 	const op errors.Op = "facade.Service.CurrentSessionQsoSlice"

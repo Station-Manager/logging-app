@@ -13,6 +13,8 @@
     import TextInput from "$lib/ui/logging/components/TextInput.svelte";
     import DateInput from "$lib/ui/logging/components/DateInput.svelte";
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
+    import {isValidCallsignForLog} from "$lib/constants/callsign";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -25,6 +27,7 @@
     const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 
     let showEditPanel = $state(false);
+    let isUpdating: boolean = $state(false);
 
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
@@ -44,6 +47,28 @@
     const cancelAction = (): void => {
         showEditPanel = false;
     }
+
+    const updateAction = async (): Promise<void> => {
+        if (!canLog()) {
+            const elem = document.getElementById('call') as HTMLInputElement;
+            if (elem) {
+                elem.focus();
+                elem.select();
+            }
+            return;
+        }
+
+        if (isUpdating) return; // Prevent double-clicks
+        isUpdating = true;
+
+        //TODO: Validate
+        const qso: types.Qso = qsoEditState.toQso();
+
+    }
+
+    const canLog = (): boolean => {
+        return isValidCallsignForLog(qsoState.call)
+    };
 
 </script>
 
@@ -183,6 +208,7 @@
         </div>
         <div class="flex w-full gap-x-3 justify-end">
             <button
+                    onclick={updateAction}
                     id="log-contact-btn"
                     type="button"
                     class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 px-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

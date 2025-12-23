@@ -5,7 +5,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Station-Manager/enums/upload"
+	"github.com/Station-Manager/enums/upload/action"
+	"github.com/Station-Manager/enums/upload/status"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/maidenhead"
 	"github.com/Station-Manager/types"
@@ -123,7 +124,7 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msg("container is nil. Call SetContainer before using the facade.")
 	}
 
-	s.LoggerService.DebugWith().Int64("qso_id", qsoUpload.Qso.ID).Msg("Forwarding QSO to online service")
+	//	s.LoggerService.DebugWith().Int64("qso_id", qsoUpload.Qso.ID).Msg("Forwarding QSO to online service")
 
 	provider, ok := s.forwarders[qsoUpload.Service]
 	if !ok {
@@ -131,7 +132,7 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 	}
 
 	errState := ""
-	status := "failed"
+	uploadStatus := status.Failed
 	err := provider.Forward(qsoUpload.Qso)
 	if err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
@@ -142,10 +143,10 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 	} else {
 		qsoUpload.Attempts = 0
 		qsoUpload.LastError = ""
-		status = upload.Uploaded.String()
+		uploadStatus = status.Uploaded
 	}
 
-	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, status, qsoUpload.Attempts, errState)
+	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, uploadStatus, action.Insert, qsoUpload.Attempts, errState)
 	if uerr != nil {
 		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")
 	}

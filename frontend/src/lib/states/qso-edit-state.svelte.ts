@@ -45,6 +45,7 @@ export const qsoEditState: QsoEditState = $state({
         this.call = qso.call;
         this.rst_sent = qso.rst_sent;
         this.rst_rcvd = qso.rst_rcvd;
+        this.mode = qso.mode;
         this.submode = qso.submode;
         this.freq = qso.freq;
         this.freq_rx = qso.freq_rx;
@@ -59,6 +60,23 @@ export const qsoEditState: QsoEditState = $state({
         this.rx_pwr = qso.rx_pwr;
     },
     toQso(this: QsoEditState): types.Qso {
-        return new types.Qso({});
+        return new types.Qso({
+            call: this.call,
+            rst_sent: this.rst_sent,
+            rst_rcvd: this.rst_rcvd,
+            submode: this.submode,
+            mode: this.mode,
+            freq: this.freq,
+            freq_rx: this.freq_rx,
+            name: this.name,
+            qth: this.qth,
+            comment: this.comment,
+            notes: this.notes,
+            qso_date: this.qso_date,
+            time_on: this.time_on,
+            time_off: this.time_off,
+            rig: this.rig,
+            rx_pwr: this.rx_pwr,
+        });
     },
 });
