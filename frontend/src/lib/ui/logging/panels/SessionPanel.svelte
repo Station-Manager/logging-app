@@ -15,6 +15,7 @@
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
     import {isValidCallsignForLog} from "$lib/constants/callsign";
     import {qsoState} from "$lib/states/new-qso-state.svelte";
+    import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -63,7 +64,14 @@
 
         //TODO: Validate
         const qso: types.Qso = qsoEditState.toQso();
-console.log(qso);
+        try {
+            await UpdateQso(qso);
+        } catch(e: unknown) {
+            handleAsyncError(e, 'SessionPanel.svelte->updateAction')
+        } finally {
+            isUpdating = false;
+            showEditPanel = false;
+        }
     }
 
     const canLog = (): boolean => {

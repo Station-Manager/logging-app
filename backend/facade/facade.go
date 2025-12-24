@@ -185,6 +185,7 @@ func (s *Service) LogQso(qso types.Qso) error {
 	return nil
 }
 
+// UpdateQso updates an existing QSO record in the database and logs the operation; validates input and service state.
 func (s *Service) UpdateQso(qso types.Qso) error {
 	const op errors.Op = "facade.Service.UpdateQso"
 	if !s.initialized.Load() {
