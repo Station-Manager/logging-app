@@ -164,7 +164,7 @@
             qso.logbook_id = configState.logbook.id;
 
             await LogQso(qso);
-            showToast.SUCCESS("QSO logged.");
+            showToast.SUCCESS("QSO logged...");
             sessionState.update(await CurrentSessionQsoSlice());
 
             if ($isContestMode) {

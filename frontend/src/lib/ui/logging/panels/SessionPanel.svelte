@@ -14,8 +14,8 @@
     import DateInput from "$lib/ui/logging/components/DateInput.svelte";
     import TimeInput from "$lib/ui/logging/components/TimeInput.svelte";
     import {isValidCallsignForLog} from "$lib/constants/callsign";
-    import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
+    import {showToast} from "$lib/utils/toast";
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -62,10 +62,10 @@
         if (isUpdating) return; // Prevent double-clicks
         isUpdating = true;
 
-        //TODO: Validate
         const qso: types.Qso = qsoEditState.toQso();
         try {
             await UpdateQso(qso);
+            showToast.SUCCESS("QSO updated...");
         } catch(e: unknown) {
             handleAsyncError(e, 'SessionPanel.svelte->updateAction')
         } finally {
@@ -75,7 +75,7 @@
     }
 
     const canLog = (): boolean => {
-        return isValidCallsignForLog(qsoState.call)
+        return isValidCallsignForLog(qsoEditState.call)
     };
 
 </script>
@@ -217,7 +217,7 @@
         <div class="flex w-full gap-x-3 justify-end">
             <button
                     onclick={updateAction}
-                    id="log-contact-btn"
+                    id="update-contact-btn"
                     type="button"
                     class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 px-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     title="Ctrl-s">Update QSO

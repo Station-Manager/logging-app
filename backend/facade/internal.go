@@ -124,8 +124,6 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msg("container is nil. Call SetContainer before using the facade.")
 	}
 
-	//	s.LoggerService.DebugWith().Int64("qso_id", qsoUpload.Qso.ID).Msg("Forwarding QSO to online service")
-
 	provider, ok := s.forwarders[qsoUpload.Service]
 	if !ok {
 		return errors.New(op).Msgf("no forwarder found for service: %s", qsoUpload.Service)
@@ -133,11 +131,9 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 
 	errState := ""
 	uploadStatus := status.Failed
-	err := provider.Forward(qsoUpload.Qso)
+	err := provider.Forward(qsoUpload.Qso, qsoUpload.Action)
 	if err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
-		//return errors.New(op).Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
-		//
 		qsoUpload.Attempts++
 		errState = errors.Root(err).Error()
 	} else {
@@ -146,12 +142,17 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		uploadStatus = status.Uploaded
 	}
 
-	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, uploadStatus, action.Insert, qsoUpload.Attempts, errState)
+	act, _ := action.Parse(qsoUpload.Action)
+	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, uploadStatus, act, qsoUpload.Attempts, errState)
 	if uerr != nil {
 		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")
 	}
 
-	s.LoggerService.InfoWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Msg("QSO uploaded successfully")
+	if err == nil {
+		s.LoggerService.InfoWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Msg("QSO uploaded successfully")
+	} else {
+		s.LoggerService.WarnWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(err).Msg("Failed to upload QSO")
+	}
 
 	return nil
 }

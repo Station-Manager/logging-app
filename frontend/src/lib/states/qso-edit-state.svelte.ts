@@ -2,6 +2,9 @@ import { types } from '$lib/wailsjs/go/models';
 import { formatDate, formatTime } from '$lib/utils/time-date';
 
 export interface QsoEditState {
+    id: number;
+    logbook_id: number;
+    session_id: number;
     call: string;
     freq: string;
     freq_rx: string;
@@ -19,11 +22,16 @@ export interface QsoEditState {
     rig: string;
     rx_pwr: string;
     tx_pwr: string;
+    band: string;
+    station_callsign: string;
     fromQso(this: QsoEditState, qso: types.Qso): void;
     toQso(this: QsoEditState): types.Qso;
 }
 
 export const qsoEditState: QsoEditState = $state({
+    id: 0,
+    logbook_id: 0,
+    session_id: 0,
     call: '',
     freq: '',
     freq_rx: '',
@@ -41,7 +49,12 @@ export const qsoEditState: QsoEditState = $state({
     rig: '',
     rx_pwr: '',
     tx_pwr: '',
+    band: '',
+    station_callsign: '',
     fromQso(this: QsoEditState, qso: types.Qso): void {
+        this.id = qso.id;
+        this.logbook_id = qso.logbook_id;
+        this.session_id = qso.session_id;
         this.call = qso.call;
         this.rst_sent = qso.rst_sent;
         this.rst_rcvd = qso.rst_rcvd;
@@ -58,9 +71,14 @@ export const qsoEditState: QsoEditState = $state({
         this.time_off = formatTime(qso.time_off);
         this.rig = qso.rig;
         this.rx_pwr = qso.rx_pwr;
+        this.band = qso.band;
+        this.station_callsign = qso.station_callsign;
     },
     toQso(this: QsoEditState): types.Qso {
         return new types.Qso({
+            id: this.id,
+            logbook_id: this.logbook_id,
+            session_id: this.session_id,
             call: this.call,
             rst_sent: this.rst_sent,
             rst_rcvd: this.rst_rcvd,
@@ -77,6 +95,8 @@ export const qsoEditState: QsoEditState = $state({
             time_off: this.time_off,
             rig: this.rig,
             rx_pwr: this.rx_pwr,
+            band: this.band,
+            station_callsign: this.station_callsign,
         });
     },
 });
