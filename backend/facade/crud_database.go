@@ -29,7 +29,7 @@ func (s *Service) openAndLoadFromDatabase() error {
 	}
 
 	// Load the default logbook
-	logbook, err := s.DatabaseService.FetchLogbookByID(s.requiredCfgs.DefaultRigID)
+	logbook, err := s.DatabaseService.FetchLogbookByID(s.requiredCfgs.DefaultLogbookID)
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch logbook.")
@@ -136,12 +136,12 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		if qerr != nil {
 			qerr = errors.New(op).Err(qerr).Err(qerr)
 			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to convert QSO type to model.")
-			continue
+			return qerr
 		}
 
 		if _, qerr = model.Update(context.Background(), tx, boil.Infer()); qerr != nil {
-			qerr = errors.New(op).Err(qerr).Err(err)
-			s.LoggerService.ErrorWith().Err(err).Msg("Failed to update model")
+			qerr = errors.New(op).Err(qerr)
+			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to update model")
 			_ = tx.Rollback()
 			return qerr
 		}

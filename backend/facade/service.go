@@ -193,7 +193,7 @@ func (s *Service) Start(ctx context.Context) error {
 	s.launchWorkerThread(run, s.catStatusChannelListener, "catStatusChannelListener")
 
 	// Create a map of all the configured forwarders
-	cfgs, _ := s.ConfigService.ForwarderConfigs()
+	cfgs, _ := s.ConfigService.ForwarderConfigs() // Error discarded as ForwarderConfigs err is always nil
 	s.forwarders = make(map[string]fwdrs.Forwarder, len(cfgs))
 	for _, cfg := range cfgs {
 		name := cfg.Name

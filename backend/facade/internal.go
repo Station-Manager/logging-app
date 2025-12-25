@@ -142,7 +142,7 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		uploadStatus = status.Uploaded
 	}
 
-	act, _ := action.Parse(qsoUpload.Action)
+	act, _ := action.Parse(qsoUpload.Action) // Error discarded as Parse() always returns nil error
 	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, uploadStatus, act, qsoUpload.Attempts, errState)
 	if uerr != nil {
 		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")

@@ -23,8 +23,10 @@ func (s *Service) catStatusChannelListener(shutdown <-chan struct{}) {
 			return
 		case <-s.ctx.Done():
 			return
-		case status := <-statusChannel:
-			//			s.LoggerService.DebugWith().Int("status", len(status)).Msg("Received CAT status update.")
+		case status, ok := <-statusChannel:
+			if !ok {
+				continue
+			}
 			// Emit the status update to the frontend
 			runtime.EventsEmit(s.ctx, events.Status.String(), status)
 		}
