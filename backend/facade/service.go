@@ -236,7 +236,14 @@ func (s *Service) Stop() error {
 		return err
 	}
 
+	// Take a consistent view of the current run/forwarding state under lock to avoid races with Start.
+	s.mu.Lock()
 	run := s.currentRun
+	fwd := s.forwarding
+	s.currentRun = nil
+	s.started.Store(false)
+	s.mu.Unlock()
+
 	if run != nil && run.shutdownChannel != nil {
 		select {
 		case <-run.shutdownChannel:
@@ -246,9 +253,9 @@ func (s *Service) Stop() error {
 		}
 	}
 
-	if s.forwarding != nil {
-		close(s.forwarding.forwardingQueue)
-		s.forwarding.wg.Wait()
+	if fwd != nil {
+		close(fwd.forwardingQueue)
+		fwd.wg.Wait()
 	}
 
 	if run != nil {
@@ -271,9 +278,6 @@ func (s *Service) Stop() error {
 		// Log the error, but it's not fatal
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to close database")
 	}
-
-	s.currentRun = nil
-	s.started.Store(false)
 
 	return nil
 }
