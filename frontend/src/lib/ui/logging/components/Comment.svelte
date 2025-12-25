@@ -24,14 +24,17 @@
 
     let clipboardVisible = $state(false);
     let enabled: boolean = $state(true);
-    let clipboard: string[] = $derived(clipboardState.list);
+    let clipboard = $derived(clipboardState.list);
 
     const clipboardAction = (): void => {
-        if (value.trim().length === 0) {
-            clipboardVisible = false;
-            return;
+        const textToAdd = (value || '').trim();
+        if (textToAdd.length > 0) {
+            clipboardState.add(textToAdd);
         }
-        clipboardVisible = !clipboardVisible;
+
+        if (clipboardState.list.length > 0) {
+            clipboardVisible = !clipboardVisible;
+        }
     }
 
     const onClickOutside = (): void => {
@@ -48,6 +51,7 @@
 <div class="relative {overallWidthCss}" use:clickoutside={{enabled}} onclickoutside={onClickOutside}>
     <div class="flex items-center">
         <button
+                type="button"
                 onclick={clipboardAction}
                 class="cursor-pointer"
                 aria-label="clip-board"
@@ -58,16 +62,18 @@
         </button>
         <label for={id} class={labelCss}>{label}</label>
     </div>
-    <div class="{clipboardVisible ? '' : 'hidden'} absolute top-6 z-30 w-44 text-xs p-2 border border-gray-300 rounded-md bg-white shadow-lg">
-    {#each clipboard as item (item)}
-        <button
-                onclick={() => insertSelectedText(item)}
-                aria-label="clip-board"
-                class="cursor-pointer w-full text-left p-1 text-xs rounded-xs text-gray-700 hover:bg-gray-300 text-nowrap overflow-hidden text-ellipsis">
-            {item}
-        </button>
-    {/each}
-    </div>
+    {#if clipboardVisible && clipboard.length > 0}
+        <div class="absolute top-8 z-50 w-44 text-xs p-2 border border-gray-300 rounded-md bg-white shadow-lg">
+            {#each clipboard as item (item)}
+                <button
+                        onclick={() => insertSelectedText(item)}
+                        type="button"
+                        class="cursor-pointer w-full text-left p-1 text-xs rounded-xs text-gray-700 hover:bg-gray-300 text-nowrap overflow-hidden text-ellipsis">
+                    {item}
+                </button>
+            {/each}
+        </div>
+    {/if}
     <div class={divCss}>
         <textarea
                 bind:value={value}

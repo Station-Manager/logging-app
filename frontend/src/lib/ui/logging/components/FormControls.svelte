@@ -12,6 +12,7 @@
     import {contestState} from "$lib/states/contest-state.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
     import {shortcut} from "@svelte-put/shortcut";
+    import {clipboardState} from "$lib/states/clipboard-state.svelte";
 
     let isLogging: boolean = $state(false);
 
@@ -166,6 +167,7 @@
             await LogQso(qso);
             showToast.SUCCESS("QSO logged...");
             sessionState.update(await CurrentSessionQsoSlice());
+            clipboardState.add(qso.comment);
 
             if ($isContestMode) {
                 contestTimers.reset();
