@@ -46,7 +46,7 @@ func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error 
 func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 	defer f.wg.Done()
 
-	f.logger.DebugWith().Msg("Starting forwarding poller")
+	f.logger.InfoWith().Msg("Starting forwarding poller")
 
 	ticker := time.NewTicker(f.pollInterval)
 	defer ticker.Stop()
@@ -90,10 +90,10 @@ func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, w
 	for {
 		select {
 		case <-ctx.Done():
-			f.logger.InfoWith().Msg("Context done, shutting down forwarding poller")
+			f.logger.InfoWith().Msg("Context done, shutting down forwarding worker")
 			return
 		case <-shutdown:
-			f.logger.InfoWith().Msg("Forwarding poller shutting down")
+			f.logger.InfoWith().Msg("Forwarding worker shutting down")
 			return
 		case qsoUpload, ok := <-f.forwardingQueue:
 			if !ok {

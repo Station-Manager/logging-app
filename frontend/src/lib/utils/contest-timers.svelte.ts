@@ -14,7 +14,7 @@ export class ContestTimersClass implements ContestTimers {
     sinceLastQsoTimerID: number;
     elapsedSinceStart: number = $state(0);
     elapsedSinceLastQso: number = $state(0);
-    isRunning: boolean = $state(false);  // Add a reactive flag
+    isRunning: boolean = $state(false); // Add a reactive flag
 
     constructor() {
         this.sinceStartTimerID = 0;
