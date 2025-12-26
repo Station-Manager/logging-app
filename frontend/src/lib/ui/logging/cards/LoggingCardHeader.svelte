@@ -78,7 +78,7 @@
             </div>
             <div class="flex">
                 <div class="w-12">Last:</div>
-                <div>{formatTimeSecondsToHHColonMMColonSS(contestTimers.elapasedSinceLastQso)}</div>
+                <div>{formatTimeSecondsToHHColonMMColonSS(contestTimers.elapsedSinceLastQso)}</div>
             </div>
         {/if}
     </div>
@@ -94,6 +94,6 @@
     </div>
     <div class="flex text-sm font-semibold w-[180px]">
         <div class="w-[110px]">Session Time:</div>
-        <div class="w-[80px]">{getSessionElapsedTime()}</div>
+        <div class="w-20">{getSessionElapsedTime()}</div>
     </div>
 </header>
