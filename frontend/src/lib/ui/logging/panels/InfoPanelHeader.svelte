@@ -29,7 +29,7 @@
     const tabSelectClickHandler = (value: string): void => {
         appState.activePanel = value;
     }
-    const sendEmailClickHandler = async (): void => {
+    const sendEmailClickHandler = async (): Promise<void> => {
         if (sending) return;
 
         const recipientAddress = configState.default_fwd_email;
