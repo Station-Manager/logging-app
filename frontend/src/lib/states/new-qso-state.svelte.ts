@@ -227,7 +227,7 @@ export const qsoState: QsoState = $state({
                 base.freq = qsoState.cat_vfoa_freq;
                 base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
                 base.freq_rx = qsoState.cat_vfob_freq;
-                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
+                base.band_rx = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
             }
         } else {
             if (catState.split === 'OFF' || catState.split === '') {
@@ -237,7 +237,7 @@ export const qsoState: QsoState = $state({
                 base.freq = qsoState.cat_vfob_freq;
                 base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfob_freq);
                 base.freq_rx = qsoState.cat_vfoa_freq;
-                base.band = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
+                base.band_rx = frequencyToBandFromDottedMHz(qsoState.cat_vfoa_freq);
             }
         }
 

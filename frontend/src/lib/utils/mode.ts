@@ -55,5 +55,5 @@ export const getModeBySubmode = (submode: string): string => {
         LSB: 'SSB',
         USB: 'SSB',
     };
-    return map[s];
+    return map[s] ?? s;
 };
