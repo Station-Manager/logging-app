@@ -12,6 +12,7 @@
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {formatTimeSecondsToHHColonMMColonSS} from "$lib/utils/time-date";
     import {contestState} from "$lib/states/contest-state.svelte";
+    import {onDestroy} from "svelte";
 
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
 
@@ -33,6 +34,12 @@
             opField.select();
         }
     }
+
+    onDestroy(() => {
+        if (contestTimers.isRunning) {
+            contestTimers.stop();
+        }
+    });
 </script>
 
 <header class="flex items-center h-[50px] pl-4 border-b border-b-gray-300">

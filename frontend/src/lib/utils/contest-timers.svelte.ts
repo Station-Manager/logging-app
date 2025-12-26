@@ -3,6 +3,7 @@ export interface ContestTimers {
     sinceLastQsoTimerID: number;
     elapsedSinceStart: number;
     elapsedSinceLastQso: number;
+    isRunning: boolean;
     start(): void;
     reset(): void;
     stop(): void;
@@ -11,8 +12,9 @@ export interface ContestTimers {
 export class ContestTimersClass implements ContestTimers {
     sinceStartTimerID: number;
     sinceLastQsoTimerID: number;
-    elapsedSinceStart: number;
+    elapsedSinceStart: number = $state(0);
     elapsedSinceLastQso: number = $state(0);
+    isRunning: boolean = $state(false);  // Add a reactive flag
 
     constructor() {
         this.sinceStartTimerID = 0;
