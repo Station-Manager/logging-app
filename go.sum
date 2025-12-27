@@ -26,8 +26,8 @@ github.com/Station-Manager/iocdi v0.0.1 h1:b3IcTZ0xSI+CKlUhWbVClBhkS5roFzNjHvwv3
 github.com/Station-Manager/iocdi v0.0.1/go.mod h1:N2zO4mf6PLkiEg4Us1X9Mj+qKasiQFjpcwJiizUIdwM=
 github.com/Station-Manager/logging v0.0.12 h1:ETA9Vgydx8XwyjR9DnzSKqek0OqpAwnHOMsWsSs5Jso=
 github.com/Station-Manager/logging v0.0.12/go.mod h1:G7PSDZaNs1uPQ98UEXE9B+fujnNgDHWQxo+3XDunm3s=
-github.com/Station-Manager/lookup v0.0.11 h1:4R6X33t7ro7S97YaoecgOmwFLOCvim3fNotaWmdUTRM=
-github.com/Station-Manager/lookup v0.0.11/go.mod h1:Rzsu5g/NYL5uaTRbIbFjjV0vRUCXkKaA8uVM/V1S/JM=
+github.com/Station-Manager/lookup v0.0.12 h1:WIgKTX4VEStQEO4tC/onGkUEZjk8FJKnG+O0ZbGrxcI=
+github.com/Station-Manager/lookup v0.0.12/go.mod h1:n7zMwoqPLfjhwaUxUy1fB6rpcEcNgmscFtz/om1z+0o=
 github.com/Station-Manager/maidenhead v0.0.1 h1:N0b5ogXYCZ3qhfnla0V/FUcqgHokwXcznyqJzvqc++g=
 github.com/Station-Manager/maidenhead v0.0.1/go.mod h1:0/Y79g9u/NU8Qp5MOWDELp9gJuDM5FkShi1Dc5cg6iY=
 github.com/Station-Manager/serial v0.0.5 h1:O7a1d0mZifAVJDHme5eBd5Tkcp5ixQhvu3v/hLbyC9Q=

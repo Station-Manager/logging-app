@@ -12,7 +12,7 @@ require (
 	github.com/Station-Manager/forwarding v0.0.6
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.12
-	github.com/Station-Manager/lookup v0.0.11
+	github.com/Station-Manager/lookup v0.0.12
 	github.com/Station-Manager/maidenhead v0.0.1
 	github.com/Station-Manager/types v0.0.68
 	github.com/Station-Manager/utils v0.0.4
