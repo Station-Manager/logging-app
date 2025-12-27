@@ -4,15 +4,15 @@ go 1.25
 
 require (
 	github.com/Station-Manager/cat v0.0.9
-	github.com/Station-Manager/config v0.0.32
+	github.com/Station-Manager/config v0.0.33
 	github.com/Station-Manager/database v0.0.45
 	github.com/Station-Manager/email v0.0.5
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
-	github.com/Station-Manager/forwarding v0.0.5
+	github.com/Station-Manager/forwarding v0.0.6
 	github.com/Station-Manager/iocdi v0.0.1
-	github.com/Station-Manager/logging v0.0.11
-	github.com/Station-Manager/lookup v0.0.10
+	github.com/Station-Manager/logging v0.0.12
+	github.com/Station-Manager/lookup v0.0.11
 	github.com/Station-Manager/maidenhead v0.0.1
 	github.com/Station-Manager/types v0.0.68
 	github.com/Station-Manager/utils v0.0.4

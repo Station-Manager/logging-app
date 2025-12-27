@@ -2,6 +2,7 @@ version: '3'
 dotenv: ['../.env','.env']
 vars:
   MODULE_NAME: "Logging App"
+  EXE_NAME: "smlogging"
 
 includes:
   version: ../Taskfile.version.yml
@@ -22,7 +23,6 @@ tasks:
       - go get -u
       - go mod tidy
       - go mod verify
-      - task: default
 
   format:
     dir: frontend
@@ -32,32 +32,35 @@ tasks:
 
   prod:
     desc: "Production build of {{.MODULE_NAME}}"
+    vars:
+      VERSION:
+        sh: task version:get
     cmds:
       - task: update
       - echo -e "Building \033[34m{{.MODULE_NAME}}\033[0m module, version \033[33m{{.VERSION}}...\033[0m"
       - go vet ./...
       - go build ./...
       - go test -race -run Test ./...
-      - git add --all
-      - git diff --cached --quiet || git commit -m "Bump {{.MODULE_NAME}} version to v{{.VERSION}}"
-      - git tag -a "v{{.VERSION}}" -m "Release v{{.VERSION}}"
-      - |
-        if [ -z "${GITHUB_TOKEN}" ]; then
-        echo "GITHUB_TOKEN is not set. Abort."
-        exit 1
-        fi
-      - |
-        cat > /tmp/git-askpass.sh <<'EOF'
-        case "$1" in
-        *Username*) echo "git" ;;
-        *Password*) echo "${GITHUB_TOKEN}" ;;
-        *) echo "" ;;
-        esac
-        EOF
-        chmod +x /tmp/git-askpass.sh
-      - GIT_ASKPASS=/tmp/git-askpass.sh git push origin main --tags
-      - rm -f /tmp/git-askpass.sh
-      - wails build -ldflags "-X main.version={{.NEXT_VERSION}}" -o smdesk
-      - cf -f ../build/bin/sdesk /Data/7QSM/smdesk
+#      - git add --all
+#      - git diff --cached --quiet || git commit -m "Bump {{.MODULE_NAME}} version to v{{.VERSION}}"
+#      - git tag -a "v{{.VERSION}}" -m "Release v{{.VERSION}}"
+#      - |
+#        if [ -z "${GITHUB_TOKEN}" ]; then
+#        echo "GITHUB_TOKEN is not set. Abort."
+#        exit 1
+#        fi
+#      - |
+#        cat > /tmp/git-askpass.sh <<'EOF'
+#        case "$1" in
+#        *Username*) echo "git" ;;
+#        *Password*) echo "${GITHUB_TOKEN}" ;;
+#        *) echo "" ;;
+#        esac
+#        EOF
+#        chmod +x /tmp/git-askpass.sh
+#      - GIT_ASKPASS=/tmp/git-askpass.sh git push origin main --tags
+#      - rm -f /tmp/git-askpass.sh
+      - wails build -ldflags "-X main.version={{.NEXT_VERSION}}" -o {{.EXE_NAME}}
+      - cp -f ../build/bin/{{.EXE_NAME}} {{.DST_DIR}}/{{.EXE_NAME}}
       - echo -e "✓ \033[1;32m{{.MODULE_NAME}} module v{{.VERSION}} released\033[0m"
     silent: true
