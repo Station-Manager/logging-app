@@ -38,7 +38,7 @@ func (s *Service) openAndLoadFromDatabase() error {
 	s.CurrentLogbook = logbook
 
 	// Generate a new session id
-	s.sessionID, err = s.DatabaseService.InsertSession()
+	s.sessionID, err = s.DatabaseService.GenerateSession()
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to generate new session ID.")
