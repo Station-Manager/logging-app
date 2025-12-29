@@ -39,7 +39,7 @@ func main() {
 		_, _ = fmt.Fprintf(os.Stderr, "failed to determine working directory: %v\n", errors.Root(err))
 		os.Exit(ExitWorkingDir)
 	}
-
+	fmt.Println(workingDir)
 	if err = initializeContainer(workingDir); err != nil {
 		errors.PrintChain(err)
 		_, _ = fmt.Fprintf(os.Stderr, "failed to initialize container: %v\n", errors.Root(err))
