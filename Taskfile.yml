@@ -61,6 +61,6 @@ tasks:
 #      - GIT_ASKPASS=/tmp/git-askpass.sh git push origin main --tags
 #      - rm -f /tmp/git-askpass.sh
       - wails build -ldflags "-X main.version={{.NEXT_VERSION}}" -o {{.EXE_NAME}}
-      - cp -f ../build/bin/{{.EXE_NAME}} {{.DST_DIR}}/{{.EXE_NAME}}
+      - sudo cp -f ../build/bin/{{.EXE_NAME}} {{.DST_DIR}}/{{.EXE_NAME}}
       - echo -e "✓ \033[1;32m{{.MODULE_NAME}} module v{{.VERSION}} released\033[0m"
     silent: true

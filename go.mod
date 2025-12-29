@@ -5,16 +5,16 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.9
 	github.com/Station-Manager/config v0.0.33
-	github.com/Station-Manager/database v0.0.45
+	github.com/Station-Manager/database v0.0.48
 	github.com/Station-Manager/email v0.0.5
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
-	github.com/Station-Manager/forwarding v0.0.6
+	github.com/Station-Manager/forwarding v0.0.7
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.12
 	github.com/Station-Manager/lookup v0.0.12
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.68
+	github.com/Station-Manager/types v0.0.69
 	github.com/Station-Manager/utils v0.0.4
 	github.com/aarondl/sqlboiler/v4 v4.19.5
 	github.com/go-playground/validator/v10 v10.30.1
@@ -22,7 +22,7 @@ require (
 )
 
 require (
-	github.com/Station-Manager/adif v0.0.4 // indirect
+	github.com/Station-Manager/adif v0.0.5 // indirect
 	github.com/Station-Manager/serial v0.0.5 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect
@@ -80,5 +80,5 @@ require (
 	modernc.org/libc v1.67.2 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.41.0 // indirect
+	modernc.org/sqlite v1.42.2 // indirect
 )
