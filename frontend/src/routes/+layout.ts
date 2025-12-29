@@ -1,4 +1,3 @@
-import type { LayoutData } from './$types';
 import { loadCatStateValues } from '$lib/stores/cat-state-store';
 import { handleAsyncError } from '$lib/utils/error-handler';
 import { FetchUiConfig } from '$lib/wailsjs/go/facade/Service';
@@ -15,13 +14,9 @@ export const ssr = false;
  *
  * This function attempts to load necessary configuration data for the
  * application. If an error occurs during the configuration loading process,
- * it logs the error message for debugging purposes. In all cases, it
- * resolves to an object, which represents the layout data.
- *
- * @returns {Promise<object>} A promise that resolves to an object containing
- * the application layout data.
+ * it logs the error message for debugging purposes.
  */
-export const load: LayoutData = async (): Promise<object> => {
+export const load = async (): Promise<void> => {
     try {
         const cfg: types.UiConfig | null | undefined = await FetchUiConfig();
         let activeCfg = cfg;
@@ -39,5 +34,4 @@ export const load: LayoutData = async (): Promise<object> => {
     } catch (e: unknown) {
         handleAsyncError(e, '+layout.ts->load: LayoutData');
     }
-    return {};
 };

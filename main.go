@@ -43,7 +43,6 @@ func main() {
 	if err = initializeContainer(workingDir); err != nil {
 		errors.PrintChain(err)
 		_, _ = fmt.Fprintf(os.Stderr, "failed to initialize container: %v\n", errors.Root(err))
-		_, _ = fmt.Fprintf(os.Stderr, "container initialization failed: %s\n", err)
 		os.Exit(ExitContainerInit)
 	}
 
