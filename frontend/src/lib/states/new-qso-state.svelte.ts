@@ -176,7 +176,7 @@ export const qsoState: QsoState = $state({
     fromQso(this: QsoState, qso: types.Qso): void {
         if (!qso) return;
         this.original = qso;
-        this.call = qso.call;
+        this.call = qso.call ?? '';
         this.name = qso.name ?? '';
         this.qth = qso.qth ?? '';
         this.email = qso.email ?? '';
