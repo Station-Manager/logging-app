@@ -166,7 +166,14 @@ export const qsoState: QsoState = $state({
         this.stx = '';
         this.operator = '';
         this.owner_callsign = '';
+
+        this.email = '';
+        this.rx_pwr = '';
+        this.tx_pwr = '';
+        this.rig = '';
+        this.web = '';
     },
+
     /**
      * Updates the current QsoState instance based on the provided QSO data. This is called when a new QSO is loaded
      * from the backend.
