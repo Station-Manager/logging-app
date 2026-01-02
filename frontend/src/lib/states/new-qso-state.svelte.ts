@@ -48,6 +48,7 @@ export interface QsoState extends CatDrivenFields {
     cqz: string;
     rig: string;
     qso_random: string;
+    qslWanted: string;
 
     country_name: string;
     ccode: string;
@@ -111,6 +112,7 @@ export const qsoState: QsoState = $state({
     email: '',
     rig: '',
     qso_random: '',
+    qslWanted: '',
 
     country_name: '',
     ccode: '',
@@ -161,6 +163,7 @@ export const qsoState: QsoState = $state({
         this.remote_time = '';
         this.remote_offset = '';
         this.contact_history = [];
+        this.qslWanted = '';
 
         this.srx = '';
         this.stx = '';

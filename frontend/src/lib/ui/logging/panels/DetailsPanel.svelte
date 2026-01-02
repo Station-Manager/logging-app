@@ -3,12 +3,20 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {OpenInBrowser} from "$lib/wailsjs/go/facade/Service"
 
-    const onClick = () => {
-        // if (qslCardWanted) {
-        //     qsoFormState.qslWantedValue = adifNoString;
-        // } else {
-        //     qsoFormState.qslWantedValue = adifYesString;
-        // }
+    let qslCardWanted = $state(false);
+
+    /**
+     * Handler function for the onClick event.
+     * Toggles the QSL card wanted status by updating the QSL wanted value
+     * in the QSO form state. When the QSL card is wanted, the value is set
+     * to `adifNoString`. Otherwise, it is set to `adifYesString`.
+     */
+    const onClick = (): void => {
+        if (qslCardWanted) {
+            qsoState.qslWanted = 'Y';
+        } else {
+            qsoState.qslWanted = 'N';
+        }
     }
 
     const viewWebSite = async ():Promise<void> => {
@@ -80,6 +88,7 @@
             <div class="group grid size-5 grid-cols-1">
                 <input
                         onclick={onClick}
+                        checked={qslCardWanted}
                         id="qsl_wanted"
                         type="checkbox"
                         title="Request QSL from contacted station"
