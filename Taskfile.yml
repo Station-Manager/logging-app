@@ -3,6 +3,8 @@ dotenv: ['../.env','.env']
 vars:
   MODULE_NAME: "Logging App"
   EXE_NAME: "smlogger"
+  VERSION:
+    sh: task version:get
 
 includes:
   version: ../Taskfile.version.yml
