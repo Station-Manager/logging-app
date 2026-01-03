@@ -1,5 +1,7 @@
 <script lang="ts">
     import {qsoState, qsoTimerState} from "$lib/states/new-qso-state.svelte";
+    import {shortcut} from "@svelte-put/shortcut";
+    import {isValidCallsignForLog, isValidCallsignLength} from "$lib/constants/callsign";
 
     let cannotStart = $derived.by(() => {
         return qsoTimerState.running || qsoState.call === '';
@@ -14,6 +16,15 @@
 
     const onclickStartTimer = (): void => {
         qsoState.startTimer();
+    }
+
+    const toggleTimer = (): void => {
+        if (!isValidCallsignLength(qsoState.call) || !isValidCallsignForLog(qsoState.call)) return;
+        if (qsoState.isTimerRunning()) {
+            qsoState.stopTimer();
+        } else {
+            qsoState.startTimer();
+        }
     }
 </script>
 
@@ -41,3 +52,10 @@
         </svg>
     </button>
 </div>
+<svelte:window
+        use:shortcut={{
+        trigger: [
+            {key: 'F5', callback: toggleTimer},
+        ],
+    }}
+></svelte:window>
