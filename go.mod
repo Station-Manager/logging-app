@@ -9,12 +9,12 @@ require (
 	github.com/Station-Manager/email v0.0.5
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
-	github.com/Station-Manager/forwarding v0.0.8
+	github.com/Station-Manager/forwarding v0.0.9
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.12
-	github.com/Station-Manager/lookup v0.0.12
+	github.com/Station-Manager/lookup v0.0.13
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.70
+	github.com/Station-Manager/types v0.0.71
 	github.com/Station-Manager/utils v0.0.4
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/go-playground/validator/v10 v10.30.1
