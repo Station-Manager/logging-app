@@ -5,6 +5,7 @@ import (
 	"embed"
 	"fmt"
 	"os"
+	"runtime/debug"
 
 	"github.com/Station-Manager/enums/events"
 	"github.com/Station-Manager/enums/tags"
@@ -60,6 +61,13 @@ func main() {
 	}
 
 	startup := func(ctx context.Context) {
+		defer func() {
+			if r := recover(); r != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "PANIC in startup: %v\n", r)
+				_, _ = fmt.Fprintf(os.Stderr, "Stack trace:\n%s\n", debug.Stack())
+			}
+		}()
+
 		if err = facade.Start(ctx); err != nil {
 			errors.PrintChain(err)
 			_, _ = fmt.Fprintf(os.Stderr, "failed to start facade service: %v\n", errors.Root(err))
@@ -68,6 +76,12 @@ func main() {
 	}
 
 	shutdown := func(ctx context.Context) {
+		defer func() {
+			if r := recover(); r != nil {
+				_, _ = fmt.Fprintf(os.Stderr, "PANIC in shutdown: %v\n", r)
+				_, _ = fmt.Fprintf(os.Stderr, "Stack trace:\n%s\n", debug.Stack())
+			}
+		}()
 		if err = facade.Stop(); err != nil {
 			errors.PrintChain(err)
 			_, _ = fmt.Fprintf(os.Stderr, "failed to stop facade service: %v\n", errors.Root(err))
