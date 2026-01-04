@@ -211,7 +211,7 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 
 	// Update forwarder poll interval from config
-	s.forwarding.pollInterval = s.requiredCfgs.QsoForwardingIntervalSeconds * time.Second
+	s.forwarding.pollInterval = s.requiredCfgs.QsoForwardingPollIntervalSeconds * time.Second
 
 	// Start the forwarder
 	if s.forwarding != nil {

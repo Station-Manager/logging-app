@@ -101,9 +101,9 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 func (s *Service) initializeForwarding() error {
 	// Initialize the internal forwarding service workers
 	s.forwarding = &forwarding{
-		pollInterval:    30 * time.Second, // Will be updated in Start
-		maxWorkers:      5,
-		forwardingQueue: make(chan types.QsoUpload, 10),
+		pollInterval:    s.requiredCfgs.QsoForwardingPollIntervalSeconds * time.Second,
+		maxWorkers:      s.requiredCfgs.QsoForwardingWorkerCount,
+		forwardingQueue: make(chan types.QsoUpload, s.requiredCfgs.QsoForwardingQueueSize),
 		fetchPending: func() ([]types.QsoUpload, error) {
 			return s.DatabaseService.FetchPendingUploads()
 		},
