@@ -44,18 +44,18 @@ func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error 
 		workerID := i
 		workerName := fmt.Sprintf("worker-%d", workerID)
 
-		f.launchWorker(ctx, shutdown, workerName, func() {
+		f.launchWorker(workerName, func() {
 			f.workerLoop(ctx, shutdown, workerID)
 		})
 	}
 
 	// Start the database write worker
-	f.launchWorker(ctx, shutdown, "db-writer", func() {
+	f.launchWorker("db-writer", func() {
 		f.dbWriteWorkerLoop(ctx, shutdown)
 	})
 
 	// Start the polling goroutine
-	f.launchWorker(ctx, shutdown, "poller", func() {
+	f.launchWorker("poller", func() {
 		f.pollerLoop(ctx, shutdown)
 	})
 
@@ -66,8 +66,9 @@ func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error 
 	return nil
 }
 
-// launchWorker starts a worker goroutine with proper lifecycle tracking
-func (f *forwarding) launchWorker(ctx context.Context, shutdown <-chan struct{}, name string, work func()) {
+// launchWorker starts a worker goroutine with proper lifecycle tracking.
+// The work function is a closure that captures ctx and shutdown from the calling context.
+func (f *forwarding) launchWorker(name string, work func()) {
 	// Register worker before launching
 	f.workerRegistry.Store(name, true)
 
@@ -90,7 +91,7 @@ func (f *forwarding) launchWorker(ctx context.Context, shutdown <-chan struct{},
 
 		f.logger.DebugWith().Str("worker", name).Msg("Worker started")
 
-		// Run the actual work
+		// Run the actual work (work closure already has ctx and shutdown captured)
 		work()
 	}()
 }
