@@ -37,10 +37,7 @@ tasks:
 
   deploy:
     desc: "Local deployment of the {{.MODULE_NAME}} module"
-    vars:
-      VERSION:
-        sh: cat {{.VERSION_FILE}} 2>/dev/null || echo "0.0.0"
     cmds:
-      - wails build -ldflags "-X main.version={{.VERSION}}" -o {{.EXE_NAME}}
+      - wails build -ldflags "-X main.version=$(cat {{.VERSION_FILE}} 2>/dev/null || echo '0.0.0')" -o {{.EXE_NAME}}
       - sudo sudo cp -f {{.SM_WORKING_DIR}}/bin/{{.EXE_NAME}} {{.DEPLOY_DIR}}/{{.EXE_NAME}}
-      - echo "✓ {{.MODULE_NAME}} v{{.VERSION}} deployed"
+      - echo "✓ {{.MODULE_NAME}} v$(cat {{.VERSION_FILE}} 2>/dev/null || echo '0.0.0') deployed"
