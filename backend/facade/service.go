@@ -37,10 +37,10 @@ type Service struct {
 	HamnutLookupService *hamnut.Service  `di.inject:"hamnutlookupservice"`
 	QrzLookupService    *qrz.Service     `di.inject:"qrzlookupservice"`
 	EmailService        *email.Service   `di.inject:"emailservice"`
+	requiredCfgs        *types.RequiredConfigs
 
 	forwarders map[string]fwdrs.Forwarder
 
-	requiredCfgs   *types.RequiredConfigs
 	CurrentLogbook types.Logbook
 	sessionID      int64
 
@@ -96,12 +96,19 @@ func (s *Service) Initialize() error {
 			return
 		}
 
-		if err := s.initializeValidation(); err != nil {
+		reqCfg, err := s.ConfigService.RequiredConfigs()
+		if err != nil {
+			initErr = errors.New(op).Err(err)
+			return
+		}
+		s.requiredCfgs = &reqCfg
+
+		if err = s.initializeValidation(); err != nil {
 			initErr = errors.New(op).Err(err)
 			return
 		}
 
-		if err := s.initializeForwarding(); err != nil {
+		if err = s.initializeForwarding(); err != nil {
 			initErr = errors.New(op).Err(err)
 			return
 		}
@@ -163,23 +170,15 @@ func (s *Service) Start(ctx context.Context) error {
 	}
 	s.ctx = ctx
 
-	reqCfg, err := s.ConfigService.RequiredConfigs()
-	if err != nil {
-		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch required configs.")
-		return errors.Root(err)
-	}
-	s.requiredCfgs = &reqCfg
-
 	// Start the database service
-	if err = s.openAndLoadFromDatabase(); err != nil {
+	if err := s.openAndLoadFromDatabase(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open and load from database.")
 		return errors.Root(err)
 	}
 
 	// Start the CAT service
-	if err = s.CatService.Start(); err != nil {
+	if err := s.CatService.Start(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start CAT service.")
 		return errors.Root(err)
@@ -196,6 +195,10 @@ func (s *Service) Start(ctx context.Context) error {
 	cfgs, _ := s.ConfigService.ForwarderConfigs() // Error discarded as ForwarderConfigs err is always nil
 	s.forwarders = make(map[string]fwdrs.Forwarder, len(cfgs))
 	for _, cfg := range cfgs {
+		if !cfg.Enabled {
+			continue
+		}
+
 		name := cfg.Name
 		obj, serr := s.container.ResolveSafe(name)
 		if serr != nil {
@@ -215,7 +218,7 @@ func (s *Service) Start(ctx context.Context) error {
 
 	// Start the forwarder
 	if s.forwarding != nil {
-		if err = s.forwarding.start(s.ctx, run.shutdownChannel); err != nil {
+		if err := s.forwarding.start(s.ctx, run.shutdownChannel); err != nil {
 			err = errors.New(op).Err(err)
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarder.")
 			return errors.Root(err)
