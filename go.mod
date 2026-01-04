@@ -5,8 +5,8 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.9
 	github.com/Station-Manager/config v0.0.34
-	github.com/Station-Manager/database v0.0.52
-	github.com/Station-Manager/email v0.0.5
+	github.com/Station-Manager/database v0.0.53
+	github.com/Station-Manager/email v0.0.6
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
 	github.com/Station-Manager/forwarding v0.0.9
@@ -22,7 +22,7 @@ require (
 )
 
 require (
-	github.com/Station-Manager/adif v0.0.5 // indirect
+	github.com/Station-Manager/adif v0.0.6 // indirect
 	github.com/Station-Manager/serial v0.0.5 // indirect
 	github.com/aarondl/inflect v0.0.2 // indirect
 	github.com/aarondl/null/v8 v8.1.3 // indirect

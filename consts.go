@@ -4,6 +4,7 @@ const (
 	ExitWorkingDir = iota + 100
 	ExitContainerInit
 	ExitFacadeService
+	ExitPanic
 )
 
 const (
