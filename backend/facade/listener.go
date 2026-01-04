@@ -17,6 +17,12 @@ func (s *Service) catStatusChannelListener(shutdown <-chan struct{}) {
 		return
 	}
 
+	if statusChannel == nil {
+		err = errors.New(op).Msg("CAT status channel is nil")
+		s.LoggerService.ErrorWith().Err(err).Msg("Cannot start listener with nil channel")
+		return
+	}
+
 	for {
 		select {
 		case <-shutdown:
@@ -25,7 +31,8 @@ func (s *Service) catStatusChannelListener(shutdown <-chan struct{}) {
 			return
 		case status, ok := <-statusChannel:
 			if !ok {
-				continue
+				s.LoggerService.InfoWith().Msg("CAT status channel closed, listener exiting")
+				return
 			}
 			// Emit the status update to the frontend
 			runtime.EventsEmit(s.ctx, events.Status.String(), status)

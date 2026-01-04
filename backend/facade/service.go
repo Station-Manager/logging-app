@@ -256,13 +256,28 @@ func (s *Service) Stop() error {
 		}
 	}
 
+	// Stop forwarding workers with timeout
 	if fwd != nil {
-		close(fwd.forwardingQueue)
-		fwd.wg.Wait()
+		if err := fwd.stop(10 * time.Second); err != nil {
+			s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop forwarding workers cleanly")
+			// Continue with shutdown even if workers timeout
+		}
 	}
 
+	// Wait for other workers with timeout
 	if run != nil {
-		run.wg.Wait()
+		waitDone := make(chan struct{})
+		go func() {
+			run.wg.Wait()
+			close(waitDone)
+		}()
+
+		select {
+		case <-waitDone:
+			// Success
+		case <-time.After(5 * time.Second):
+			s.LoggerService.WarnWith().Msg("Timeout waiting for run workers to stop")
+		}
 	}
 
 	// Stop the CAT service
