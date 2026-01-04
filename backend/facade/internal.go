@@ -75,7 +75,7 @@ func (s *Service) lookupCallsignOnline(callsign string) (types.ContactedStation,
 	return station, nil
 }
 
-func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.LoggingStation, cs types.ContactedStation) error {
+func (s *Service) calculatedBearingAndDistance(country *types.Country, ls types.LoggingStation, cs types.ContactedStation) error {
 	const op errors.Op = "facade.Service.calulatedBearingAndDistance"
 	if country == nil {
 		return errors.New(op).Msg("country parameter is nil")
@@ -98,6 +98,7 @@ func (s *Service) calulatedBearingAndDistance(country *types.Country, ls types.L
 	return nil
 }
 
+// initializeForwarding configures and initializes the internal forwarding service workers required for QSO upload processing.
 func (s *Service) initializeForwarding() error {
 	// Initialize the internal forwarding service workers
 	s.forwarding = &forwarding{

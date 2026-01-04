@@ -135,7 +135,7 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 
 		model, qerr := adapters.QsoTypeToModel(qso)
 		if qerr != nil {
-			qerr = errors.New(op).Err(qerr).Err(qerr)
+			qerr = errors.New(op).Err(qerr)
 			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to convert QSO type to model.")
 			return qerr
 		}

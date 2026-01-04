@@ -96,6 +96,11 @@ func (s *Service) Initialize() error {
 			return
 		}
 
+		if s.EmailService == nil {
+			initErr = errors.New(op).Msg(errMsgNilEmailService)
+			return
+		}
+
 		reqCfg, err := s.ConfigService.RequiredConfigs()
 		if err != nil {
 			initErr = errors.New(op).Err(err)
