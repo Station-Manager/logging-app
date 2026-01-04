@@ -127,6 +127,7 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		return errors.New(op).Err(err)
 	}
 	defer txCancel()
+	defer func() { _ = tx.Rollback() }() // No-op after successful commit
 
 	for _, qso := range slice {
 		qso.SmFwrdByEmailStatus = "Y"
@@ -142,13 +143,11 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		if _, qerr = model.Update(context.Background(), tx, boil.Infer()); qerr != nil {
 			qerr = errors.New(op).Err(qerr)
 			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to update model")
-			_ = tx.Rollback()
 			return qerr
 		}
 	}
 
 	if err = tx.Commit(); err != nil {
-		_ = tx.Rollback()
 		return errors.New(op).Err(err)
 	}
 
