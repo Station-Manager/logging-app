@@ -109,7 +109,7 @@ func (f *forwarding) workerLoop(ctx context.Context, shutdown <-chan struct{}, w
 			// Note: Database writes are now handled within sendAndMarkDone via the dbWriteQueue
 			// This maintains backward compatibility while ensuring serialized DB access
 			if err != nil {
-				f.logger.ErrorWith().Err(err).Msg("Failed to forward QSO")
+				f.logger.ErrorWith().Err(err).Msg("Error in processing or forwarding QSO")
 			}
 		}
 	}

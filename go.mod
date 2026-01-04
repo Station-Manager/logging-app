@@ -9,7 +9,7 @@ require (
 	github.com/Station-Manager/email v0.0.6
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
-	github.com/Station-Manager/forwarding v0.0.9
+	github.com/Station-Manager/forwarding v0.0.11
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.12
 	github.com/Station-Manager/lookup v0.0.13
