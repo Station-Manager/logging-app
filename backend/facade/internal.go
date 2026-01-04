@@ -104,11 +104,12 @@ func (s *Service) initializeForwarding() error {
 		pollInterval:    s.requiredCfgs.QsoForwardingPollIntervalSeconds * time.Second,
 		maxWorkers:      s.requiredCfgs.QsoForwardingWorkerCount,
 		forwardingQueue: make(chan types.QsoUpload, s.requiredCfgs.QsoForwardingQueueSize),
+		dbWriteQueue:    make(chan func() error, 100), // Buffered to handle bursts
 		fetchPending: func() ([]types.QsoUpload, error) {
 			return s.DatabaseService.FetchPendingUploads()
 		},
 		sendAndMarkDone: func(qsoUpload types.QsoUpload) error {
-			return s.forwardQso(qsoUpload)
+			return s.forwardQsoWithSerializedDB(qsoUpload)
 		},
 		logger: s.LoggerService,
 	}
@@ -116,9 +117,10 @@ func (s *Service) initializeForwarding() error {
 	return nil
 }
 
-// forwardQso forwards a single QSO upload to the appropriate service and updates the database
-func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
-	const op errors.Op = "facade.Service.forwardQso"
+// forwardQsoWithSerializedDB forwards a QSO to the network service and serializes all database writes.
+// This prevents SQLITE_BUSY errors during concurrent forwarding operations.
+func (s *Service) forwardQsoWithSerializedDB(qsoUpload types.QsoUpload) error {
+	const op errors.Op = "facade.Service.forwardQsoWithSerializedDB"
 
 	if s.container == nil {
 		return errors.New(op).Msg("container is nil. Call SetContainer before using the facade.")
@@ -129,29 +131,93 @@ func (s *Service) forwardQso(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msgf("no forwarder found for service: %s", qsoUpload.Service)
 	}
 
+	// Phase 1: Network operation (can be concurrent)
+	networkErr := s.forwardNetworkOnly(provider, qsoUpload)
+
+	// Phase 2: Database operations (serialized through dedicated worker)
+	// Send the DB operation to the serialized queue
+	s.forwarding.dbWriteQueue <- func() error {
+		return s.updateDatabaseOnly(qsoUpload, networkErr)
+	}
+
+	return nil
+}
+
+// forwardNetworkOnly performs only the network call to the forwarding service.
+// Database operations are handled separately to enable serialization.
+func (s *Service) forwardNetworkOnly(provider interface{}, qsoUpload types.QsoUpload) error {
+	const op errors.Op = "facade.Service.forwardNetworkOnly"
+
+	// Type assertion to get the actual forwarder interface
+	forwarder, ok := provider.(interface {
+		ForwardNetworkOnly(qso types.Qso, action string) error
+	})
+
+	if !ok {
+		// Fallback: if the provider doesn't implement ForwardNetworkOnly,
+		// use the old Forward method (which includes DB writes - not ideal but maintains compatibility)
+		s.LoggerService.WarnWith().Msgf("Provider %s does not implement ForwardNetworkOnly, using legacy Forward method", qsoUpload.Service)
+		legacyForwarder, ok := provider.(interface {
+			Forward(qso types.Qso, action string) error
+		})
+		if !ok {
+			return errors.New(op).Msgf("provider %s does not implement Forward interface", qsoUpload.Service)
+		}
+		return legacyForwarder.Forward(qsoUpload.Qso, qsoUpload.Action)
+	}
+
+	return forwarder.ForwardNetworkOnly(qsoUpload.Qso, qsoUpload.Action)
+}
+
+// updateDatabaseOnly performs all database write operations for a forwarded QSO.
+// This is called by the serialized DB write worker to prevent concurrent write conflicts.
+func (s *Service) updateDatabaseOnly(qsoUpload types.QsoUpload, networkErr error) error {
+	const op errors.Op = "facade.Service.updateDatabaseOnly"
+
 	errState := ""
 	uploadStatus := status.Failed
-	err := provider.Forward(qsoUpload.Qso, qsoUpload.Action)
-	if err != nil {
-		s.LoggerService.ErrorWith().Err(err).Msgf("failed to forward QSO to %s", qsoUpload.Service)
+
+	if networkErr != nil {
+		s.LoggerService.ErrorWith().Err(networkErr).Msgf("failed to forward QSO to %s", qsoUpload.Service)
 		qsoUpload.Attempts++
-		errState = errors.Root(err).Error()
+		errState = errors.Root(networkErr).Error()
 	} else {
 		qsoUpload.Attempts = 0
 		qsoUpload.LastError = ""
 		uploadStatus = status.Uploaded
 	}
 
+	// Update qso_upload table
 	act, _ := action.Parse(qsoUpload.Action) // Error discarded as Parse() always returns nil error
 	uerr := s.DatabaseService.UpdateQsoUploadStatus(qsoUpload.ID, uploadStatus, act, qsoUpload.Attempts, errState)
 	if uerr != nil {
-		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status after forward failure")
+		s.LoggerService.ErrorWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(uerr).Msg("Database error: Failed to update upload status")
+		return errors.New(op).Err(uerr)
 	}
 
-	if err == nil {
+	// Update service-specific fields in qso table (e.g., QrzComUploadStatus)
+	if networkErr == nil {
+		// Get the provider to update its specific QSO fields
+		provider, ok := s.forwarders[qsoUpload.Service]
+		if ok {
+			// Type assertion to get the database updater interface
+			dbUpdater, hasDBUpdate := provider.(interface {
+				UpdateDatabase(qso types.Qso) error
+			})
+			if hasDBUpdate {
+				if err := dbUpdater.UpdateDatabase(qsoUpload.Qso); err != nil {
+					s.LoggerService.ErrorWith().Err(err).Msgf("failed to update %s-specific QSO fields in database", qsoUpload.Service)
+					return errors.New(op).Err(err)
+				}
+			}
+		}
+	}
+
+	// Log the result
+	if networkErr == nil {
 		s.LoggerService.InfoWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Msg("QSO uploaded successfully")
 	} else {
-		s.LoggerService.WarnWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(err).Msg("Failed to upload QSO")
+		s.LoggerService.WarnWith().Int64("qso_id", qsoUpload.QsoID).Str("service", qsoUpload.Service).Err(networkErr).Msg("Failed to upload QSO")
 	}
 
 	return nil
