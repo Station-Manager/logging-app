@@ -269,8 +269,13 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 		return errors.New(op).Msg("Context is not set")
 	}
 	u, err := url.ParseRequestURI(urlStr)
-	if err != nil || u == nil || u.Scheme != "https" {
-		err = errors.New(op).Err(err).Msg("Invalid or unsafe URL")
+	if err != nil || u == nil {
+		err = errors.New(op).Err(err).Msg("Invalid URL")
+		s.LoggerService.ErrorWith().Err(err).Str("url", urlStr).Msg("Invalid URL")
+		return err
+	}
+	if u.Scheme != "https" {
+		err = errors.New(op).Msg("URL scheme must be https")
 		s.LoggerService.ErrorWith().Err(err).Str("url_scheme", u.Scheme).Msg("Invalid or unsafe URL")
 		return err
 	}

@@ -114,9 +114,13 @@ func (f *forwarding) stop(timeout time.Duration) error {
 
 	f.logger.InfoWith().Msg("Stopping forwarding workers")
 
-	// Close queues to signal workers to exit
-	close(f.forwardingQueue)
-	close(f.dbWriteQueue)
+	// Close queues to signal workers to exit (only if they were initialized)
+	if f.forwardingQueue != nil {
+		close(f.forwardingQueue)
+	}
+	if f.dbWriteQueue != nil {
+		close(f.dbWriteQueue)
+	}
 
 	// Wait with timeout
 	done := make(chan struct{})
