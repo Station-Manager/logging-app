@@ -148,19 +148,22 @@ func (s *Service) forwardQsoWithSerializedDB(qsoUpload types.QsoUpload) error {
 		return s.updateDatabaseOnly(qsoUpload, networkErr)
 	}
 
-	// Send the DB operation to the serialized queue with non-blocking select
+	// Send the DB operation to the serialized queue with non-blocking select.
+	// Note: When the operation is queued successfully, this function returns nil immediately.
+	// Any errors from updateDatabaseOnly are handled asynchronously by dbWriteWorkerLoop
+	// and logged there. This is intentional - we want to return quickly from the network
+	// operation and let the DB writes be serialized separately.
 	select {
 	case s.forwarding.dbWriteQueue <- func() error {
 		return s.updateDatabaseOnly(qsoUpload, networkErr)
 	}:
-		// Successfully queued
+		// Successfully queued - DB errors will be logged by dbWriteWorkerLoop
+		return nil
 	default:
-		// Queue is full or closed, execute inline
+		// Queue is full, execute inline and return any error directly
 		s.LoggerService.WarnWith().Msg("DB write queue full, executing inline")
 		return s.updateDatabaseOnly(qsoUpload, networkErr)
 	}
-
-	return nil
 }
 
 // forwardNetworkOnly performs only the network call to the forwarding service.
