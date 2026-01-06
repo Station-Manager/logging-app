@@ -26,16 +26,32 @@ func (s *Service) catStatusChannelListener(shutdown <-chan struct{}) {
 	for {
 		select {
 		case <-shutdown:
+			s.LoggerService.DebugWith().Msg("CAT status listener received shutdown signal")
 			return
 		case <-s.ctx.Done():
+			s.LoggerService.DebugWith().Msg("CAT status listener context cancelled")
 			return
 		case status, ok := <-statusChannel:
 			if !ok {
 				s.LoggerService.InfoWith().Msg("CAT status channel closed, listener exiting")
 				return
 			}
-			// Emit the status update to the frontend
-			runtime.EventsEmit(s.ctx, events.Status.String(), status)
+			// Emit the status update to the frontend in a non-blocking manner
+			// Use a goroutine to prevent blocking this listener if EventsEmit is slow
+			go func(statusCopy map[string]string) {
+				// Check if we should still emit before doing the potentially blocking operation
+				select {
+				case <-shutdown:
+					s.LoggerService.DebugWith().Msg("Skipping event emit due to shutdown")
+					return
+				case <-s.ctx.Done():
+					s.LoggerService.DebugWith().Msg("Skipping event emit due to context cancellation")
+					return
+				default:
+					// Safe to emit
+					runtime.EventsEmit(s.ctx, events.Status.String(), statusCopy)
+				}
+			}(status)
 		}
 	}
 }
