@@ -247,7 +247,9 @@ func (s *Service) Start(ctx context.Context) error {
 	return nil
 }
 
-// Stop gracefully shuts down the service, closes resources, and resets the service state. Returns an error if any failure occurs.
+// Stop gracefully shuts down the service, closes resources, and resets the service state.
+// Returns an error if critical failures occur during shutdown, but attempts to complete
+// all shutdown steps regardless of individual failures.
 func (s *Service) Stop() error {
 	const op errors.Op = "facade.Service.Stop"
 	if !s.initialized.Load() {
@@ -255,6 +257,9 @@ func (s *Service) Stop() error {
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
 		return err
 	}
+
+	// Collect non-fatal shutdown errors for reporting
+	var shutdownErrors []error
 
 	// Take a consistent view of the current run/forwarding state under lock to avoid races with Start.
 	s.mu.Lock()
@@ -275,8 +280,9 @@ func (s *Service) Stop() error {
 
 	// Stop forwarding workers with timeout
 	if fwd != nil {
-		if err := fwd.stop(10 * time.Second); err != nil {
+		if err := fwd.stop(forwardingStopTimeout); err != nil {
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop forwarding workers cleanly")
+			shutdownErrors = append(shutdownErrors, err)
 			// Continue with shutdown even if workers timeout
 		}
 	}
@@ -292,26 +298,34 @@ func (s *Service) Stop() error {
 		select {
 		case <-waitDone:
 			// Success
-		case <-time.After(5 * time.Second):
+		case <-time.After(workerWaitTimeout):
 			s.LoggerService.WarnWith().Msg("Timeout waiting for run workers to stop")
+			shutdownErrors = append(shutdownErrors, errors.New(op).Msg("timeout waiting for run workers"))
 		}
 	}
 
 	// Stop the CAT service
 	if err := s.CatService.Stop(); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop CAT service")
+		shutdownErrors = append(shutdownErrors, err)
 	}
 
 	// Soft-delete the session ID
 	if err := s.DatabaseService.SoftDeleteSessionByID(s.sessionID); err != nil {
 		// Not a show-stopper, just log the error
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to soft-delete session ID")
+		shutdownErrors = append(shutdownErrors, err)
 	}
 
 	// Stop the database service
 	if err := s.DatabaseService.Close(); err != nil {
-		// Log the error, but it's not fatal
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to close database")
+		shutdownErrors = append(shutdownErrors, err)
+	}
+
+	// Return combined error if any shutdown steps failed
+	if len(shutdownErrors) > 0 {
+		return errors.New(op).Msgf("shutdown completed with %d error(s)", len(shutdownErrors))
 	}
 
 	return nil
