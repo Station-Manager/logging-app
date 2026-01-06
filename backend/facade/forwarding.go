@@ -114,15 +114,16 @@ func (f *forwarding) stop(timeout time.Duration) error {
 
 	f.logger.InfoWith().Msg("Stopping forwarding workers")
 
-	// Close queues to signal workers to exit (only if they were initialized)
-	if f.forwardingQueue != nil {
-		close(f.forwardingQueue)
-	}
-	if f.dbWriteQueue != nil {
-		close(f.dbWriteQueue)
-	}
+	// Note: We do NOT close the channels here because workers might still be
+	// writing to them (e.g., pollerLoop writes to forwardingQueue, sendAndMarkDone
+	// writes to dbWriteQueue). Closing a channel while another goroutine is
+	// sending to it causes a panic.
+	//
+	// Instead, workers will exit when they receive the shutdown signal or
+	// context cancellation. The channels will be garbage collected after
+	// all references are gone.
 
-	// Wait with timeout
+	// Wait with timeout for workers to exit
 	done := make(chan struct{})
 	go func() {
 		f.wg.Wait()
@@ -132,6 +133,13 @@ func (f *forwarding) stop(timeout time.Duration) error {
 	select {
 	case <-done:
 		f.logger.InfoWith().Msg("All forwarding workers stopped gracefully")
+		// Now it's safe to close the channels since all workers have exited
+		if f.forwardingQueue != nil {
+			close(f.forwardingQueue)
+		}
+		if f.dbWriteQueue != nil {
+			close(f.dbWriteQueue)
+		}
 		return nil
 	case <-time.After(timeout):
 		activeWorkers := f.ActiveWorkerCount()
@@ -166,12 +174,22 @@ func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 		case <-shutdown:
 			return
 		case <-ticker.C:
+			// Check if we're stopping before doing any work
+			if f.stopping.Load() {
+				return
+			}
+
 			qsoUploads, err := f.fetchPending()
 			if err != nil {
 				f.logger.ErrorWith().Err(err).Msg("Failed to fetch pending uploads")
 				continue
 			}
 			for _, qsoUpload := range qsoUploads {
+				// Check stopping flag before each send attempt to avoid sending on closed channel
+				if f.stopping.Load() {
+					return
+				}
+
 				select {
 				case f.forwardingQueue <- qsoUpload:
 					// forwarded to the forwarding queue

@@ -127,6 +127,11 @@ func (s *Service) forwardQsoWithSerializedDB(qsoUpload types.QsoUpload) error {
 		return errors.New(op).Msg("container is nil. Call SetContainer before using the facade.")
 	}
 
+	// Check if forwarding is stopping before doing any work
+	if s.forwarding == nil || s.forwarding.stopping.Load() {
+		return errors.New(op).Msg("forwarding is stopping or not initialized")
+	}
+
 	provider, ok := s.forwarders[qsoUpload.Service]
 	if !ok {
 		return errors.New(op).Msgf("no forwarder found for service: %s", qsoUpload.Service)
@@ -136,8 +141,22 @@ func (s *Service) forwardQsoWithSerializedDB(qsoUpload types.QsoUpload) error {
 	networkErr := s.forwardNetworkOnly(provider, qsoUpload)
 
 	// Phase 2: Database operations (serialized through dedicated worker)
-	// Send the DB operation to the serialized queue
-	s.forwarding.dbWriteQueue <- func() error {
+	// Check stopping flag again before sending to avoid race condition
+	if s.forwarding.stopping.Load() {
+		// Forwarding is stopping, execute DB update inline instead of through queue
+		// This ensures we don't lose the database update
+		return s.updateDatabaseOnly(qsoUpload, networkErr)
+	}
+
+	// Send the DB operation to the serialized queue with non-blocking select
+	select {
+	case s.forwarding.dbWriteQueue <- func() error {
+		return s.updateDatabaseOnly(qsoUpload, networkErr)
+	}:
+		// Successfully queued
+	default:
+		// Queue is full or closed, execute inline
+		s.LoggerService.WarnWith().Msg("DB write queue full, executing inline")
 		return s.updateDatabaseOnly(qsoUpload, networkErr)
 	}
 

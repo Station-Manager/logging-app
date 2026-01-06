@@ -22,6 +22,10 @@ import (
 
 const (
 	ServiceName = "logging-app-facade"
+
+	// Shutdown timeouts
+	forwardingStopTimeout = 10 * time.Second
+	workerWaitTimeout     = 5 * time.Second
 )
 
 type runState struct {
