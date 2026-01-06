@@ -160,7 +160,9 @@ func (s *Service) Start(ctx context.Context) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
-	if s.started.Load() {
+	// Use CompareAndSwap to atomically check and set started flag
+	if !s.started.CompareAndSwap(false, true) {
+		// Service already started
 		return nil
 	}
 
@@ -230,11 +232,13 @@ func (s *Service) Start(ctx context.Context) error {
 		if err := s.forwarding.start(s.ctx, run.shutdownChannel); err != nil {
 			err = errors.New(op).Err(err)
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to start QSO forwarder.")
+			// Reset started flag on failure
+			s.started.Store(false)
 			return errors.Root(err)
 		}
 	}
 
-	s.started.Store(true)
+	// Note: s.started was already set to true by CompareAndSwap above
 
 	return nil
 }
