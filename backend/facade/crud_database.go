@@ -122,7 +122,8 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		return nil
 	}
 
-	tx, txCancel, err := s.DatabaseService.BeginTxContext(context.Background())
+	ctx := context.Background()
+	tx, txCancel, err := s.DatabaseService.BeginTxContext(ctx)
 	if err != nil {
 		return errors.New(op).Err(err)
 	}
@@ -130,6 +131,11 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 	defer func() { _ = tx.Rollback() }() // No-op after successful commit
 
 	for _, qso := range slice {
+		// Check for context cancellation before each iteration
+		if err = ctx.Err(); err != nil {
+			return errors.New(op).Err(err).Msg("context cancelled during QSO update loop")
+		}
+
 		qso.SmFwrdByEmailStatus = "Y"
 		qso.SmFwrdByEmailDate = utils.DateNowAsYYYYMMDD()
 
@@ -140,7 +146,7 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 			return qerr
 		}
 
-		if _, qerr = model.Update(context.Background(), tx, boil.Infer()); qerr != nil {
+		if _, qerr = model.Update(ctx, tx, boil.Infer()); qerr != nil {
 			qerr = errors.New(op).Err(qerr)
 			s.LoggerService.ErrorWith().Err(qerr).Msg("Failed to update model")
 			return qerr
