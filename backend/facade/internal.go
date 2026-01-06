@@ -105,7 +105,7 @@ func (s *Service) initializeForwarding() error {
 		pollInterval:    s.requiredCfgs.QsoForwardingPollIntervalSeconds * time.Second,
 		maxWorkers:      s.requiredCfgs.QsoForwardingWorkerCount,
 		forwardingQueue: make(chan types.QsoUpload, s.requiredCfgs.QsoForwardingQueueSize),
-		dbWriteQueue:    make(chan func() error, 100), // Buffered to handle bursts
+		dbWriteQueue:    make(chan func() error, s.requiredCfgs.DatabaseWriteQueueSize), // Buffered to handle bursts
 		fetchPending: func() ([]types.QsoUpload, error) {
 			return s.DatabaseService.FetchPendingUploads()
 		},
