@@ -38,7 +38,7 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	}
 	//	s.LoggerService.DebugWith().Str("country", contactedStation.Country).Msg("Country details fetched successfully")
 
-	if err = s.calculatedBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
+	if err = s.calculateBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
 		// Not a serious error, we can still continue.
 		s.LoggerService.WarnWith().Err(err).Msg("Failed to calculate bearing and distance between stations")
 	}

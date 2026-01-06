@@ -75,7 +75,7 @@ func (s *Service) lookupCallsignOnline(callsign string) (types.ContactedStation,
 	return station, nil
 }
 
-func (s *Service) calculatedBearingAndDistance(country *types.Country, ls types.LoggingStation, cs types.ContactedStation) error {
+func (s *Service) calculateBearingAndDistance(country *types.Country, ls types.LoggingStation, cs types.ContactedStation) error {
 	const op errors.Op = "facade.Service.calulatedBearingAndDistance"
 	if country == nil {
 		return errors.New(op).Msg("country parameter is nil")
