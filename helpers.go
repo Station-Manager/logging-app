@@ -2,7 +2,6 @@ package main
 
 import (
 	"reflect"
-	"strings"
 
 	"github.com/Station-Manager/cat"
 	"github.com/Station-Manager/config"
@@ -75,9 +74,4 @@ func getFacadeService() (*facade.Service, error) {
 		return nil, errors.New(op).Msg("Failed to cast facade service")
 	}
 	return svc, nil
-}
-
-// isDevelopment determines if the current application version is a development version by checking if "dev" is in its name.
-func isDevelopment() bool {
-	return strings.Contains(strings.ToLower(version), "dev")
 }

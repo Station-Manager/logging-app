@@ -89,12 +89,12 @@ func (s *Service) Ready() error {
 
 	if err := s.CatService.EnqueueCommand(cmds.Init); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to enqueue command: %s", cmds.Init)
-		return errors.New(op).Err(err)
+		return errors.Root(err)
 	}
 
 	if err := s.CatService.EnqueueCommand(cmds.Read); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to enqueue command: %s", cmds.Read)
-		return errors.New(op).Err(err)
+		return errors.Root(err)
 	}
 
 	return nil
@@ -269,7 +269,7 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 		return errors.New(op).Msg("Context is not set")
 	}
 	u, err := url.ParseRequestURI(urlStr)
-	if err != nil || u.Scheme != "https" {
+	if err != nil || u == nil || u.Scheme != "https" {
 		err = errors.New(op).Err(err).Msg("Invalid or unsafe URL")
 		s.LoggerService.ErrorWith().Err(err).Str("url_scheme", u.Scheme).Msg("Invalid or unsafe URL")
 		return err
