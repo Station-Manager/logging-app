@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.9
 	github.com/Station-Manager/config v0.0.36
-	github.com/Station-Manager/database v0.0.54
+	github.com/Station-Manager/database v0.0.55
 	github.com/Station-Manager/email v0.0.6
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
