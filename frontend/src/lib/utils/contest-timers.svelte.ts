@@ -24,17 +24,18 @@ export class ContestTimersClass implements ContestTimers {
     }
     start(): void {
         if (this.sinceStartTimerID === 0) {
+            this.isRunning = true;
             this.sinceStartTimerID = window.setInterval(() => {
                 this.elapsedSinceStart += 1;
             }, 1000);
         }
     }
     reset(): void {
-        const lastQso = this.elapsedSinceLastQso;
-        if (lastQso !== 0) {
+        // Always clear existing timer if running
+        if (this.sinceLastQsoTimerID !== 0) {
             window.clearInterval(this.sinceLastQsoTimerID);
-            this.elapsedSinceLastQso = 0;
         }
+        this.elapsedSinceLastQso = 0;
         this.sinceLastQsoTimerID = window.setInterval(() => {
             this.elapsedSinceLastQso += 1;
         }, 1000);
@@ -46,6 +47,7 @@ export class ContestTimersClass implements ContestTimers {
         this.sinceLastQsoTimerID = 0;
         this.elapsedSinceStart = 0;
         this.elapsedSinceLastQso = 0;
+        this.isRunning = false;
     }
 }
 
