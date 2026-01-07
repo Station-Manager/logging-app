@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/Station-Manager/cat v0.0.9
 	github.com/Station-Manager/config v0.0.36
-	github.com/Station-Manager/database v0.0.53
+	github.com/Station-Manager/database v0.0.54
 	github.com/Station-Manager/email v0.0.6
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
@@ -14,8 +14,8 @@ require (
 	github.com/Station-Manager/logging v0.0.12
 	github.com/Station-Manager/lookup v0.0.13
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.73
-	github.com/Station-Manager/utils v0.0.4
+	github.com/Station-Manager/types v0.0.74
+	github.com/Station-Manager/utils v0.0.5
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/go-playground/validator/v10 v10.30.1
 	github.com/wailsapp/wails/v2 v2.11.0
