@@ -1,4 +1,5 @@
 import { types } from '$lib/wailsjs/go/models';
+import { CONTEST_TIMER_INTERVAL_MS } from '$lib/constants/timers';
 
 export interface SessionState {
     operator: string;
@@ -38,11 +39,12 @@ export const sessionState: SessionState = $state<SessionState>({
         this.total = list.length;
     },
     start(): void {
+        // Always cleanup any existing timer before starting a new one
         cleanupSessionState();
         sessionTimeState.elapsed = 0;
         sessionIntervalID = window.setInterval(() => {
             sessionTimeState.elapsed += 1;
-        }, 1000);
+        }, CONTEST_TIMER_INTERVAL_MS);
     },
     stop(): void {
         cleanupSessionState();
