@@ -158,12 +158,16 @@ describe('ContestTimersClass', () => {
         it('should clear previous timer even if elapsedSinceLastQso is 0', () => {
             timers.reset();
             const firstTimerID = timers.sinceLastQsoTimerID;
+            expect(firstTimerID).not.toBe(0);
 
             // Reset immediately without advancing time
             timers.reset();
+            const secondTimerID = timers.sinceLastQsoTimerID;
 
-            // A new timer should be created (different ID or same mechanism works)
-            expect(timers.sinceLastQsoTimerID).not.toBe(0);
+            // A new timer should be created with a different ID
+            expect(secondTimerID).not.toBe(0);
+            expect(secondTimerID).not.toBe(firstTimerID);
+
             // The old timer should not cause double increments
             vi.advanceTimersByTime(1000);
             expect(timers.elapsedSinceLastQso).toBe(1); // Should be 1, not 2
