@@ -99,6 +99,7 @@ func (s *Service) insertOrUpdateCountry(country types.Country) error {
 		return nil
 	}
 
+	// Currently, this is okay as the only real risk is pointer fields being added later
 	if model != country {
 		country.ID = model.ID
 		err = s.DatabaseService.UpdateCountry(country)

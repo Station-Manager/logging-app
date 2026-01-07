@@ -289,3 +289,39 @@ func TestInitializeValidation(t *testing.T) {
 		t.Error("Invalid data passed validation")
 	}
 }
+
+func TestEmailValidation(t *testing.T) {
+	s := &Service{}
+	err := s.initializeValidation()
+	if err != nil {
+		t.Fatalf("Failed to initialize validation: %v", err)
+	}
+
+	tests := []struct {
+		name    string
+		email   string
+		wantErr bool
+	}{
+		{"valid email", "user@example.com", false},
+		{"valid email with subdomain", "user@mail.example.com", false},
+		{"valid email with plus", "user+tag@example.com", false},
+		{"valid email with dots", "first.last@example.com", false},
+		{"invalid empty", "", true},
+		{"invalid no domain", "a@b", true},
+		{"invalid multiple at signs", "@@@@@", true},
+		{"invalid no at sign", "userexample.com", true},
+		{"invalid only at sign", "@", true},
+		{"invalid spaces", "user @example.com", true},
+		{"invalid no local part", "@example.com", true},
+		{"invalid no domain part", "user@", true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			err := s.validate.Var(tt.email, "required,email")
+			if (err != nil) != tt.wantErr {
+				t.Errorf("email validation(%q) error = %v, wantErr %v", tt.email, err, tt.wantErr)
+			}
+		})
+	}
+}

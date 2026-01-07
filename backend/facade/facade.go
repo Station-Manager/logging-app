@@ -309,8 +309,8 @@ func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail st
 	}
 
 	recipientEmail = strings.TrimSpace(recipientEmail)
-	if len(recipientEmail) < 5 || !strings.Contains(recipientEmail, "@") {
-		err := errors.New(op).Msg("Invalid recipient email address")
+	if err := s.validate.Var(recipientEmail, "required,email"); err != nil {
+		err = errors.New(op).Err(err).Msg("Invalid recipient email address")
 		s.LoggerService.ErrorWith().Err(err).Msg("Invalid recipient email address")
 		return errors.Root(err)
 	}
