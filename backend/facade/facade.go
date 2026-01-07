@@ -160,9 +160,9 @@ func (s *Service) LogQso(qso types.Qso) error {
 	qso.SessionID = s.sessionID
 
 	if err := s.validate.Struct(qso); err != nil {
-		err = errors.New(op).Err(err).Msg("QSO Validation failed")
+		verr := errors.New(op).Msg("QSO Validation failed")
 		s.LoggerService.ErrorWith().Err(err).Msg("QSO Validation failed")
-		return errors.Root(err)
+		return verr
 	}
 
 	// Insert the QSO into the database
@@ -216,9 +216,9 @@ func (s *Service) UpdateQso(qso types.Qso) error {
 	}
 
 	if err := s.validate.Struct(qso); err != nil {
-		err = errors.New(op).Err(err).Msg("QSO Validation failed")
+		verr := errors.New(op).Msg("QSO Validation failed")
 		s.LoggerService.ErrorWith().Err(err).Msg("QSO Validation failed")
-		return errors.Root(err)
+		return verr
 	}
 
 	if err := s.DatabaseService.UpdateQso(qso); err != nil {
@@ -329,9 +329,9 @@ func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail st
 
 	recipientEmail = strings.TrimSpace(recipientEmail)
 	if err := s.validate.Var(recipientEmail, "required,email"); err != nil {
-		err = errors.New(op).Err(err).Msg("Invalid recipient email address")
+		verr := errors.New(op).Msg("Invalid recipient email address")
 		s.LoggerService.ErrorWith().Err(err).Msg("Invalid recipient email address")
-		return errors.Root(err)
+		return verr
 	}
 
 	mail, err := s.EmailService.BuildEmailWithADIFAttachment("", "", "", []string{recipientEmail}, slice)
