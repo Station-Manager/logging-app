@@ -141,7 +141,7 @@
                             bind:value={qsoState.srx}
                             type="text"
                             id="srx_rcvd"
-                            class="outline-gray-300 uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base outline-1 -outline-offset-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                            class="uppercase block w-full rounded-md bg-white px-3 py-0.5 text-base -outline-offset-1 focus:-outline-offset-2 {contestState.srxInvalid ? 'outline-red-500 outline-2 focus:outline-red-600' : 'outline-gray-300 outline-1 focus:outline-2 focus:outline-indigo-600'}"
                             autocomplete="off"
                             onblur={onBlurContestMode}
                             onkeydown={(e) => lastKey = e.key}

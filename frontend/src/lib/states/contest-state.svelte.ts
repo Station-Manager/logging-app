@@ -2,8 +2,11 @@ export interface ContestState {
     isIncremental: boolean;
     totalQsos: number;
     currentStx: string;
+    srxInvalid: boolean;
     setCurrent(stx: string): void;
     increment(): string;
+    setSrxInvalid(invalid: boolean): void;
+    resetSrxValidation(): void;
 }
 
 export const contestState: ContestState = $state<ContestState>({
@@ -11,6 +14,7 @@ export const contestState: ContestState = $state<ContestState>({
     // The total number of QSOs logged so far
     totalQsos: 0,
     currentStx: '001', // Default starting value
+    srxInvalid: false, // Tracks validation state of SRX input
     // Set the current STX value
     setCurrent(this: ContestState, stx: string): void {
         let increment = true;
@@ -28,6 +32,14 @@ export const contestState: ContestState = $state<ContestState>({
             this.currentStx = doIncrement(this.currentStx);
         }
         return this.currentStx;
+    },
+    // Set SRX validation state
+    setSrxInvalid(this: ContestState, invalid: boolean): void {
+        this.srxInvalid = invalid;
+    },
+    // Reset SRX validation to valid state
+    resetSrxValidation(this: ContestState): void {
+        this.srxInvalid = false;
     },
 });
 

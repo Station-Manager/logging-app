@@ -34,14 +34,14 @@
      *
      * This function is responsible for stopping the QSO timer, resetting the state,
      * and updating the UI to its initial state. Additionally, it handles specific resets
-     * for contest mode by modifying class styles of relevant elements. Once the reset
-     * is complete, it ensures focus is set to the primary input field.
+     * for contest mode by resetting validation state. Once the reset is complete, it
+     * ensures focus is set to the primary input field.
      *
      * Effects:
      * - Stops the QSO timer.
      * - Resets the QSO state to its initial values.
      * - Updates the logging state to inactive.
-     * - Adjusts the styles of the contest-related input field if contest mode is active.
+     * - Resets contest SRX validation state if in contest mode.
      * - Sets focus to the input field for entering callsigns.
      */
     const resetAction = (): void => {
@@ -49,11 +49,7 @@
         qsoState.reset();
         isLogging = false;
         if ($isContestMode) {
-            const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
-            if (srxElem) {
-                srxElem.classList.remove('outline-red-500', 'outline-2', 'focus:outline-red-600');
-                srxElem.classList.add('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
-            }
+            contestState.resetSrxValidation();
         }
         const elem = document.getElementById('call') as HTMLInputElement;
         if (elem) elem.focus();
@@ -74,25 +70,22 @@
      *   if it is non-empty.
      * - Assigns the owner's callsign to the `owner_callsign` property of `qsoState`.
      * - In contest mode:
-     *   - Validates the "SRX received" field in the UI and shows an error message if invalid,
-     *     along with updating input styles to indicate the error.
-     *   - Sets the `stx` property of `qsoState` using the "STX sent" field value.
+     *   - Validates the SRX value from qsoState and sets contestState.srxInvalid if invalid.
+     *   - Sets the `stx` property of `qsoState` using the current contest STX value.
      *   - Automatically updates the contest's STX counter if logging is successful.
      *
      * Error Handling:
-     * - Displays an error toast and updates the UI input field styling when the SRX value in
+     * - Displays an error toast and sets srxInvalid state when the SRX value in
      *   contest mode is invalid.
      *
      * Side Effects:
      * - Modifies `qsoState` with updated QSO-related information.
      * - May stop the logging process (`isLogging = false`) if validation fails in contest mode.
-     * - Updates UI elements and contest state in contest mode based on successful data processing.
+     * - Updates contest state validation flags reactively.
      *
-     * Parameters: None
-     *
-     * Returns: None
+     * @returns {boolean} True if validation passed, false if validation failed.
      */
-    const updateQsoState = (): void => {
+    const updateQsoState = (): boolean => {
         qsoState.tx_pwr = calculateTxPwr().toString();
         if (sessionState.operator.trim() !== "") {
             qsoState.operator = sessionState.operator;
@@ -100,25 +93,22 @@
         qsoState.owner_callsign = configState.owners_callsign;
 
         if ($isContestMode) {
-            const srxElem = document.getElementById('srx_rcvd') as HTMLInputElement;
-            if (srxElem) {
-                if (srxElem.value.length < 1) {
-                    showToast.ERROR("Invalid SRX value.");
-                    srxElem.classList.remove('outline-gray-300', 'outline-1', 'focus:outline-indigo-600');
-                    srxElem.classList.add('outline-red-500', 'outline-2', 'focus:outline-red-600');
-                    srxElem.focus();
-                    isLogging = false;
-                    return;
-                }
+            // Validate SRX using the reactive qsoState.srx value
+            if (qsoState.srx.trim().length < 1) {
+                showToast.ERROR("Invalid SRX value.");
+                contestState.setSrxInvalid(true);
+                isLogging = false;
+                return false;
             }
-            // Increment only when we know we are able to log the QSO
-            const stxElem = document.getElementById('stx_sent') as HTMLInputElement;
-            if (stxElem) {
-                qsoState.stx = stxElem.value;
-                // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
-                contestState.increment();
-            }
+            // Reset validation state on successful validation
+            contestState.resetSrxValidation();
+
+            // Use qsoState.stx directly since it's bound to the input
+            qsoState.stx = contestState.currentStx;
+            // This will auto-update the stx_sent field in the UI (see QsoPanel.svelte)
+            contestState.increment();
         }
+        return true;
     }
 
     /**
@@ -158,7 +148,10 @@
         if (isLogging) return; // Prevent double-clicks
         isLogging = true;
 
-        updateQsoState();
+        if (!updateQsoState()) {
+            // Validation failed, updateQsoState already set isLogging = false
+            return;
+        }
 
         try {
             const qso: types.Qso = qsoState.toQso();
