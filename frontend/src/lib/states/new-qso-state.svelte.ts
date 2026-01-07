@@ -4,6 +4,7 @@ import { formatCatKHzToDottedMHz, frequencyToBandFromDottedMHz } from '$lib/util
 import { extractRemoteTime, getDateUTC, getTimeUTC } from '$lib/utils/time-date';
 import { catState } from '$lib/states/cat-state.svelte';
 import { getModeBySubmode } from '$lib/utils/mode';
+import { QSO_TIMER_INTERVAL_MS } from '$lib/constants/timers';
 
 const CAT_MAPPINGS: { [K in keyof CatForQsoPayload]: K } = {
     cat_vfoa_freq: 'cat_vfoa_freq',
@@ -316,7 +317,7 @@ export const qsoState: QsoState = $state({
             // Always write through the shared qsoState instance to avoid any
             // confusion around `this` binding inside the interval callback.
             qsoState.time_off = getTimeUTC();
-        }, 60_000); // every minute
+        }, QSO_TIMER_INTERVAL_MS);
 
         // Mark the timer as running so subscribers know.
         qsoTimerState.running = true;

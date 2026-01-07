@@ -1,6 +1,8 @@
+import { DEFAULT_CLIPBOARD_MAX_LENGTH } from '$lib/constants/timers';
+
 export class ClipboardState {
     list = $state<string[]>([]);
-    maxLength = $state(10);
+    maxLength = $state(DEFAULT_CLIPBOARD_MAX_LENGTH);
 
     add(item: string): void {
         const value = item.trim();

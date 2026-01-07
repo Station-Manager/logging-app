@@ -1,3 +1,5 @@
+import { CONTEST_TIMER_INTERVAL_MS } from '$lib/constants/timers';
+
 export interface ContestTimers {
     sinceStartTimerID: number;
     sinceLastQsoTimerID: number;
@@ -27,7 +29,7 @@ export class ContestTimersClass implements ContestTimers {
             this.isRunning = true;
             this.sinceStartTimerID = window.setInterval(() => {
                 this.elapsedSinceStart += 1;
-            }, 1000);
+            }, CONTEST_TIMER_INTERVAL_MS);
         }
     }
     reset(): void {
@@ -38,7 +40,7 @@ export class ContestTimersClass implements ContestTimers {
         this.elapsedSinceLastQso = 0;
         this.sinceLastQsoTimerID = window.setInterval(() => {
             this.elapsedSinceLastQso += 1;
-        }, 1000);
+        }, CONTEST_TIMER_INTERVAL_MS);
     }
     stop(): void {
         window.clearInterval(this.sinceStartTimerID);
