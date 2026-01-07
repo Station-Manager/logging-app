@@ -163,6 +163,28 @@ func (s *Service) forwardQsoWithSerializedDB(qsoUpload types.QsoUpload) error {
 		// Successfully queued - DB errors will be logged by dbWriteWorkerLoop
 		return nil
 	default:
+		/*
+			Queue size vs worker count: We have 5 forwarding workers (qso_forwarding_worker_count) but a queue of 100.
+			Each worker would need to generate 20 pending DB writes before the queue fills.
+			Single DB writer: The dbWriteWorkerLoop serializes all writes, so they execute sequentially.
+			As long as the DB writer processes faster than workers enqueue (which it should, since network calls are
+			slower than DB writes), the queue won't back up.
+			Poll interval: With qso_forwarding_poll_interval_seconds of
+			120 and qso_forwarding_row_limit of 5, you're only fetching 5 QSOs every 2 minutes. The queue has ample
+			time to drain.
+
+			If the queue fills and inline execution triggers, we'd have:
+			1. The single dbWriteWorkerLoop goroutine writing to SQLite
+			2. One or more forwarding workers also writing inline (concurrently)
+			With our SQLite config (_busy_timeout: 10000, _journal_mode: WAL), concurrent writes would wait up to 10
+			seconds. WAL mode allows concurrent reads with a single writer, but multiple writers still contend.
+
+			Our configuration is safe for normal operation. The 100-slot queue provides a 20x buffer over your worker
+			count. SQLITE_BUSY would only occur under extreme conditions (sustained network latency causing massive
+			backlog) and even then, the 10-second busy timeout provides a safety net. The warning log message is
+			appropriate - if we ever see it frequently, that would indicate a need to either increase the queue size
+			or investigate why DB writes are slow.
+		*/
 		// Queue is full, execute inline and return any error directly
 		s.LoggerService.WarnWith().Msg("DB write queue full, executing inline")
 		return dbOp()
