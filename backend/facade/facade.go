@@ -12,6 +12,18 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+// allowedBrowserDomains is the allowlist of domains that can be opened in the browser.
+// This prevents SSRF-style attacks and phishing via malicious URLs.
+var allowedBrowserDomains = map[string]bool{
+	"www.qrz.com":     true,
+	"qrz.com":         true,
+	"www.hamqth.com":  true,
+	"hamqth.com":      true,
+	"clublog.org":     true,
+	"www.clublog.org": true,
+	"lotw.arrl.org":   true,
+}
+
 // FetchUiConfig retrieves the UI configuration object. It returns an error if the service is not initialized, or the underlying
 // ConfigService returns an error.
 func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
@@ -280,7 +292,14 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 		return err
 	}
 
-	// There is no return value to handle
+	// Check domain against allowlist
+	host := strings.ToLower(u.Host)
+	if !allowedBrowserDomains[host] {
+		err = errors.New(op).Msg("Domain not in allowlist")
+		s.LoggerService.ErrorWith().Err(err).Str("host", host).Msg("Blocked attempt to open non-allowlisted domain")
+		return err
+	}
+
 	runtime.BrowserOpenURL(s.ctx, urlStr)
 
 	return nil

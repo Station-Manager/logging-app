@@ -325,3 +325,36 @@ func TestEmailValidation(t *testing.T) {
 		})
 	}
 }
+
+func TestAllowedBrowserDomains(t *testing.T) {
+	tests := []struct {
+		name    string
+		domain  string
+		allowed bool
+	}{
+		{"qrz.com", "qrz.com", true},
+		{"www.qrz.com", "www.qrz.com", true},
+		{"hamqth.com", "hamqth.com", true},
+		{"www.hamqth.com", "www.hamqth.com", true},
+		{"clublog.org", "clublog.org", true},
+		{"www.clublog.org", "www.clublog.org", true},
+		{"lotw.arrl.org", "lotw.arrl.org", true},
+		{"localhost", "localhost", false},
+		{"127.0.0.1", "127.0.0.1", false},
+		{"192.168.1.1", "192.168.1.1", false},
+		{"10.0.0.1", "10.0.0.1", false},
+		{"evil.com", "evil.com", false},
+		{"qrz.com.evil.com", "qrz.com.evil.com", false},
+		{"internal.local", "internal.local", false},
+		{"empty", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := allowedBrowserDomains[tt.domain]
+			if result != tt.allowed {
+				t.Errorf("allowedBrowserDomains[%q] = %v, want %v", tt.domain, result, tt.allowed)
+			}
+		})
+	}
+}
