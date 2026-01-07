@@ -337,6 +337,7 @@ func (s *Service) ForwardSessionQsosByEmail(slice []types.Qso, recipientEmail st
 	return nil
 }
 
+// GetQsoById retrieves a QSO record by its ID from the database. Returns an error if the service is not ready or ID is invalid.
 func (s *Service) GetQsoById(id int64) (types.Qso, error) {
 	const op errors.Op = "facade.Service.GetQsoById"
 	if !s.initialized.Load() {
