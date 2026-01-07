@@ -265,8 +265,8 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 	}
 
 	if s.ctx == nil || (s.ctx.Err() != nil) {
-		s.LoggerService.ErrorWith().Msg("Context is not set")
-		return errors.New(op).Msg("Context is not set")
+		s.LoggerService.ErrorWith().Msg("Context is not set or cancelled")
+		return errors.New(op).Msg("Context is not set or cancelled")
 	}
 	u, err := url.ParseRequestURI(urlStr)
 	if err != nil || u == nil {
@@ -280,6 +280,7 @@ func (s *Service) OpenInBrowser(urlStr string) error {
 		return err
 	}
 
+	// There is no return value to handle
 	runtime.BrowserOpenURL(s.ctx, urlStr)
 
 	return nil

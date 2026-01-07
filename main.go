@@ -170,6 +170,6 @@ func main() {
 	if err = wails.Run(opts); err != nil {
 		errors.PrintChain(err)
 		_, _ = fmt.Fprintf(os.Stderr, "failed to run wails: %v\n", errors.Root(err))
-		os.Exit(ExitFacadeService)
+		os.Exit(ExitWailsRun)
 	}
 }

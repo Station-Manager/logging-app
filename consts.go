@@ -5,6 +5,7 @@ const (
 	ExitContainerInit
 	ExitFacadeService
 	ExitPanic
+	ExitWailsRun
 )
 
 const (
