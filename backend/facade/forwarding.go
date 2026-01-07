@@ -35,8 +35,19 @@ func (f *forwarding) start(ctx context.Context, shutdown <-chan struct{}) error 
 		return errors.New(op).Msg("Context is nil")
 	}
 
+	// Check if we're in the middle of stopping - prevents race with stop()
+	if f.stopping.Load() {
+		return errors.New(op).Msg("Forwarding is stopping, cannot start")
+	}
+
 	if !f.started.CompareAndSwap(false, true) {
 		return errors.New(op).Msg("Forwarding already started")
+	}
+
+	// Double-check stopping flag after setting started (prevents TOCTOU race)
+	if f.stopping.Load() {
+		f.started.Store(false)
+		return errors.New(op).Msg("Forwarding is stopping, cannot start")
 	}
 
 	// Start worker goroutines with tracking
@@ -140,6 +151,8 @@ func (f *forwarding) stop(timeout time.Duration) error {
 		if f.dbWriteQueue != nil {
 			close(f.dbWriteQueue)
 		}
+		// Reset started flag after successful stop
+		f.started.Store(false)
 		return nil
 	case <-time.After(timeout):
 		activeWorkers := f.ActiveWorkerCount()

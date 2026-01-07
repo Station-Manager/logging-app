@@ -109,6 +109,57 @@ func TestForwardingStartIdempotent(t *testing.T) {
 	_ = f.stop(2 * time.Second)
 }
 
+func TestForwardingStartDuringStop(t *testing.T) {
+	logger := &logging.Service{}
+
+	f := &forwarding{
+		pollInterval:    1 * time.Second,
+		maxWorkers:      2,
+		forwardingQueue: make(chan types.QsoUpload, 10),
+		dbWriteQueue:    make(chan func() error, 10),
+		fetchPending: func() ([]types.QsoUpload, error) {
+			return nil, nil
+		},
+		sendAndMarkDone: func(qsoUpload types.QsoUpload) error {
+			return nil
+		},
+		logger: logger,
+	}
+
+	ctx := context.Background()
+	shutdown := make(chan struct{})
+
+	// Start the forwarder
+	err := f.start(ctx, shutdown)
+	if err != nil {
+		t.Fatalf("start() failed: %v", err)
+	}
+
+	// Give workers time to start
+	time.Sleep(100 * time.Millisecond)
+
+	// Signal shutdown
+	close(shutdown)
+
+	// Immediately try to start again while stop is happening
+	// This should fail because stopping flag is set
+	go func() {
+		_ = f.stop(5 * time.Second)
+	}()
+
+	// Give stop a moment to set the stopping flag
+	time.Sleep(10 * time.Millisecond)
+
+	// Try to start - should fail because we're stopping
+	err = f.start(ctx, make(chan struct{}))
+	if err == nil {
+		t.Error("start() during stop should fail but succeeded")
+	}
+
+	// Wait for stop to complete
+	time.Sleep(200 * time.Millisecond)
+}
+
 func TestForwardingStop(t *testing.T) {
 	logger := &logging.Service{}
 
