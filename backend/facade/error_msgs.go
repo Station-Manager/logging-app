@@ -1,6 +1,6 @@
 package facade
 
-var (
+const (
 	errMsgNilConfigService   = "Config service is nil."
 	errMsgNilLoggerService   = "Logger service is nil."
 	errMsgNilDatabaseService = "Database service is nil."

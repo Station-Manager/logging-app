@@ -30,13 +30,11 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to initialize the QSO's country section")
 		return nil, errors.New(op).Err(err)
 	}
-	//	s.LoggerService.DebugWith().Str("country", country.Name).Msg("Country details fetched successfully")
 
 	if err = mergeCountryIntoContactedStation(contactedStation, country); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to merge country details into contacted station")
 		return nil, errors.New(op).Err(err)
 	}
-	//	s.LoggerService.DebugWith().Str("country", contactedStation.Country).Msg("Country details fetched successfully")
 
 	if err = s.calculateBearingAndDistance(&country, loggingStation, *contactedStation); err != nil {
 		// Not a serious error, we can still continue.

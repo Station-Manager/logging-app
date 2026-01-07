@@ -120,7 +120,12 @@ func (s *Service) markQsoSliceAsForwardedByEmail(slice []types.Qso) error {
 		return nil
 	}
 
-	ctx := context.Background()
+	// Use the service context if available, otherwise fall back to background
+	ctx := s.ctx
+	if ctx == nil {
+		ctx = context.Background()
+	}
+
 	tx, txCancel, err := s.DatabaseService.BeginTxContext(ctx)
 	if err != nil {
 		return errors.New(op).Err(err)
