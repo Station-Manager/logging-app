@@ -60,9 +60,7 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 		return errors.New(op).Err(err)
 	}
 
-	// Error == sql.ErrNoRows
 	if err != nil {
-		//		s.LoggerService.DebugWith().Str("callsign", station.Call).Msg("Contacted station does not exist in database, inserting.")
 		if _, err = s.DatabaseService.InsertContactedStation(station); err != nil {
 			s.LoggerService.ErrorWith().Err(err).Msg("Failed to insert contacted station into database.")
 			return errors.Root(err)
