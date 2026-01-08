@@ -16,6 +16,9 @@
     import {isValidCallsignForLog} from "$lib/constants/callsign";
     import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
     import {showToast} from "$lib/utils/toast";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const focusContext = getFocusContext();
 
     const distanceCss = "w-[92px]";
     const timeCss = "w-[74px]";
@@ -51,11 +54,7 @@
 
     const updateAction = async (): Promise<void> => {
         if (!canLog()) {
-            const elem = document.getElementById('call') as HTMLInputElement;
-            if (elem) {
-                elem.focus();
-                elem.select();
-            }
+            focusContext.focus('editCallsignInput', true);
             return;
         }
 
@@ -120,6 +119,8 @@
                         id="call"
                         label="Callsign"
                         value={qsoEditState.call}
+                        focusRefKey="editCallsignInput"
+                        focusRefs={focusContext.refs}
                 />
                 {#if $isContestMode}
                     {@render contextLogging()}

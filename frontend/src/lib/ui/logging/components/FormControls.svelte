@@ -13,6 +13,9 @@
     import {catState} from "$lib/states/cat-state.svelte";
     import {shortcut} from "@svelte-put/shortcut";
     import {clipboardState} from "$lib/states/clipboard-state.svelte";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const focusContext = getFocusContext();
 
     let isLogging: boolean = $state(false);
 
@@ -51,8 +54,7 @@
         if ($isContestMode) {
             contestState.resetSrxValidation();
         }
-        const elem = document.getElementById('call') as HTMLInputElement;
-        if (elem) elem.focus();
+        focusContext.focus('callsignInput');
     }
 
     const canLog = (): boolean => {
@@ -137,11 +139,7 @@
      */
     const logContact = async (): Promise<void> => {
         if (!canLog()) {
-            const elem = document.getElementById('call') as HTMLInputElement;
-            if (elem) {
-                elem.focus();
-                elem.select();
-            }
+            focusContext.focus('callsignInput', true);
             return;
         }
 

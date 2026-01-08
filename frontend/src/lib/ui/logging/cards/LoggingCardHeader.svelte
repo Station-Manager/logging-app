@@ -12,7 +12,9 @@
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {contestState} from "$lib/states/contest-state.svelte";
     import {onDestroy} from "svelte";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
 
+    const focusContext = getFocusContext();
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
 
     const modeChange = (event: Event): void => {
@@ -26,12 +28,8 @@
     }
 
     const operatorField = (): void => {
-        appState.activePanel = STATION_PANEL
-        const opField = document.getElementById("operator_callsign") as HTMLInputElement;
-        if (opField) {
-            opField.focus();
-            opField.select();
-        }
+        appState.activePanel = STATION_PANEL;
+        focusContext.focus('operatorCallsignInput', true);
     }
 
     onDestroy(() => {

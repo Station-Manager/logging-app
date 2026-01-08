@@ -12,6 +12,9 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {showToast} from "$lib/utils/toast";
     import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const focusContext = getFocusContext();
 
     const emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -34,17 +37,12 @@
 
         const recipientAddress = configState.default_fwd_email;
         if (!recipientAddress || recipientAddress.length === 0) {
-            const target = document.getElementById("fwd_session_by_email");
-            if (target) target.focus();
+            focusContext.focus('fwdSessionEmailInput');
             return;
         }
 
         if (emailPattern.test(recipientAddress) == false) {
-            const target = document.getElementById("fwd_session_by_email") as HTMLInputElement;
-            if (target) {
-                target.focus();
-                target.select();
-            }
+            focusContext.focus('fwdSessionEmailInput', true);
             return;
         }
 
@@ -99,7 +97,7 @@
         <div class="flex items-center gap-x-2">
             <div class="w-[210px]">
                 <input
-                        disabled={disableFwdByEmail}
+                        bind:this={focusContext.refs.fwdSessionEmailInput}
                         bind:value={configState.default_fwd_email}
                         type="email"
                         id="fwd_session_by_email"

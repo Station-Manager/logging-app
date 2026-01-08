@@ -3,6 +3,9 @@
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const {refs} = getFocusContext();
 
     let multiplierOn: boolean = $state(configState.use_power_multiplier);
 
@@ -69,6 +72,7 @@
             </label>
             <div class="mt-2 w-[140px]">
                 <input
+                        bind:this={refs.operatorCallsignInput}
                         bind:value={sessionState.operator}
                         type="text"
                         id="operator_callsign"

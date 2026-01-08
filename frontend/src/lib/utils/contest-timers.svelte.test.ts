@@ -22,6 +22,61 @@ describe('ContestTimersClass', () => {
             expect(timers.elapsedSinceLastQso).toBe(0);
             expect(timers.isRunning).toBe(false);
         });
+
+        it('should have formatted values initialized to 00:00:00', () => {
+            expect(timers.formattedSinceStart).toBe('00:00:00');
+            expect(timers.formattedSinceLastQso).toBe('00:00:00');
+        });
+    });
+
+    describe('derived formatted values', () => {
+        it('should update formattedSinceStart when elapsedSinceStart changes', () => {
+            timers.start();
+            expect(timers.formattedSinceStart).toBe('00:00:00');
+
+            vi.advanceTimersByTime(1000);
+            expect(timers.formattedSinceStart).toBe('00:00:01');
+
+            vi.advanceTimersByTime(59000); // 60 seconds total
+            expect(timers.formattedSinceStart).toBe('00:01:00');
+
+            vi.advanceTimersByTime(3540000); // 60 minutes total
+            expect(timers.formattedSinceStart).toBe('01:00:00');
+        });
+
+        it('should update formattedSinceLastQso when elapsedSinceLastQso changes', () => {
+            timers.reset();
+            expect(timers.formattedSinceLastQso).toBe('00:00:00');
+
+            vi.advanceTimersByTime(1000);
+            expect(timers.formattedSinceLastQso).toBe('00:00:01');
+
+            vi.advanceTimersByTime(59000); // 60 seconds total
+            expect(timers.formattedSinceLastQso).toBe('00:01:00');
+        });
+
+        it('should reset formatted values when stop() is called', () => {
+            timers.start();
+            timers.reset();
+            vi.advanceTimersByTime(5000);
+
+            expect(timers.formattedSinceStart).toBe('00:00:05');
+            expect(timers.formattedSinceLastQso).toBe('00:00:05');
+
+            timers.stop();
+
+            expect(timers.formattedSinceStart).toBe('00:00:00');
+            expect(timers.formattedSinceLastQso).toBe('00:00:00');
+        });
+
+        it('should reset formattedSinceLastQso when reset() is called', () => {
+            timers.reset();
+            vi.advanceTimersByTime(5000);
+            expect(timers.formattedSinceLastQso).toBe('00:00:05');
+
+            timers.reset();
+            expect(timers.formattedSinceLastQso).toBe('00:00:00');
+        });
     });
 
     describe('start()', () => {

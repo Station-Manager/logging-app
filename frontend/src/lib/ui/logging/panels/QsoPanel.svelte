@@ -14,6 +14,9 @@
     import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {contestState} from "$lib/states/contest-state.svelte";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const {refs, focus} = getFocusContext();
 
     let lastKey: string | null = null;
     let stx: string = $derived(contestState.currentStx);
@@ -36,8 +39,7 @@
                 break;
             }
             case 'stx_sent': {
-                const nextElem = document.getElementById('srx_rcvd');
-                if (nextElem) nextElem.focus();
+                focus('srxRcvdInput');
                 break;
             }
         }
@@ -57,6 +59,8 @@
                     id="call"
                     label="Callsign"
                     value={qsoState.call}
+                    focusRefKey="callsignInput"
+                    focusRefs={refs}
             />
             {#if $isContestMode}
                 {@render contextLogging()}
@@ -138,6 +142,7 @@
                 <label for="srx_rcvd" class="block text-xs font-medium mt-1">Rcvd (SRX)</label>
                 <div class="w-[70px]">
                     <input
+                            bind:this={refs.srxRcvdInput}
                             bind:value={qsoState.srx}
                             type="text"
                             id="srx_rcvd"

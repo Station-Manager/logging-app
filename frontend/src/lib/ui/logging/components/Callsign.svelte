@@ -8,6 +8,7 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
     import {showToast} from "$lib/utils/toast";
+    import type {FocusRefs} from "$lib/states/focus-context.svelte";
 
     interface Props {
         id: string;
@@ -17,6 +18,8 @@
         divCss?: string;
         inputCss?: string;
         overallWidthCss?: string;
+        focusRefKey?: keyof FocusRefs;
+        focusRefs?: FocusRefs;
     }
     let {
         id,
@@ -25,12 +28,21 @@
         labelCss = 'block text-sm/5 font-medium',
         divCss = 'mt-2',
         inputCss = 'uppercase block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
-        overallWidthCss = 'w-[150px]'
+        overallWidthCss = 'w-[150px]',
+        focusRefKey,
+        focusRefs,
     }: Props = $props();
 
     let invalid = $state(false);
     let inputElement: HTMLInputElement;
     let lastKey: string | null = null;
+
+    // Sync the local inputElement to the focus context if provided
+    $effect(() => {
+        if (focusRefs && focusRefKey && inputElement) {
+            focusRefs[focusRefKey] = inputElement;
+        }
+    });
 
     const isValid = (v: string): boolean => {
         const value = v.trim().toUpperCase();

@@ -11,9 +11,13 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
     import {configState} from "$lib/states/config-state.svelte";
+    import {setFocusContext} from "$lib/states/focus-context.svelte";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}
+
+    // Initialize focus context for cross-component focus management
+    const focusContext = setFocusContext();
 
     const registerForCatStateEvents = (): () => void => {
         return EventsOn(events.EventName.STATUS, (status: Record<string, string>) => {
@@ -46,6 +50,8 @@
             handleAsyncError(e, '+layout.svelte->onMount')
         }
 
+        // Set initial focus to the callsign input field
+        focusContext.focus('callsignInput');
     });
 
     onDestroy((): void => {

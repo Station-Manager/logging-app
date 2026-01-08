@@ -22,8 +22,12 @@ export class ContestTimersClass implements ContestTimers {
     isRunning: boolean = $state(false); // Add a reactive flag
 
     // Derived formatted values - only recompute when elapsed values change
-    formattedSinceStart: string = $derived(formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceStart));
-    formattedSinceLastQso: string = $derived(formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceLastQso));
+    formattedSinceStart: string = $derived(
+        formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceStart)
+    );
+    formattedSinceLastQso: string = $derived(
+        formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceLastQso)
+    );
 
     constructor() {
         this.sinceStartTimerID = null;
