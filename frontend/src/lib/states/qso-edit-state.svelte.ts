@@ -55,12 +55,12 @@ export const qsoEditState: QsoEditState = $state({
         this.id = qso.id;
         this.logbook_id = qso.logbook_id;
         this.session_id = qso.session_id;
-        this.call = qso.call;
-        this.rst_sent = qso.rst_sent;
-        this.rst_rcvd = qso.rst_rcvd;
-        this.mode = qso.mode;
+        this.call = qso.call ?? '';
+        this.rst_sent = qso.rst_sent ?? '';
+        this.rst_rcvd = qso.rst_rcvd ?? '';
+        this.mode = qso.mode ?? '';
         this.submode = qso.submode;
-        this.freq = qso.freq;
+        this.freq = qso.freq ?? '';
         this.freq_rx = qso.freq_rx;
         this.name = qso.name;
         this.qth = qso.qth;
@@ -71,7 +71,8 @@ export const qsoEditState: QsoEditState = $state({
         this.time_off = formatTime(qso.time_off);
         this.rig = qso.rig;
         this.rx_pwr = qso.rx_pwr;
-        this.band = qso.band;
+        this.tx_pwr = qso.tx_pwr;
+        this.band = qso.band ?? '';
         this.station_callsign = qso.station_callsign;
     },
     toQso(this: QsoEditState): types.Qso {
@@ -95,6 +96,7 @@ export const qsoEditState: QsoEditState = $state({
             time_off: this.time_off,
             rig: this.rig,
             rx_pwr: this.rx_pwr,
+            tx_pwr: this.tx_pwr,
             band: this.band,
             station_callsign: this.station_callsign,
         });

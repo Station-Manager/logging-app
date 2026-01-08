@@ -101,7 +101,7 @@
                 <div class={freqCss}>{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
                 <div class={bandCss}>{entry.band}</div>
                 <div class={rstCss}>{entry.rst_sent}</div>
-                <div class={rstCss}>{entry.rst_sent}</div>
+                <div class={rstCss}>{entry.rst_rcvd}</div>
                 <div class={modeCss}>{entry.mode}</div>
                 <div class={timeCss}>{entry.time_on}</div>
                 <div class={countryCss} title="{entry.country}">{entry.country}</div>
@@ -260,12 +260,12 @@
                         autocomplete="off"
                         spellcheck="false"
                         id="freq"
-                        value={parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx)}
+                        bind:value={qsoEditState.freq_rx}
                         title="Format: ?#.###.###"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
             </div>
-            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(qsoEditState.freq_rx)}</div>
+            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx))}</div>
         </div>
         <div class="flex flex-row items-center">
             <label for="freq_rx" class="text-sm/5 font-medium w-[70px]">Freq (TX)</label>
@@ -275,12 +275,12 @@
                         autocomplete="off"
                         spellcheck="false"
                         id="freq_rx"
-                        value={parseDatabaseFreqToDottedKhz(qsoEditState.freq)}
+                        bind:value={qsoEditState.freq}
                         title="Format: ?#.###.###"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
             </div>
-            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(qsoEditState.freq)}</div>
+            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq))}</div>
         </div>
     </div>
 {/snippet}

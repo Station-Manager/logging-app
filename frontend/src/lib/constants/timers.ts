@@ -11,4 +11,3 @@ export const DEFAULT_CLIPBOARD_MAX_LENGTH = 10;
 
 /** Interval in milliseconds for contest timers (1 second) */
 export const CONTEST_TIMER_INTERVAL_MS = 1_000;
-

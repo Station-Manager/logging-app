@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import {
-    sessionState,
-    sessionTimeState,
-    cleanupSessionState,
-} from './session-state.svelte';
+import { sessionState, sessionTimeState, cleanupSessionState } from './session-state.svelte';
 
 describe('sessionState', () => {
     beforeEach(() => {
@@ -161,4 +157,3 @@ describe('sessionState', () => {
         });
     });
 });
-
