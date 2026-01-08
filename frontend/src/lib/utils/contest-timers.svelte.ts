@@ -1,8 +1,8 @@
 import { CONTEST_TIMER_INTERVAL_MS } from '$lib/constants/timers';
 
 export interface ContestTimers {
-    sinceStartTimerID: number;
-    sinceLastQsoTimerID: number;
+    sinceStartTimerID: number | null;
+    sinceLastQsoTimerID: number | null;
     elapsedSinceStart: number;
     elapsedSinceLastQso: number;
     isRunning: boolean;
@@ -12,20 +12,20 @@ export interface ContestTimers {
 }
 
 export class ContestTimersClass implements ContestTimers {
-    sinceStartTimerID: number;
-    sinceLastQsoTimerID: number;
+    sinceStartTimerID: number | null;
+    sinceLastQsoTimerID: number | null;
     elapsedSinceStart: number = $state(0);
     elapsedSinceLastQso: number = $state(0);
     isRunning: boolean = $state(false); // Add a reactive flag
 
     constructor() {
-        this.sinceStartTimerID = 0;
-        this.sinceLastQsoTimerID = 0;
+        this.sinceStartTimerID = null;
+        this.sinceLastQsoTimerID = null;
         this.elapsedSinceStart = 0;
         this.elapsedSinceLastQso = 0;
     }
     start(): void {
-        if (this.sinceStartTimerID === 0) {
+        if (this.sinceStartTimerID === null) {
             this.isRunning = true;
             this.sinceStartTimerID = window.setInterval(() => {
                 this.elapsedSinceStart += 1;
@@ -34,8 +34,9 @@ export class ContestTimersClass implements ContestTimers {
     }
     reset(): void {
         // Always clear existing timer if running
-        if (this.sinceLastQsoTimerID !== 0) {
+        if (this.sinceLastQsoTimerID !== null) {
             window.clearInterval(this.sinceLastQsoTimerID);
+            this.sinceLastQsoTimerID = null;
         }
         this.elapsedSinceLastQso = 0;
         this.sinceLastQsoTimerID = window.setInterval(() => {
@@ -43,10 +44,14 @@ export class ContestTimersClass implements ContestTimers {
         }, CONTEST_TIMER_INTERVAL_MS);
     }
     stop(): void {
-        window.clearInterval(this.sinceStartTimerID);
-        this.sinceStartTimerID = 0;
-        window.clearInterval(this.sinceLastQsoTimerID);
-        this.sinceLastQsoTimerID = 0;
+        if (this.sinceStartTimerID !== null) {
+            window.clearInterval(this.sinceStartTimerID);
+            this.sinceStartTimerID = null;
+        }
+        if (this.sinceLastQsoTimerID !== null) {
+            window.clearInterval(this.sinceLastQsoTimerID);
+            this.sinceLastQsoTimerID = null;
+        }
         this.elapsedSinceStart = 0;
         this.elapsedSinceLastQso = 0;
         this.isRunning = false;

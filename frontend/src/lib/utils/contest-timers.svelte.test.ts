@@ -16,8 +16,8 @@ describe('ContestTimersClass', () => {
 
     describe('initial state', () => {
         it('should have correct default values', () => {
-            expect(timers.sinceStartTimerID).toBe(0);
-            expect(timers.sinceLastQsoTimerID).toBe(0);
+            expect(timers.sinceStartTimerID).toBeNull();
+            expect(timers.sinceLastQsoTimerID).toBeNull();
             expect(timers.elapsedSinceStart).toBe(0);
             expect(timers.elapsedSinceLastQso).toBe(0);
             expect(timers.isRunning).toBe(false);
@@ -33,12 +33,12 @@ describe('ContestTimersClass', () => {
             expect(timers.isRunning).toBe(true);
         });
 
-        it('should set sinceStartTimerID to a non-zero value', () => {
-            expect(timers.sinceStartTimerID).toBe(0);
+        it('should set sinceStartTimerID to a non-null value', () => {
+            expect(timers.sinceStartTimerID).toBeNull();
 
             timers.start();
 
-            expect(timers.sinceStartTimerID).not.toBe(0);
+            expect(timers.sinceStartTimerID).not.toBeNull();
         });
 
         it('should increment elapsedSinceStart every second', () => {
@@ -76,13 +76,13 @@ describe('ContestTimersClass', () => {
             expect(timers.isRunning).toBe(false);
         });
 
-        it('should reset sinceStartTimerID to 0', () => {
+        it('should reset sinceStartTimerID to null', () => {
             timers.start();
-            expect(timers.sinceStartTimerID).not.toBe(0);
+            expect(timers.sinceStartTimerID).not.toBeNull();
 
             timers.stop();
 
-            expect(timers.sinceStartTimerID).toBe(0);
+            expect(timers.sinceStartTimerID).toBeNull();
         });
 
         it('should reset all elapsed counters to 0', () => {
@@ -115,7 +115,7 @@ describe('ContestTimersClass', () => {
 
             timers.stop();
 
-            expect(timers.sinceLastQsoTimerID).toBe(0);
+            expect(timers.sinceLastQsoTimerID).toBeNull();
             expect(timers.elapsedSinceLastQso).toBe(0);
         });
     });
@@ -134,13 +134,13 @@ describe('ContestTimersClass', () => {
         it('should start a new lastQso timer', () => {
             timers.reset();
             const firstTimerID = timers.sinceLastQsoTimerID;
-            expect(firstTimerID).not.toBe(0);
+            expect(firstTimerID).not.toBeNull();
 
             vi.advanceTimersByTime(2000);
             timers.reset();
 
             // New timer should be created
-            expect(timers.sinceLastQsoTimerID).not.toBe(0);
+            expect(timers.sinceLastQsoTimerID).not.toBeNull();
             expect(timers.elapsedSinceLastQso).toBe(0);
         });
 
@@ -158,14 +158,14 @@ describe('ContestTimersClass', () => {
         it('should clear previous timer even if elapsedSinceLastQso is 0', () => {
             timers.reset();
             const firstTimerID = timers.sinceLastQsoTimerID;
-            expect(firstTimerID).not.toBe(0);
+            expect(firstTimerID).not.toBeNull();
 
             // Reset immediately without advancing time
             timers.reset();
             const secondTimerID = timers.sinceLastQsoTimerID;
 
             // A new timer should be created with a different ID
-            expect(secondTimerID).not.toBe(0);
+            expect(secondTimerID).not.toBeNull();
             expect(secondTimerID).not.toBe(firstTimerID);
 
             // The old timer should not cause double increments
