@@ -59,7 +59,7 @@ export function parseCatKHzToMHz(freqKHz: string | null | undefined): number | n
     return value / 1_000_000;
 }
 
-export function parseDatabaseFreqToDottedKhz(freq: string): string {
+export function parseDatabaseFreqToDottedKhz(freq: string | undefined): string {
     // Format validated plain kHz string into dotted thousands of groups for UI.
     if (!freq) return '';
     const trimmed = freq.trim();

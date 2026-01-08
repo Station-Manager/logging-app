@@ -1,10 +1,13 @@
 import { CONTEST_TIMER_INTERVAL_MS } from '$lib/constants/timers';
+import { formatTimeSecondsToHHColonMMColonSS } from '$lib/utils/time-date';
 
 export interface ContestTimers {
     sinceStartTimerID: number | null;
     sinceLastQsoTimerID: number | null;
     elapsedSinceStart: number;
     elapsedSinceLastQso: number;
+    formattedSinceStart: string;
+    formattedSinceLastQso: string;
     isRunning: boolean;
     start(): void;
     reset(): void;
@@ -17,6 +20,10 @@ export class ContestTimersClass implements ContestTimers {
     elapsedSinceStart: number = $state(0);
     elapsedSinceLastQso: number = $state(0);
     isRunning: boolean = $state(false); // Add a reactive flag
+
+    // Derived formatted values - only recompute when elapsed values change
+    formattedSinceStart: string = $derived(formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceStart));
+    formattedSinceLastQso: string = $derived(formatTimeSecondsToHHColonMMColonSS(this.elapsedSinceLastQso));
 
     constructor() {
         this.sinceStartTimerID = null;

@@ -10,7 +10,6 @@
     import {appState} from "$lib/states/app-state.svelte";
     import {STATION_PANEL} from "$lib/ui/logging/panels/constants";
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
-    import {formatTimeSecondsToHHColonMMColonSS} from "$lib/utils/time-date";
     import {contestState} from "$lib/states/contest-state.svelte";
     import {onDestroy} from "svelte";
 
@@ -85,7 +84,7 @@
             </div>
             <div class="flex">
                 <div class="w-12">Last:</div>
-                <div>{formatTimeSecondsToHHColonMMColonSS(contestTimers.elapsedSinceLastQso)}</div>
+                <div>{contestTimers.formattedSinceLastQso}</div>
             </div>
         {/if}
     </div>
