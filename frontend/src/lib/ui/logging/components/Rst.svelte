@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {inputInvalid} from "$lib/ui/styles";
+
     interface Props {
         id: string;
         label: string;
