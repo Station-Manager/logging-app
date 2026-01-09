@@ -12,6 +12,9 @@ import (
 	"github.com/Station-Manager/types"
 )
 
+// defaultPollInterval is the fallback interval for the forwarding poller when no valid interval is configured.
+const defaultPollInterval = 120 * time.Second
+
 type forwarding struct {
 	pollInterval    time.Duration
 	maxWorkers      int
@@ -177,7 +180,17 @@ func (f *forwarding) stop(timeout time.Duration) error {
 func (f *forwarding) pollerLoop(ctx context.Context, shutdown <-chan struct{}) {
 	f.logger.InfoWith().Msg("Starting forwarding poller")
 
-	ticker := time.NewTicker(f.pollInterval)
+	// Validate poll interval to prevent panic from NewTicker with non-positive duration
+	pollInterval := f.pollInterval
+	if pollInterval <= 0 {
+		f.logger.WarnWith().
+			Dur("configured_interval", pollInterval).
+			Dur("fallback_interval", defaultPollInterval).
+			Msg("Invalid poll interval configured, using default")
+		pollInterval = defaultPollInterval
+	}
+
+	ticker := time.NewTicker(pollInterval)
 	defer ticker.Stop()
 
 	for {
