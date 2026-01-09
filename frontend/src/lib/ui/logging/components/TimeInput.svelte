@@ -1,7 +1,6 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte.js";
-
-    const disabledCss: string = 'disabled:outline-orange-500 disabled:outline-2 disabled:bg-orange-200';
+    import {inputDateTimePicker, inputTimerDisabled, labelBase} from "$lib/ui/styles";
 
     interface Props {
         id: string,
@@ -24,14 +23,14 @@
 </script>
 
 <div class="w-[110px]">
-    <label for={id} class="block text-sm/5 font-medium">{label}</label>
+    <label for={id} class={labelBase}>{label}</label>
     <div class="relative mt-2">
         <input
                 bind:value={value}
                 type="time"
                 id={id}
                 disabled={disabled}
-                class="{ticking ? disabledCss : ''} block w-full rounded-md bg-white px-1.5 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                class="{ticking ? inputTimerDisabled : ''} {inputDateTimePicker}"
             />
         <span class="absolute top-2 right-2">
             <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-gray-700">

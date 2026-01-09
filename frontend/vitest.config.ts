@@ -17,8 +17,8 @@ export default defineConfig({
         include: ['src/**/*.{test,spec}.{js,ts}'],
         setupFiles: ['src/test-setup.ts'],
         alias: {
-            '$lib': resolve(process.cwd(), './src/lib'),
-            '$app': resolve(process.cwd(), './node_modules/@sveltejs/kit/src/runtime/app'),
+            $lib: resolve(process.cwd(), './src/lib'),
+            $app: resolve(process.cwd(), './node_modules/@sveltejs/kit/src/runtime/app'),
         },
     },
     resolve: {

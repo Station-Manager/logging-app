@@ -1,5 +1,6 @@
 <script lang="ts">
     import {isCatEnabled} from "$lib/states/cat-state.svelte";
+    import {selectBase, selectWrapper, labelBase} from "$lib/ui/styles";
 
     interface Props {
         id: string;
@@ -16,9 +17,9 @@
         label,
         value = $bindable(),
         list,
-        labelCss = 'block text-sm/5 font-medium',
-        divCss = 'mt-2 grid grid-cols-1',
-        inputCss = 'col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
+        labelCss = labelBase,
+        divCss = selectWrapper,
+        inputCss = selectBase,
         overallWidthCss = 'w-[150px]'
     }: Props = $props();
 </script>

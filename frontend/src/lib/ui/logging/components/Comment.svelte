@@ -1,6 +1,7 @@
 <script lang="ts">
     import {clickoutside} from "@svelte-put/clickoutside";
     import {clipboardState} from "$lib/states/clipboard-state.svelte";
+    import {textareaBase, inputWrapper, labelWithMargin} from "$lib/ui/styles";
 
     interface Props {
         id: string;
@@ -16,9 +17,9 @@
         id,
         label,
         value = $bindable(),
-        labelCss = 'block text-sm/5 font-medium ml-2',
-        divCss = 'mt-2',
-        inputCss = 'h-[68px] resize-none w-full rounded-md bg-white px-2 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
+        labelCss = labelWithMargin,
+        divCss = inputWrapper,
+        inputCss = `h-[68px] ${textareaBase}`,
         overallWidthCss = 'w-[280px]'
     }: Props = $props();
 

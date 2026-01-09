@@ -122,7 +122,7 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to fetch country details for callsign %s", parsedCallsign)
 	}
 
-	if err != nil {
+	if stderr.Is(err, errors.ErrNotFound) {
 		dbCountry.IsNewEntity = true
 	}
 

@@ -17,18 +17,9 @@
     import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
     import {showToast} from "$lib/utils/toast";
     import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {sessionTable} from "$lib/ui/styles";
 
     const focusContext = getFocusContext();
-
-    const distanceCss = "w-[92px]";
-    const timeCss = "w-[74px]";
-    const callsignCss = "w-[90px]";
-    const bandCss = "w-[50px]";
-    const freqCss = "w-[80px]";
-    const rstCss = "w-[50px]";
-    const modeCss = "w-[52px]";
-    const countryCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
-    const nameCss = "w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1";
 
     let showEditPanel = $state(false);
     let isUpdating: boolean = $state(false);
@@ -81,30 +72,30 @@
 
 <div class="cursor-default flex flex-col">
     <div class="flex flex-row border-b border-b-gray-300 font-semibold h-8 items-center px-4">
-        <div class={callsignCss}>Callsign</div>
-        <div class={nameCss}>Name</div>
-        <div class={freqCss}>Freq</div>
-        <div class={bandCss}>Band</div>
-        <div class={rstCss}>Send</div>
-        <div class={rstCss}>Rcvd</div>
-        <div class={modeCss}>Mode</div>
-        <div class={timeCss}>Time On</div>
-        <div class={countryCss}>Country</div>
+        <div class={sessionTable.callsign}>Callsign</div>
+        <div class={sessionTable.name}>Name</div>
+        <div class={sessionTable.freq}>Freq</div>
+        <div class={sessionTable.band}>Band</div>
+        <div class={sessionTable.rst}>Send</div>
+        <div class={sessionTable.rst}>Rcvd</div>
+        <div class={sessionTable.mode}>Mode</div>
+        <div class={sessionTable.time}>Time On</div>
+        <div class={sessionTable.country}>Country</div>
         <div class="w-[130px]">Distance</div>
     </div>
     <div class="flex flex-col overflow-y-scroll h-[298px] px-4">
         {#each sessionState.list as entry (entry.id)}
             <div class="flex flex-row even:bg-gray-300 text-sm h-[22px] p-0.5 rounded-xs">
-                <div class={callsignCss}>{entry.call}</div>
-                <div class={nameCss} title="{entry.name}">{entry.name}</div>
-                <div class={freqCss}>{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
-                <div class={bandCss}>{entry.band}</div>
-                <div class={rstCss}>{entry.rst_sent}</div>
-                <div class={rstCss}>{entry.rst_rcvd}</div>
-                <div class={modeCss}>{entry.mode}</div>
-                <div class={timeCss}>{entry.time_on}</div>
-                <div class={countryCss} title="{entry.country}">{entry.country}</div>
-                <div class={distanceCss}>{entry.distance} km ({entry.ant_path})</div>
+                <div class={sessionTable.callsign}>{entry.call}</div>
+                <div class={sessionTable.name} title="{entry.name}">{entry.name}</div>
+                <div class={sessionTable.freq}>{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
+                <div class={sessionTable.band}>{entry.band}</div>
+                <div class={sessionTable.rst}>{entry.rst_sent}</div>
+                <div class={sessionTable.rst}>{entry.rst_rcvd}</div>
+                <div class={sessionTable.mode}>{entry.mode}</div>
+                <div class={sessionTable.time}>{entry.time_on}</div>
+                <div class={sessionTable.country} title="{entry.country}">{entry.country}</div>
+                <div class={sessionTable.distance}>{entry.distance} km ({entry.ant_path})</div>
                 <div><button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer font-semibold hover:text-indigo-700">Edit</button></div>
             </div>
         {/each}

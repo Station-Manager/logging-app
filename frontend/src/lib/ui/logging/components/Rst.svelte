@@ -58,7 +58,7 @@
                 maxlength="3"
                 minlength="2"
                 id={id}
-                class="{inputCss} {invalid ? 'outline-red-600 focus:outline-red-600' : ''}"
+                class="{inputCss} {invalid ? inputInvalid : ''}"
                 autocomplete="off"
                 oninput={handleInput}
                 onblur={validateAndFocus}

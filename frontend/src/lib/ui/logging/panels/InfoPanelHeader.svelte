@@ -13,17 +13,13 @@
     import {showToast} from "$lib/utils/toast";
     import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
     import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getTabButtonClass, inputCompact} from "$lib/ui/styles";
 
     const focusContext = getFocusContext();
 
     const emailPattern: RegExp = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-    const baseCss = "flex gap-x-2";
-    const selectedBtn = "cursor-default text-indigo-600 font-semibold";
-    const unselectedBtn = "cursor-pointer text-gray-500 font-semibold hover:text-gray-700";
-
-    const btnClass = (value: string) =>
-        `${baseCss} ${selected === value ? selectedBtn : unselectedBtn}`;
+    const btnClass = (value: string) => getTabButtonClass(selected === value);
 
     let selected = $derived(appState.activePanel);
     let disableFwdByEmail = $derived(sessionState.list.length === 0);
@@ -102,7 +98,7 @@
                         type="email"
                         id="fwd_session_by_email"
                         placeholder="Email address"
-                        class="w-full outline-1 outline-gray-300 rounded-md px-2 py-1 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 text-sm/6">
+                        class={inputCompact}>
             </div>
             <div class="w-[20px]">
                 <button

@@ -1,4 +1,6 @@
 <script lang="ts">
+    import {inputBase, inputWrapper, labelBase} from "$lib/ui/styles";
+
     interface Props {
         id: string;
         label: string;
@@ -12,9 +14,9 @@
         id,
         label,
         value = $bindable(),
-        labelCss = 'block text-sm/5 font-medium',
-        divCss = 'mt-2',
-        inputCss = 'block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
+        labelCss = labelBase,
+        divCss = inputWrapper,
+        inputCss = inputBase,
         overallWidthCss = 'w-[210px]'
     }: Props = $props();
 </script>

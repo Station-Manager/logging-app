@@ -1,5 +1,6 @@
 <script lang="ts">
     import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
+    import {inputBase} from "$lib/ui/styles";
 
     interface Props {
         id: string;
@@ -13,7 +14,7 @@
         value = $bindable(),
         band,
         disabled = false,
-        inputCss = 'block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600',
+        inputCss = inputBase,
     }: Props = $props();
 
 </script>

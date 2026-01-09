@@ -25,6 +25,7 @@
         } else {
             contestTimers.stop();
         }
+       focusContext.focus('callsignInput');
     }
 
     const operatorField = (): void => {

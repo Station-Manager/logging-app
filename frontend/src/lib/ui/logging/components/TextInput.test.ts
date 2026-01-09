@@ -11,7 +11,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             expect(screen.getByLabelText('Test Label')).toBeInTheDocument();
@@ -24,7 +24,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: 'initial value',
-                }
+                },
             });
 
             expect(screen.getByRole('textbox')).toHaveValue('initial value');
@@ -39,7 +39,7 @@ describe('TextInput', () => {
                     labelCss: 'custom-label-class',
                     inputCss: 'custom-input-class',
                     overallWidthCss: 'custom-width-class',
-                }
+                },
             });
 
             const label = screen.getByText('Test Label');
@@ -55,7 +55,7 @@ describe('TextInput', () => {
                     id: 'my-unique-id',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -68,7 +68,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -81,7 +81,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -98,7 +98,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -115,7 +115,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: 'initial',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -132,7 +132,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: 'hello',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -149,7 +149,7 @@ describe('TextInput', () => {
                     id: 'accessible-input',
                     label: 'Accessible Label',
                     value: '',
-                }
+                },
             });
 
             const label = screen.getByText('Accessible Label');
@@ -164,7 +164,7 @@ describe('TextInput', () => {
                     id: 'test-input',
                     label: 'Test Label',
                     value: '',
-                }
+                },
             });
 
             const input = screen.getByRole('textbox');
@@ -174,4 +174,3 @@ describe('TextInput', () => {
         });
     });
 });
-
