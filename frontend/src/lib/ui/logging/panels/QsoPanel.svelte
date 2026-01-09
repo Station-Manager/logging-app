@@ -58,7 +58,7 @@
             <Callsign
                     id="call"
                     label="Callsign"
-                    value={qsoState.call}
+                    bind:value={qsoState.call}
                     focusRefKey="callsignInput"
                     focusRefs={refs}
             />
