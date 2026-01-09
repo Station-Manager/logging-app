@@ -14,6 +14,7 @@
     import {shortcut} from "@svelte-put/shortcut";
     import {clipboardState} from "$lib/states/clipboard-state.svelte";
     import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {buildTrigger, SHORTCUTS} from "$lib/constants/shortcuts";
 
     const focusContext = getFocusContext();
 
@@ -179,20 +180,20 @@
             type="button"
             disabled={!canLog()}
             class="disabled:bg-gray-400 disabled:cursor-not-allowed h-9 cursor-pointer rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            title="Ctrl-s">Log Contact
+            title={SHORTCUTS.LOG_CONTACT.displayKey}>Log Contact
     </button>
     <button
             onclick={resetAction}
             type="button"
             class="h-9 w-[74px] cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
-            title="ESC">Clear
+            title={SHORTCUTS.CLEAR_FORM.displayKey}>Clear
     </button>
 </div>
 <svelte:window
         use:shortcut={{
         trigger: [
-            {key: 'Escape', callback: resetAction},
-            {key: 's', modifier: 'ctrl', callback: logContact},
+            buildTrigger('CLEAR_FORM', resetAction),
+            buildTrigger('LOG_CONTACT', logContact),
         ],
     }}
 ></svelte:window>

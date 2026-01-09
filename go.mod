@@ -12,7 +12,7 @@ require (
 	github.com/Station-Manager/forwarding v0.0.11
 	github.com/Station-Manager/iocdi v0.0.1
 	github.com/Station-Manager/logging v0.0.12
-	github.com/Station-Manager/lookup v0.0.13
+	github.com/Station-Manager/lookup v0.0.15
 	github.com/Station-Manager/maidenhead v0.0.1
 	github.com/Station-Manager/types v0.0.74
 	github.com/Station-Manager/utils v0.0.5
@@ -73,12 +73,12 @@ require (
 	golang.org/x/crypto v0.46.0 // indirect
 	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
 	golang.org/x/net v0.48.0 // indirect
-	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	modernc.org/libc v1.67.4 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
-	modernc.org/sqlite v1.42.2 // indirect
+	modernc.org/sqlite v1.43.0 // indirect
 )
