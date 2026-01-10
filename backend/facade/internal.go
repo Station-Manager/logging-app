@@ -198,7 +198,7 @@ func (s *Service) forwardNetworkOnly(provider interface{}, qsoUpload types.QsoUp
 
 	// Type assertion to get the actual forwarder interface
 	forwarder, ok := provider.(interface {
-		ForwardNetworkOnly(qso types.Qso, action string) error
+		ForwardNetworkOnly(qso types.Qso, param ...string) error
 	})
 
 	if !ok {
@@ -206,7 +206,7 @@ func (s *Service) forwardNetworkOnly(provider interface{}, qsoUpload types.QsoUp
 		// use the old Forward method (which includes DB writes - not ideal but maintains compatibility)
 		s.LoggerService.WarnWith().Msgf("Provider %s does not implement ForwardNetworkOnly, using legacy Forward method", qsoUpload.Service)
 		legacyForwarder, ok := provider.(interface {
-			Forward(qso types.Qso, action string) error
+			Forward(qso types.Qso, param ...string) error
 		})
 		if !ok {
 			return errors.New(op).Msgf("provider %s does not implement Forward interface", qsoUpload.Service)

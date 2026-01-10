@@ -730,6 +730,133 @@ func TestForwardQsoWithSerializedDB_NilForwarding(t *testing.T) {
 	}
 }
 
+// mockForwarder implements the Forwarder interface with variadic parameters
+type mockForwarder struct {
+	forwardCalled            bool
+	forwardNetworkOnlyCalled bool
+	forwardErr               error
+	forwardNetworkOnlyErr    error
+}
+
+func (m *mockForwarder) Forward(qso types.Qso, param ...string) error {
+	m.forwardCalled = true
+	return m.forwardErr
+}
+
+func (m *mockForwarder) ForwardNetworkOnly(qso types.Qso, param ...string) error {
+	m.forwardNetworkOnlyCalled = true
+	return m.forwardNetworkOnlyErr
+}
+
+func (m *mockForwarder) UpdateDatabase(qso types.Qso) error {
+	return nil
+}
+
+// mockLegacyForwarder only implements Forward (not ForwardNetworkOnly)
+type mockLegacyForwarder struct {
+	forwardCalled bool
+	forwardErr    error
+}
+
+func (m *mockLegacyForwarder) Forward(qso types.Qso, param ...string) error {
+	m.forwardCalled = true
+	return m.forwardErr
+}
+
+// mockInvalidForwarder doesn't implement any Forward method correctly
+type mockInvalidForwarder struct{}
+
+func TestForwardNetworkOnly_WithVariadicForwarder(t *testing.T) {
+	s := createStartedTestService()
+	mock := &mockForwarder{}
+
+	qsoUpload := types.QsoUpload{
+		Service: "test-service",
+		Action:  "insert",
+		Qso:     types.Qso{ID: 1},
+	}
+
+	err := s.forwardNetworkOnly(mock, qsoUpload)
+	if err != nil {
+		t.Errorf("forwardNetworkOnly() unexpected error: %v", err)
+	}
+
+	if !mock.forwardNetworkOnlyCalled {
+		t.Error("ForwardNetworkOnly should have been called")
+	}
+}
+
+func TestForwardNetworkOnly_FallbackToLegacyForward(t *testing.T) {
+	s := createStartedTestService()
+	mock := &mockLegacyForwarder{}
+
+	qsoUpload := types.QsoUpload{
+		Service: "test-service",
+		Action:  "insert",
+		Qso:     types.Qso{ID: 1},
+	}
+
+	err := s.forwardNetworkOnly(mock, qsoUpload)
+	if err != nil {
+		t.Errorf("forwardNetworkOnly() unexpected error: %v", err)
+	}
+
+	if !mock.forwardCalled {
+		t.Error("Forward should have been called as fallback")
+	}
+}
+
+func TestForwardNetworkOnly_NoForwardInterface(t *testing.T) {
+	s := createStartedTestService()
+	mock := &mockInvalidForwarder{}
+
+	qsoUpload := types.QsoUpload{
+		Service: "test-service",
+		Action:  "insert",
+		Qso:     types.Qso{ID: 1},
+	}
+
+	err := s.forwardNetworkOnly(mock, qsoUpload)
+	if err == nil {
+		t.Error("forwardNetworkOnly() should fail when provider doesn't implement Forward interface")
+	}
+
+	// Check error message contains expected text
+	if !containsString(err.Error(), "does not implement Forward interface") {
+		t.Errorf("expected error about Forward interface, got: %v", err)
+	}
+}
+
+func TestForwardNetworkOnly_ReturnsForwarderError(t *testing.T) {
+	s := createStartedTestService()
+	expectedErr := errors.New("network failure")
+	mock := &mockForwarder{forwardNetworkOnlyErr: expectedErr}
+
+	qsoUpload := types.QsoUpload{
+		Service: "test-service",
+		Action:  "insert",
+		Qso:     types.Qso{ID: 1},
+	}
+
+	err := s.forwardNetworkOnly(mock, qsoUpload)
+	if err == nil {
+		t.Error("forwardNetworkOnly() should return forwarder error")
+	}
+}
+
+func containsString(s, substr string) bool {
+	return len(s) >= len(substr) && (s == substr || len(s) > 0 && containsStringHelper(s, substr))
+}
+
+func containsStringHelper(s, substr string) bool {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return true
+		}
+	}
+	return false
+}
+
 // =============================================================================
 // QSO Init Tests
 // =============================================================================
