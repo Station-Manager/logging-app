@@ -74,7 +74,7 @@ require (
 	golang.org/x/exp v0.0.0-20251219203646-944ab1f22d93 // indirect
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.32.0 // indirect
+	golang.org/x/text v0.33.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	modernc.org/libc v1.67.4 // indirect
