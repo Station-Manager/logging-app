@@ -1,6 +1,6 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte";
-    import {handleAsyncError} from "$lib/utils/error-handler";
+    import {handleAsyncError} from "../../../utils/error-handler";
     import {OpenInBrowser} from "$lib/wailsjs/go/facade/Service"
 
     let qslCardWanted = $state(false);

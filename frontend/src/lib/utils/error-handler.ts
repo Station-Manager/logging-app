@@ -1,8 +1,8 @@
-import { LogError } from '$lib/wailsjs/runtime';
+import { LogError } from '$lib/wailsjs/runtime/runtime';
 import { showToast } from '$lib/utils/toast';
+import { createErrorHandler } from '@station-manager/shared-utils';
 
-export const handleAsyncError = (error: unknown, operation: string): void => {
-    const errMsg = error instanceof Error ? error.message : String(error);
-    LogError(`${operation}: ${errMsg}`);
-    showToast.ERROR(errMsg);
-};
+export const handleAsyncError = createErrorHandler({
+    logger: LogError,
+    notifier: showToast.ERROR,
+});

@@ -6,7 +6,7 @@
     import {appState} from "$lib/states/app-state.svelte";
     import {WORKED_TAB_TITLE} from "$lib/ui/logging/panels/constants";
     import {isContestMode} from "$lib/stores/logging-mode-store";
-    import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
+    import {frequencyToBandFromDottedMHz} from "../../../../../../../shared-utils/src";
     import {showToast} from "$lib/utils/toast";
     import type {FocusRefs} from "$lib/states/focus-context.svelte";
     import {inputBaseUppercase, inputWrapper, labelBase} from "$lib/ui/styles";

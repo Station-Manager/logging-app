@@ -1,6 +1,6 @@
 import { writable, type Writable } from 'svelte/store';
 import { FetchCatStateValues } from '$lib/wailsjs/go/facade/Service';
-import { handleAsyncError } from '$lib/utils/error-handler';
+import { handleAsyncError } from '../utils/error-handler';
 import { tags } from '$lib/wailsjs/go/models';
 
 export class StateValuesClass {

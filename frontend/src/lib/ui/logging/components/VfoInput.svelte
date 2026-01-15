@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {frequencyToBandFromDottedMHz} from "$lib/utils/frequency";
+    import {frequencyToBandFromDottedMHz} from "../../../../../../../shared-utils/src";
     import {inputBase} from "$lib/ui/styles";
 
     interface Props {
