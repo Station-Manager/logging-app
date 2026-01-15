@@ -1,5 +1,5 @@
 import { types } from '$lib/wailsjs/go/models';
-import { formatDate, formatTime } from '../../../../../shared-utils/src/lib/utils/time-date';
+import { formatDate, formatTime } from '../../../../../shared-utils/src';
 
 export interface QsoEditState {
     id: number;

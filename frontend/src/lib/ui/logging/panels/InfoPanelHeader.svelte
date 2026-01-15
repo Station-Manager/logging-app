@@ -9,7 +9,7 @@
     import {sessionState} from "$lib/states/session-state.svelte";
     import {appState} from "$lib/states/app-state.svelte";
     import {configState} from "$lib/states/config-state.svelte";
-    import {handleAsyncError} from "../../../utils/error-handler";
+    import {handleAsyncError} from "$lib/utils/error-handler";
     import {showToast} from "$lib/utils/toast";
     import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
     import {getFocusContext} from "$lib/states/focus-context.svelte";

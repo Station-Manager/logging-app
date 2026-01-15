@@ -3,12 +3,12 @@ import { types } from '$lib/wailsjs/go/models';
 import {
     formatCatKHzToDottedMHz,
     frequencyToBandFromDottedMHz,
-} from '../../../../../shared-utils/src/lib/utils/frequency';
+} from '../../../../../shared-utils/src';
 import {
     extractRemoteTime,
     getDateUTC,
     getTimeUTC,
-} from '../../../../../shared-utils/src/lib/utils/time-date';
+} from '../../../../../shared-utils/src';
 import { catState } from '$lib/states/cat-state.svelte';
 import { getModeBySubmode } from '$lib/utils/mode';
 import { QSO_TIMER_INTERVAL_MS } from '$lib/constants/timers';
