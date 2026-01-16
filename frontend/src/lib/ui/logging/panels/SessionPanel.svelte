@@ -1,6 +1,6 @@
 <script lang="ts">
     import {sessionState} from "$lib/states/session-state.svelte";
-    import {frequencyToBandFromDottedMHz, parseDatabaseFreqToDottedKhz} from "../../../../../../../shared-utils/src";
+    import {frequencyToBandFromDottedMHz, parseDatabaseFreqToDottedKhz} from "@station-manager/shared-utils";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {types} from "$lib/wailsjs/go/models";
     import {GetQsoById} from "$lib/wailsjs/go/facade/Service";

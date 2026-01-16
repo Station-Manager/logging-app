@@ -1,7 +1,7 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte";
-    import {formatDate, formatTime} from "../../../../../../../shared-utils/src";
-    import {parseDatabaseFreqToDottedKhz} from "../../../../../../../shared-utils/src";
+    import {formatDate, formatTime} from "@station-manager/shared-utils";
+    import {parseDatabaseFreqToDottedKhz} from "@station-manager/shared-utils";
 </script>
 
 <div class="cursor-default flex flex-col">
