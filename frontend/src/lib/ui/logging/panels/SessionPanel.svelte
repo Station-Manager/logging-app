@@ -18,7 +18,6 @@
     import {showToast} from "$lib/utils/toast";
     import {getFocusContext} from "$lib/states/focus-context.svelte";
     import {sessionTable} from "$lib/ui/styles";
-    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const focusContext = getFocusContext();
     const SHORT_PATH = 'S';
