@@ -25,6 +25,7 @@ export interface QsoEditState {
     tx_pwr: string;
     band: string;
     station_callsign: string;
+    ant_path: string;
     fromQso(this: QsoEditState, qso: types.Qso): void;
     toQso(this: QsoEditState): types.Qso;
 }
@@ -53,6 +54,7 @@ export const qsoEditState: QsoEditState = $state({
     tx_pwr: '',
     band: '',
     station_callsign: '',
+    ant_path: '',
     fromQso(this: QsoEditState, qso: types.Qso): void {
         this.original = qso;
         this.id = qso.id;
@@ -77,6 +79,7 @@ export const qsoEditState: QsoEditState = $state({
         this.tx_pwr = qso.tx_pwr;
         this.band = qso.band ?? '';
         this.station_callsign = qso.station_callsign;
+        this.ant_path = qso.ant_path ?? '';
     },
     toQso(this: QsoEditState): types.Qso {
         let qsoObject: types.Qso;
@@ -103,31 +106,7 @@ export const qsoEditState: QsoEditState = $state({
         qsoObject.time_off = this.time_off;
         qsoObject.rx_pwr = this.rx_pwr;
         qsoObject.tx_pwr = this.tx_pwr;
-
-        // return new types.Qso({
-        //     id: this.id,
-        //     logbook_id: this.logbook_id,
-        //     session_id: this.session_id,
-        //     call: this.call,
-        //     rst_sent: this.rst_sent,
-        //     rst_rcvd: this.rst_rcvd,
-        //     submode: this.submode,
-        //     mode: this.mode,
-        //     freq: this.freq,
-        //     freq_rx: this.freq_rx,
-        //     name: this.name,
-        //     qth: this.qth,
-        //     comment: this.comment,
-        //     notes: this.notes,
-        //     qso_date: this.qso_date,
-        //     time_on: this.time_on,
-        //     time_off: this.time_off,
-        //     rig: this.rig,
-        //     rx_pwr: this.rx_pwr,
-        //     tx_pwr: this.tx_pwr,
-        //     band: this.band,
-        //     station_callsign: this.station_callsign,
-        // });
+        qsoObject.ant_path = this.ant_path;
 
         return qsoObject;
     },

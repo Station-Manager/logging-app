@@ -18,8 +18,11 @@
     import {showToast} from "$lib/utils/toast";
     import {getFocusContext} from "$lib/states/focus-context.svelte";
     import {sessionTable} from "$lib/ui/styles";
+    import {qsoState} from "$lib/states/new-qso-state.svelte";
 
     const focusContext = getFocusContext();
+    const SHORT_PATH = 'S';
+    const LONG_PATH = 'L';
 
     let showEditPanel = $state(false);
     let isUpdating: boolean = $state(false);
@@ -31,6 +34,22 @@
     let freqRx: string = $derived.by(() => {
         return parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx);
     })
+
+    let shortPathRadio: HTMLInputElement;
+    let longPathRadio: HTMLInputElement;
+
+    const toggleAntPath = (event: Event):void => {
+        const target = event.currentTarget as HTMLInputElement;
+        if (!target) return;
+        if (target.value === SHORT_PATH) {
+            qsoEditState.ant_path = SHORT_PATH;
+            longPathRadio.checked = false;
+
+        } else if (target.value === LONG_PATH) {
+            qsoEditState.ant_path = LONG_PATH;
+            shortPathRadio.checked = false;
+        }
+    };
 
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
@@ -112,7 +131,7 @@
 {#if showEditPanel}
 <div class="absolute top-12.5 w-full h-175.25 z-40 bg-gray-400/70">
     <div class="bg-white rounded-lg py-8 px-14 h-[530px] w-214 mt-21 mx-auto">
-        <div class="flex flex-col gap-y-3 w-[744px] h-[340px] px-6">
+        <div class="flex flex-col gap-y-3 w-186 h-[420px] px-6">
             <div class="flex flex-row gap-x-4 items-center h-[100px]">
                 <Callsign
                         id="call"
@@ -134,7 +153,7 @@
                 />
                 {@render vfos()}
             </div>
-            <div class="flex flex-row gap-x-4 -mt-1.5">
+            <div class="flex flex-row gap-x-4 -mt-2">
                 <TextInput
                         id="name"
                         label="Name"
@@ -158,7 +177,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-row gap-x-4 items-top">
+            <div class="flex flex-row gap-x-4 items-top -mt-2">
                 <DateInput
                         id="qso_date"
                         label="Date"
@@ -188,7 +207,7 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-row space-x-4 -mt-6">
+            <div class="flex flex-row space-x-4 -mt-7">
                 <div>
                     <label class="block text-sm/5 font-medium" for="rx_pwr">Power</label>
                     <div class="mt-2 w-[100px]">
@@ -211,6 +230,17 @@
                             id="rig"
                             placeholder="Working conditions"></textarea>
                     </div>
+                </div>
+            </div>
+            <div class="flex flex-row gap-x-4 -mt-2">
+                <div>Ant Path:</div>
+                <div class="flex items-center">
+                    <input onclick={toggleAntPath} bind:this={shortPathRadio} value={SHORT_PATH} id="short_path" type="radio" checked class="relative size-4 appearance-none rounded-full border border-gray-400 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden">
+                    <label for="short_path" class="ml-1 block text-sm font-medium">Short path</label>
+                </div>
+                <div class="flex items-center">
+                    <input onclick={toggleAntPath} bind:this={longPathRadio} value={LONG_PATH} id="long_path" type="radio" class="relative size-4 appearance-none rounded-full border border-gray-400 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden">
+                    <label for="long_path" class="ml-1 block text-sm font-medium">Long path</label>
                 </div>
             </div>
         </div>
