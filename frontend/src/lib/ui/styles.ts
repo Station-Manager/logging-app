@@ -153,7 +153,7 @@ export const sessionTable = {
     time: 'w-[74px]',
     callsign: 'w-[90px]',
     band: 'w-[50px]',
-    freq: 'w-[80px]',
+    freq: 'w-[86px]',
     rst: 'w-[50px]',
     mode: 'w-[52px]',
     country: 'w-[140px] text-nowrap overflow-hidden text-ellipsis pr-1',

@@ -3,7 +3,7 @@
     import {frequencyToBandFromDottedMHz, parseDatabaseFreqToDottedKhz} from "@station-manager/shared-utils";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {types} from "$lib/wailsjs/go/models";
-    import {GetQsoById} from "$lib/wailsjs/go/facade/Service";
+    import {GetQsoById, CurrentSessionQsoSlice} from "$lib/wailsjs/go/facade/Service";
     import {qsoEditState} from "$lib/states/qso-edit-state.svelte";
     import Callsign from "$lib/ui/logging/components/Callsign.svelte";
     import Mode from "$lib/ui/logging/components/Mode.svelte";
@@ -34,19 +34,19 @@
         return parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx);
     })
 
-    let shortPathRadio: HTMLInputElement;
-    let longPathRadio: HTMLInputElement;
+    let shortPathRadio: HTMLInputElement | undefined = $state();
+    let longPathRadio: HTMLInputElement | undefined = $state();
 
     const toggleAntPath = (event: Event):void => {
         const target = event.currentTarget as HTMLInputElement;
         if (!target) return;
         if (target.value === SHORT_PATH) {
             qsoEditState.ant_path = SHORT_PATH;
-            longPathRadio.checked = false;
+            if (longPathRadio) longPathRadio.checked = false;
 
         } else if (target.value === LONG_PATH) {
             qsoEditState.ant_path = LONG_PATH;
-            shortPathRadio.checked = false;
+            if (shortPathRadio) shortPathRadio.checked = false;
         }
     };
 
@@ -87,6 +87,7 @@
         } finally {
             isUpdating = false;
             showEditPanel = false;
+            sessionState.update(await CurrentSessionQsoSlice());
         }
     }
 
@@ -107,11 +108,11 @@
         <div class={sessionTable.mode}>Mode</div>
         <div class={sessionTable.time}>Time On</div>
         <div class={sessionTable.country}>Country</div>
-        <div class="w-[130px]">Distance</div>
+        <div class="w-32.5">Distance</div>
     </div>
-    <div class="flex flex-col overflow-y-scroll h-[298px] px-4">
+    <div class="flex flex-col overflow-y-scroll h-74.5 px-4">
         {#each sessionState.list as entry (entry.id)}
-            <div class="flex flex-row even:bg-gray-300 text-sm h-[22px] p-0.5 rounded-xs">
+            <div class="flex flex-row even:bg-gray-300 text-sm h-5.5 p-0.5 rounded-xs">
                 <div class={sessionTable.callsign}>{entry.call}</div>
                 <div class={sessionTable.name} title="{entry.name}">{entry.name}</div>
                 <div class={sessionTable.freq}>{parseDatabaseFreqToDottedKhz(entry.freq)}</div>
