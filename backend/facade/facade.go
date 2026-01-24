@@ -2,12 +2,14 @@ package facade
 
 import (
 	"net/url"
+	"strconv"
 	"strings"
 
 	"github.com/Station-Manager/enums/cmds"
 	"github.com/Station-Manager/enums/upload"
 	"github.com/Station-Manager/enums/upload/action"
 	"github.com/Station-Manager/errors"
+	"github.com/Station-Manager/maidenhead"
 	"github.com/Station-Manager/types"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -225,9 +227,17 @@ func (s *Service) UpdateQso(qso types.Qso) error {
 		return verr
 	}
 
-	distance, direction := s.distanceAndDirection(qso)
-	qso.Distance = distance
-	qso.LoggingStation.AntennaAzimuth = direction
+	if location, err := maidenhead.GetLocation(qso.MyGridsquare, qso.Gridsquare); err != nil {
+		s.LoggerService.WarnWith().Err(err).Msg("Failed to get location between logging station and contacted station")
+	} else {
+		if qso.AntPath == "S" {
+			qso.AntennaAzimuth = strconv.FormatFloat(location.ShortPathBearing, 'f', -1, 64)
+			qso.Distance = strconv.Itoa(int(location.ShortPathDistanceKm))
+		} else {
+			qso.AntennaAzimuth = strconv.FormatFloat(location.LongPathBearing, 'f', -1, 64)
+			qso.Distance = strconv.Itoa(int(location.LongPathDistanceKm))
+		}
+	}
 
 	if err := s.DatabaseService.UpdateQso(qso); err != nil {
 		err = errors.New(op).Err(err)

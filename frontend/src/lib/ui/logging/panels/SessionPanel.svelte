@@ -71,7 +71,7 @@
 
     const updateAction = async (): Promise<void> => {
         if (!canLog()) {
-            focusContext.focus('editCallsignInput', true);
+            await focusContext.focus('editCallsignInput', true);
             return;
         }
 
