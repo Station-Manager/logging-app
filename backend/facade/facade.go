@@ -165,6 +165,10 @@ func (s *Service) LogQso(qso types.Qso) error {
 		return verr
 	}
 
+	distance, direction := s.distanceAndDirection(qso)
+	qso.Distance = distance
+	qso.LoggingStation.AntennaAzimuth = direction
+
 	// Insert the QSO into the database
 	qsoId, err := s.DatabaseService.InsertQso(qso)
 	if err != nil {
@@ -220,6 +224,10 @@ func (s *Service) UpdateQso(qso types.Qso) error {
 		s.LoggerService.ErrorWith().Err(err).Msg("QSO Validation failed")
 		return verr
 	}
+
+	distance, direction := s.distanceAndDirection(qso)
+	qso.Distance = distance
+	qso.LoggingStation.AntennaAzimuth = direction
 
 	if err := s.DatabaseService.UpdateQso(qso); err != nil {
 		err = errors.New(op).Err(err)

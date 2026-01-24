@@ -270,3 +270,10 @@ func (s *Service) updateDatabaseOnly(qsoUpload types.QsoUpload, networkErr error
 
 	return nil
 }
+
+func (s *Service) distanceAndDirection(qso types.Qso) (string, string) {
+	if strings.ToUpper(qso.AntPath) == "S" {
+		return qso.CountryDetails.ShortPathDistance, qso.CountryDetails.ShortPathBearing
+	}
+	return qso.CountryDetails.LongPathDistance, qso.CountryDetails.LongPathBearing
+}
