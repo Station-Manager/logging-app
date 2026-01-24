@@ -2,6 +2,7 @@ import { types } from '$lib/wailsjs/go/models';
 import { formatDate, formatTime } from '@station-manager/shared-utils';
 
 export interface QsoEditState {
+    original: types.Qso;
     id: number;
     logbook_id: number;
     session_id: number;
@@ -29,6 +30,7 @@ export interface QsoEditState {
 }
 
 export const qsoEditState: QsoEditState = $state({
+    original: new types.Qso({}),
     id: 0,
     logbook_id: 0,
     session_id: 0,
@@ -52,6 +54,7 @@ export const qsoEditState: QsoEditState = $state({
     band: '',
     station_callsign: '',
     fromQso(this: QsoEditState, qso: types.Qso): void {
+        this.original = qso;
         this.id = qso.id;
         this.logbook_id = qso.logbook_id;
         this.session_id = qso.session_id;
@@ -76,29 +79,56 @@ export const qsoEditState: QsoEditState = $state({
         this.station_callsign = qso.station_callsign;
     },
     toQso(this: QsoEditState): types.Qso {
-        return new types.Qso({
-            id: this.id,
-            logbook_id: this.logbook_id,
-            session_id: this.session_id,
-            call: this.call,
-            rst_sent: this.rst_sent,
-            rst_rcvd: this.rst_rcvd,
-            submode: this.submode,
-            mode: this.mode,
-            freq: this.freq,
-            freq_rx: this.freq_rx,
-            name: this.name,
-            qth: this.qth,
-            comment: this.comment,
-            notes: this.notes,
-            qso_date: this.qso_date,
-            time_on: this.time_on,
-            time_off: this.time_off,
-            rig: this.rig,
-            rx_pwr: this.rx_pwr,
-            tx_pwr: this.tx_pwr,
-            band: this.band,
-            station_callsign: this.station_callsign,
-        });
+        let qsoObject: types.Qso;
+        if (this.original) {
+            qsoObject = types.Qso.createFrom(this.original);
+        } else {
+            qsoObject = new types.Qso({});
+        }
+
+        qsoObject.call = this.call;
+        qsoObject.rst_rcvd = this.rst_rcvd;
+        qsoObject.rst_sent = this.rst_sent;
+        qsoObject.mode = this.mode;
+        qsoObject.submode = this.submode;
+        qsoObject.band = this.band;
+        qsoObject.freq = this.freq;
+        qsoObject.freq_rx = this.freq_rx;
+        qsoObject.name = this.name;
+        qsoObject.qth = this.qth;
+        qsoObject.comment = this.comment;
+        qsoObject.notes = this.notes;
+        qsoObject.qso_date = this.qso_date;
+        qsoObject.time_on = this.time_on;
+        qsoObject.time_off = this.time_off;
+        qsoObject.rx_pwr = this.rx_pwr;
+        qsoObject.tx_pwr = this.tx_pwr;
+
+        // return new types.Qso({
+        //     id: this.id,
+        //     logbook_id: this.logbook_id,
+        //     session_id: this.session_id,
+        //     call: this.call,
+        //     rst_sent: this.rst_sent,
+        //     rst_rcvd: this.rst_rcvd,
+        //     submode: this.submode,
+        //     mode: this.mode,
+        //     freq: this.freq,
+        //     freq_rx: this.freq_rx,
+        //     name: this.name,
+        //     qth: this.qth,
+        //     comment: this.comment,
+        //     notes: this.notes,
+        //     qso_date: this.qso_date,
+        //     time_on: this.time_on,
+        //     time_off: this.time_off,
+        //     rig: this.rig,
+        //     rx_pwr: this.rx_pwr,
+        //     tx_pwr: this.tx_pwr,
+        //     band: this.band,
+        //     station_callsign: this.station_callsign,
+        // });
+
+        return qsoObject;
     },
 });

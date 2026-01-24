@@ -24,6 +24,14 @@
     let showEditPanel = $state(false);
     let isUpdating: boolean = $state(false);
 
+    let freq: string = $derived.by(() => {
+        return parseDatabaseFreqToDottedKhz(qsoEditState.freq);
+    });
+
+    let freqRx: string = $derived.by(() => {
+        return parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx);
+    })
+
     const editSessonQso = async (event: MouseEvent): Promise<void> => {
         const target = event.currentTarget as HTMLButtonElement | null;
         if (!target) {
@@ -102,8 +110,8 @@
     </div>
 </div>
 {#if showEditPanel}
-<div class="absolute top-[50px] w-full h-[701px] z-40 bg-gray-400/70">
-    <div class="bg-white rounded-lg py-8 px-14 h-[460px] w-[856px] mt-24 mx-auto">
+<div class="absolute top-12.5 w-full h-175.25 z-40 bg-gray-400/70">
+    <div class="bg-white rounded-lg py-8 px-14 h-[530px] w-214 mt-21 mx-auto">
         <div class="flex flex-col gap-y-3 w-[744px] h-[340px] px-6">
             <div class="flex flex-row gap-x-4 items-center h-[100px]">
                 <Callsign
@@ -114,7 +122,7 @@
                         focusRefs={focusContext.refs}
                 />
                 {#if $isContestMode}
-                    {@render contextLogging()}
+                    {@render contestLogging()}
                 {:else}
                     {@render normalLogging()}
                 {/if}
@@ -238,27 +246,12 @@
     />
 {/snippet}
 
-{#snippet contextLogging()}
+{#snippet contestLogging()}
     <div></div>
 {/snippet}
 
 {#snippet vfos()}
     <div class="flex flex-col w-[250px] h-20 mt-6 gap-y-2">
-        <div class="flex flex-row items-center">
-            <label for="freq" class="text-sm/5 font-medium w-[70px]">Freq (RX)</label>
-            <div class="w-[116px]">
-                <input
-                        type="text"
-                        autocomplete="off"
-                        spellcheck="false"
-                        id="freq"
-                        bind:value={qsoEditState.freq_rx}
-                        title="Format: ?#.###.###"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                />
-            </div>
-            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx))}</div>
-        </div>
         <div class="flex flex-row items-center">
             <label for="freq_rx" class="text-sm/5 font-medium w-[70px]">Freq (TX)</label>
             <div class="w-[116px]">
@@ -267,12 +260,27 @@
                         autocomplete="off"
                         spellcheck="false"
                         id="freq_rx"
-                        bind:value={qsoEditState.freq}
+                        bind:value={freq}
                         title="Format: ?#.###.###"
                         class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 />
             </div>
             <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq))}</div>
+        </div>
+        <div class="flex flex-row items-center">
+            <label for="freq" class="text-sm/5 font-medium w-[70px]">Freq (RX)</label>
+            <div class="w-[116px]">
+                <input
+                        type="text"
+                        autocomplete="off"
+                        spellcheck="false"
+                        id="freq"
+                        bind:value={freqRx}
+                        title="Format: ?#.###.###"
+                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                />
+            </div>
+            <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq_rx))}</div>
         </div>
     </div>
 {/snippet}
