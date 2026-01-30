@@ -3,6 +3,7 @@ package facade
 import (
 	stderr "errors"
 
+	"github.com/Station-Manager/adif"
 	"github.com/Station-Manager/errors"
 	"github.com/Station-Manager/types"
 )
@@ -42,10 +43,13 @@ func (s *Service) initializeQso(callsign string) (*types.Qso, error) {
 	}
 
 	qso := &types.Qso{
-		QsoDetails:       s.initQsoDetailsSection(),
-		LoggingStation:   loggingStation,
-		ContactedStation: *contactedStation,
-		CountryDetails:   country,
+		QsoDetails:          s.initQsoDetailsSection(),
+		LoggingStation:      loggingStation,
+		ContactedStation:    *contactedStation,
+		CountryDetails:      country,
+		QrzComUploadStatus:  adif.NoString,
+		SmQsoUploadStatus:   adif.NoString,
+		SmFwrdByEmailStatus: adif.NoString,
 	}
 
 	history, err := s.getContactHistory(*contactedStation)
