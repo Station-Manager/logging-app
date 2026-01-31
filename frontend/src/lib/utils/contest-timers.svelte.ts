@@ -1,5 +1,5 @@
 import { CONTEST_TIMER_INTERVAL_MS } from '$lib/constants/timers';
-import { formatTimeSecondsToHHColonMMColonSS } from '../../../../../shared-utils/src';
+import { formatTimeSecondsToHHColonMMColonSS } from '@station-manager/shared-utils';
 
 export interface ContestTimers {
     sinceStartTimerID: number | null;
