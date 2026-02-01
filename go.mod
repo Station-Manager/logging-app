@@ -6,7 +6,7 @@ require (
 	github.com/Station-Manager/adif v0.0.6
 	github.com/Station-Manager/cat v0.0.9
 	github.com/Station-Manager/config v0.0.39
-	github.com/Station-Manager/database v0.0.56
+	github.com/Station-Manager/database v0.0.57
 	github.com/Station-Manager/email v0.0.6
 	github.com/Station-Manager/enums v0.0.6
 	github.com/Station-Manager/errors v0.0.11
@@ -33,7 +33,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/ericlagergren/decimal v0.0.0-20240411145413-00de7ca16731 // indirect
 	github.com/friendsofgo/errors v0.9.2 // indirect
-	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
+	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/go-ole/go-ole v1.3.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
