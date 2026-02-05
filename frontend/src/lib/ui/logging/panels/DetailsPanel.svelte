@@ -47,7 +47,7 @@
         <div class="flex flex-row space-x-4">
             <div>
                 <label class="block text-sm/5 font-medium" for="rx_pwr">Power</label>
-                <div class="mt-2 w-[100px]">
+                <div class="mt-2 w-25">
                     <input
                             bind:value={qsoState.rx_pwr}
                             class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -60,7 +60,7 @@
             </div>
             <div>
                 <label class="block text-sm/5 font-medium" for="rig">Rig</label>
-                <div class="mt-2 w-[360px]">
+                <div class="mt-2 w-90">
                     <textarea
                             bind:value={qsoState.rig}
                             class="resize-none w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -73,7 +73,7 @@
             <label class="block text-sm/5 font-medium" for="notes">Notes</label>
             <textarea
                     bind:value={qsoState.notes}
-                    class="mt-2 w-[476px] h-20 resize-none rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                    class="mt-2 w-119 h-20 resize-none rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                     id="notes"
                     placeholder="My personal notes"></textarea>
         </div>
@@ -104,7 +104,7 @@
     <div class="flex flex-col mt-3 w-1/2">
         <div>
             <label class="block text-sm/5 font-medium" for="email">Email</label>
-            <div class="mt-2 w-[280px]">
+            <div class="mt-2 w-70">
                 <input
                         bind:value={qsoState.email}
                         class="w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300"

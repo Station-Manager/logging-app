@@ -40,9 +40,9 @@
     });
 </script>
 
-<header class="flex items-center h-[50px] pl-4 border-b border-b-gray-300">
-    <div class="flex flex-row items-center w-[290px]">
-        <div class="text-md font-semibold w-[124px]">Logging Mode:</div>
+<header class="flex items-center h-12.5 pl-4 border-b border-b-gray-300">
+    <div class="flex flex-row items-center w-72.5">
+        <div class="text-md font-semibold w-31">Logging Mode:</div>
         <div class="grid grid-cols-1">
             <select
                     class="text-sm col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1 pr-8 pl-3 outline-1 -outline-offset-1 outline-gray-300 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600"
@@ -57,7 +57,7 @@
             </svg>
         </div>
     </div>
-    <div class="w-[165px] text-xs">
+    <div class="w-41.25 text-xs">
         {#if $isContestMode}
         <div class="flex">
             <div class="w-16">Station:</div>
@@ -75,7 +75,7 @@
         </div>
         {/if}
     </div>
-    <div class="w-[165px] text-xs">
+    <div class="w-41.25 text-xs">
         {#if $isContestMode}
             <div class="flex">
                 <div class="w-12">QSOs:</div>
@@ -87,18 +87,18 @@
             </div>
         {/if}
     </div>
-    <div class="flex flex-col text-xs font-semibold w-[200px]">
+    <div class="flex flex-col text-xs font-semibold w-50">
         <div class="flex flex-row items-center">
-            <div class="w-[60px]">Logbook:</div>
-            <div class="w-[110px]">{configState.logbook.name}</div>
+            <div class="w-15">Logbook:</div>
+            <div class="w-27.5">{configState.logbook.name}</div>
         </div>
         <div class="flex flex-row items-center">
-            <div class="w-[60px]">Rig:</div>
-            <div class="w-[110px]">{configState.rig_name}</div>
+            <div class="w-15">Rig:</div>
+            <div class="w-27.5">{configState.rig_name}</div>
         </div>
     </div>
-    <div class="flex text-sm font-semibold w-[180px]">
-        <div class="w-[110px]">Session Time:</div>
+    <div class="flex text-sm font-semibold w-45">
+        <div class="w-27.5">Session Time:</div>
         <div class="w-20">{getSessionElapsedTime()}</div>
     </div>
 </header>

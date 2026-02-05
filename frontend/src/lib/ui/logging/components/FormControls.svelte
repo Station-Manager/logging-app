@@ -173,7 +173,7 @@
     }
 </script>
 
-<div class="flex w-[230px] justify-end gap-x-3">
+<div class="flex w-57.5 justify-end gap-x-3">
     <button
             id="log-contact-btn"
             onclick={logContact}
@@ -185,7 +185,7 @@
     <button
             onclick={resetAction}
             type="button"
-            class="h-9 w-[74px] cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
+            class="h-9 w-18.5 cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
             title={SHORTCUTS.CLEAR_FORM.displayKey}>Clear
     </button>
 </div>

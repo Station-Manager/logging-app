@@ -21,14 +21,14 @@ let {
 
 <div class="text-xs font-medium">
     {#if isSplit}
-        <div class="{bgColorTopCss} cursor-default rounded-t  px-1 text-white w-[52px] h-[16px] text-center">
+        <div class="{bgColorTopCss} cursor-default rounded-t  px-1 text-white w-13 h-4 text-center">
             {action}
         </div>
-        <div class="{bgColorBottomCss} cursor-default rounded-b px-1 text-white w-[52px] h-[16px] text-center">
+        <div class="{bgColorBottomCss} cursor-default rounded-b px-1 text-white w-13 h-4 text-center">
             {label}
         </div>
     {:else}
-        <div class="{bgColorCss} cursor-default rounded text-white w-[52px] h-[32px] text-center pt-2">
+        <div class="{bgColorCss} cursor-default rounded text-white w-13 h-8 text-center pt-2">
             {label}
         </div>
     {/if}

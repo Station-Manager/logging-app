@@ -52,9 +52,9 @@
     }
 </script>
 
-<div class="flex flex-row h-[281px]">
-    <div class="flex flex-col gap-y-3 w-[744px] px-6">
-        <div class="flex flex-row gap-x-4 items-center h-[100px]">
+<div class="flex flex-row h-70.25">
+    <div class="flex flex-col gap-y-3 w-186 px-6">
+        <div class="flex flex-row gap-x-4 items-center h-25">
             <Callsign
                     id="call"
                     label="Callsign"
@@ -117,7 +117,7 @@
             </div>
         </div>
     </div>
-    <div class="flex w-[280px] pt-6 pl-2">
+    <div class="flex w-70 pt-6 pl-2">
         <CountryPanel/>
     </div>
 </div>
@@ -140,7 +140,7 @@
         <div class="flex flex-col-reverse">
             <div>
                 <label for="srx_rcvd" class="block text-xs font-medium mt-1">Rcvd (SRX)</label>
-                <div class="w-[70px]">
+                <div class="w-17.5">
                     <input
                             bind:this={refs.srxRcvdInput}
                             bind:value={qsoState.srx}
@@ -155,7 +155,7 @@
             </div>
             <div>
                 <label for="stx_sent" class="block text-xs font-medium">Sent (STX)</label>
-                <div class="w-[70px]">
+                <div class="w-17.5">
                     <input
                             bind:value={stx}
                             type="text"

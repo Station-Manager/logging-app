@@ -30,12 +30,12 @@
     };
 </script>
 
-<div class="w-[240px] h-[236px] border border-gray-300 rounded-md bg-gray-200">
+<div class="w-60 h-59 border border-gray-300 rounded-md bg-gray-200">
     <div class="{isVisible ? 'block' : 'hidden'} flex flex-col">
         <div class="px-4 text-2xl text-center font-semibold mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
             {qsoState.country_name}
         </div>
-        <div class="flex justify-center h-[54px] my-1.5">
+        <div class="flex justify-center h-13.5 my-1.5">
             <img class="border border-gray-400/40" src="{flagImgPath}" alt="{qsoState.country_name}" title="{qsoState.country_name}">
         </div>
         <div class="text-center">
@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="flex flex-row font-semibold items-center justify-center mt-2">
-            <div class="w-[100px]">Local time:</div>
+            <div class="w-25">Local time:</div>
             <div class="text-sm text-red-600">{qsoState.remote_time} ({qsoState.remote_offset})</div>
         </div>
     </div>

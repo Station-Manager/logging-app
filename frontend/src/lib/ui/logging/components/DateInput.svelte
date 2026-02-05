@@ -14,7 +14,7 @@
 
 </script>
 
-<div class="w-[142px]">
+<div class="w-35.5">
     <label for={id} class={labelBase}>{label}</label>
     <div class="relative mt-2">
         <input

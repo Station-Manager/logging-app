@@ -29,7 +29,7 @@
     }
 </script>
 
-<div class="flex gap-x-1 w-[54px]">
+<div class="flex gap-x-1 w-13.5">
     <button
             disabled={cannotStop}
             aria-label="stop"

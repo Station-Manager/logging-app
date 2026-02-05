@@ -8,7 +8,7 @@
 
 </script>
 
-<div class="flex flex-col w-[250px] h-[80px] mt-6 gap-y-2">
+<div class="flex flex-col w-62.5 h-20 mt-6 gap-y-2">
     {#if catState.select === 'VFO-A' || catState.select === ''}
         <div class="flex flex-row items-center gap-x-2">
             {#if isSplit}

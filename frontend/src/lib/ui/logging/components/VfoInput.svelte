@@ -19,7 +19,7 @@
 
 </script>
 
-<div class="w-[116px]">
+<div class="w-29">
     <input
             type="text"
             autocomplete="off"
@@ -31,4 +31,4 @@
             class={inputCss}
     />
 </div>
-<div class="cursor-default w-[32px] font-semibold text-base">{frequencyToBandFromDottedMHz(band)}</div>
+<div class="cursor-default w-8 font-semibold text-base">{frequencyToBandFromDottedMHz(band)}</div>

@@ -8,7 +8,7 @@
     import {appState} from "$lib/states/app-state.svelte";
 </script>
 
-<div class="flex flex-col h-[370px]">
+<div class="flex flex-col h-92.5">
     <InfoPanelHeader/>
     {#if appState.activePanel === WORKED_TAB_TITLE}
         <WorkedPanel/>
