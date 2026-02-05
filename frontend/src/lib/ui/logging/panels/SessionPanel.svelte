@@ -130,9 +130,9 @@
 </div>
 {#if showEditPanel}
 <div class="absolute top-12.5 w-full h-175.25 z-40 bg-gray-400/70">
-    <div class="bg-white rounded-lg py-8 px-14 h-[530px] w-214 mt-21 mx-auto">
-        <div class="flex flex-col gap-y-3 w-186 h-[420px] px-6">
-            <div class="flex flex-row gap-x-4 items-center h-[100px]">
+    <div class="bg-white rounded-lg py-8 px-14 h-132.5 w-214 mt-21 mx-auto">
+        <div class="flex flex-col gap-y-3 w-186 h-105 px-6">
+            <div class="flex flex-row gap-x-4 items-center h-25">
                 <Callsign
                         id="call"
                         label="Callsign"
@@ -165,8 +165,8 @@
                         bind:value={qsoEditState.qth}
                         overallWidthCss="w-[170px]"
                 />
-                <div class="w-[280px]">
-                    <label for="comment" class="block text-sm/5 font-medium w-[70px]">Comments</label>
+                <div class="w-70">
+                    <label for="comment" class="block text-sm/5 font-medium w-17.5">Comments</label>
                     <div class="mt-2">
                     <textarea
                             bind:value={qsoEditState.comment}
@@ -195,8 +195,8 @@
                         bind:value={qsoEditState.time_off}
                         disabled={false}
                 />
-                <div class="w-[280px]">
-                    <label for="notes" class="block text-sm/5 font-medium w-[70px]">Notes</label>
+                <div class="w-70">
+                    <label for="notes" class="block text-sm/5 font-medium w-17.5">Notes</label>
                     <div class="mt-2">
                     <textarea
                             bind:value={qsoEditState.notes}
@@ -210,7 +210,7 @@
             <div class="flex flex-row space-x-4 -mt-7">
                 <div>
                     <label class="block text-sm/5 font-medium" for="rx_pwr">Power</label>
-                    <div class="mt-2 w-[100px]">
+                    <div class="mt-2 w-25">
                         <input
                                 bind:value={qsoEditState.rx_pwr}
                                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -223,7 +223,7 @@
                 </div>
                 <div>
                     <label class="block text-sm/5 font-medium" for="rig">Rig</label>
-                    <div class="mt-2 w-[360px]">
+                    <div class="mt-2 w-90">
                     <textarea
                             bind:value={qsoEditState.rig}
                             class="resize-none w-full rounded-md bg-white px-3 py-1.5 text-sm outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
@@ -255,7 +255,7 @@
             <button
                     onclick={cancelAction}
                     type="button"
-                    class="h-9 w-[74px] cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
+                    class="h-9 w-18.5 cursor-pointer rounded-md bg-white px-2.5 py-1.5 text-base font-semibold ring-1 shadow-sm ring-gray-300 ring-inset hover:bg-gray-100"
                     title="ESC">Cancel
             </button>
         </div>
@@ -281,10 +281,10 @@
 {/snippet}
 
 {#snippet vfos()}
-    <div class="flex flex-col w-[250px] h-20 mt-6 gap-y-2">
+    <div class="flex flex-col w-62.5 h-20 mt-6 gap-y-2">
         <div class="flex flex-row items-center">
-            <label for="freq_rx" class="text-sm/5 font-medium w-[70px]">Freq (TX)</label>
-            <div class="w-[116px]">
+            <label for="freq_rx" class="text-sm/5 font-medium w-17.5">Freq (TX)</label>
+            <div class="w-29">
                 <input
                         type="text"
                         autocomplete="off"
@@ -298,8 +298,8 @@
             <div class="cursor-default w-8 font-semibold text-base ml-2">{frequencyToBandFromDottedMHz(parseDatabaseFreqToDottedKhz(qsoEditState.freq))}</div>
         </div>
         <div class="flex flex-row items-center">
-            <label for="freq" class="text-sm/5 font-medium w-[70px]">Freq (RX)</label>
-            <div class="w-[116px]">
+            <label for="freq" class="text-sm/5 font-medium w-17.5">Freq (RX)</label>
+            <div class="w-29">
                 <input
                         type="text"
                         autocomplete="off"
