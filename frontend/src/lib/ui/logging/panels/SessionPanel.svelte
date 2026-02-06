@@ -1,6 +1,10 @@
 <script lang="ts">
     import {sessionState} from "$lib/states/session-state.svelte";
-    import {frequencyToBandFromDottedMHz, parseDatabaseFreqToDottedKhz} from "@station-manager/shared-utils";
+    import {
+        formatTime,
+        frequencyToBandFromDottedMHz,
+        parseDatabaseFreqToDottedKhz
+    } from "@station-manager/shared-utils";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {types} from "$lib/wailsjs/go/models";
     import {GetQsoById, CurrentSessionQsoSlice} from "$lib/wailsjs/go/facade/Service";
@@ -120,7 +124,7 @@
                 <div class={sessionTable.rst}>{entry.rst_sent}</div>
                 <div class={sessionTable.rst}>{entry.rst_rcvd}</div>
                 <div class={sessionTable.mode}>{entry.mode}</div>
-                <div class={sessionTable.time}>{entry.time_on}</div>
+                <div class={sessionTable.time}>{formatTime(entry.time_on)}</div>
                 <div class={sessionTable.country} title="{entry.country}">{entry.country}</div>
                 <div class={sessionTable.distance}>{entry.distance} km ({entry.ant_path})</div>
                 <div><button onclick={editSessonQso} id={entry.id.toString()} class="cursor-pointer font-semibold hover:text-indigo-700">Edit</button></div>

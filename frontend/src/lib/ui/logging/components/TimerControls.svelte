@@ -3,6 +3,9 @@
     import {shortcut} from "@svelte-put/shortcut";
     import {isValidCallsignForLog, isValidCallsignLength} from "$lib/constants/callsign";
     import {buildTrigger, SHORTCUTS} from "$lib/constants/shortcuts";
+    import {getFocusContext} from "$lib/states/focus-context.svelte";
+
+    const {focus} = getFocusContext();
 
     let cannotStart = $derived.by(() => {
         return qsoTimerState.running || qsoState.call === '';
@@ -13,6 +16,7 @@
 
     const onclickStopTimer = (): void => {
         qsoState.stopTimer();
+        focus('callsignInput');
     }
 
     const onclickStartTimer = (): void => {
