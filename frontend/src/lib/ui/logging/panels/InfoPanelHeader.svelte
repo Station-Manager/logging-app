@@ -12,7 +12,7 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {showToast} from "$lib/utils/toast";
     import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
     import {getTabButtonClass, inputCompact} from "$lib/ui/styles";
 
     const focusContext = getFocusContext();

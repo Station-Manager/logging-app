@@ -81,6 +81,7 @@
                 id={id}
                 spellcheck="false"
                 class={inputCss}
+                maxlength="128"
                 autocomplete="off"></textarea>
     </div>
 </div>

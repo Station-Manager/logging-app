@@ -8,7 +8,7 @@
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {frequencyToBandFromDottedMHz} from "@station-manager/shared-utils";
     import {showToast} from "$lib/utils/toast";
-    import type {FocusRefs} from "$lib/states/focus-context.svelte";
+    import type {FocusRefs} from "@station-manager/shared-utils/svelte";
     import {inputBaseUppercase, inputWrapper, labelBase} from "$lib/ui/styles";
 
     interface Props {

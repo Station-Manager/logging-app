@@ -11,7 +11,7 @@
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {Ready} from "$lib/wailsjs/go/facade/Service";
     import {configState} from "$lib/states/config-state.svelte";
-    import {setFocusContext} from "$lib/states/focus-context.svelte";
+    import {setFocusContext} from "@station-manager/shared-utils/svelte";
 
     let {children} = $props();
     let catStateEventsCancel: () => void = (): void => {}

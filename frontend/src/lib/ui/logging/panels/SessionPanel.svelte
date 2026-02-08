@@ -20,7 +20,7 @@
     import {isValidCallsignForLog} from "$lib/constants/callsign";
     import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
     import {showToast} from "$lib/utils/toast";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
     import {sessionTable} from "$lib/ui/styles";
 
     const focusContext = getFocusContext();

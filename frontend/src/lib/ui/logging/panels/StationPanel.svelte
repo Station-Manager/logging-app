@@ -3,7 +3,7 @@
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {sessionState} from "$lib/states/session-state.svelte";
     import {catState} from "$lib/states/cat-state.svelte";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
 
     const {refs} = getFocusContext();
 

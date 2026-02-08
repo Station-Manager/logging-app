@@ -13,7 +13,7 @@
     import {catState} from "$lib/states/cat-state.svelte";
     import {shortcut} from "@svelte-put/shortcut";
     import {clipboardState} from "$lib/states/clipboard-state.svelte";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
     import {buildTrigger, SHORTCUTS} from "$lib/constants/shortcuts";
 
     const focusContext = getFocusContext();

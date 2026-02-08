@@ -3,7 +3,7 @@
     import {shortcut} from "@svelte-put/shortcut";
     import {isValidCallsignForLog, isValidCallsignLength} from "$lib/constants/callsign";
     import {buildTrigger, SHORTCUTS} from "$lib/constants/shortcuts";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
 
     const {focus} = getFocusContext();
 

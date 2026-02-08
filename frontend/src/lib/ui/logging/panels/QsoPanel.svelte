@@ -14,7 +14,7 @@
     import CountryPanel from "$lib/ui/logging/panels/CountryPanel.svelte";
     import {isContestMode} from "$lib/stores/logging-mode-store";
     import {contestState} from "$lib/states/contest-state.svelte";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
 
     const {refs, focus} = getFocusContext();
 

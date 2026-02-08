@@ -12,7 +12,7 @@
     import {contestTimers} from "$lib/utils/contest-timers.svelte";
     import {contestState} from "$lib/states/contest-state.svelte";
     import {onDestroy} from "svelte";
-    import {getFocusContext} from "$lib/states/focus-context.svelte";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
 
     const focusContext = getFocusContext();
     const modeEntries = Object.entries(loggingModes) as [LoggingModeKey, string][];
