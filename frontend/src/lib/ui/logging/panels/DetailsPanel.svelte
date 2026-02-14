@@ -2,6 +2,7 @@
     import {qsoState} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
     import {OpenInBrowser} from "$lib/wailsjs/go/facade/Service"
+    import {configState} from "$lib/states/config-state.svelte";
 
     let qslCardWanted = $state(false);
 
@@ -35,7 +36,7 @@
             return;
         }
         try {
-//            await OpenInBrowser($configState.qrz_view_url + qsoState.call.toUpperCase());
+            await OpenInBrowser(configState.qrz_view_url + qsoState.call.toUpperCase());
         } catch(e: unknown) {
             handleAsyncError(e, "Failed to open callsign lookup")
         }

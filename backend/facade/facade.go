@@ -51,6 +51,13 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		return nil, err
 	}
 
+	optionalCfg, err := s.ConfigService.OptionalConfigs()
+	if err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to fetch optional configs.")
+		return nil, err
+	}
+
 	return &types.UiConfig{
 		DefaultRigID:       requiredCfg.DefaultRigID,
 		Logbook:            s.CurrentLogbook,
@@ -63,6 +70,7 @@ func (s *Service) FetchUiConfig() (*types.UiConfig, error) {
 		DefaultMode:        requiredCfg.DefaultMode,
 		DefaultFwdEmail:    requiredCfg.DefaultFwdEmail,
 		OwnersCallsign:     strings.ToUpper(loggingStation.OwnerCallsign),
+		QrzViewUrl:         optionalCfg.QrzViewUrl,
 	}, nil
 }
 

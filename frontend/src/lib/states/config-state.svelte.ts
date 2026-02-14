@@ -12,6 +12,7 @@ export interface ConfigState {
     default_random_qso: boolean;
     power_multiplier: number;
     default_fwd_email: string;
+    qrz_view_url: string;
     load(this: ConfigState, cfg: types.UiConfig): void;
 }
 
@@ -26,6 +27,7 @@ export const configState: ConfigState = $state({
     power_multiplier: 1,
     default_power: 5,
     default_fwd_email: '',
+    qrz_view_url: '',
 
     load(this: ConfigState, cfg: types.UiConfig): void {
         this.default_freq = cfg.default_freq;
@@ -38,5 +40,6 @@ export const configState: ConfigState = $state({
         this.power_multiplier = cfg.power_multiplier;
         this.default_power = cfg.default_tx_power;
         this.default_fwd_email = cfg.default_fwd_email;
+        this.qrz_view_url = cfg.qrz_view_url;
     },
 });
