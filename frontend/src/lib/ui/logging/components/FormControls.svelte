@@ -140,7 +140,7 @@
      */
     const logContact = async (): Promise<void> => {
         if (!canLog()) {
-            focusContext.focus('callsignInput', true);
+            await focusContext.focus('callsignInput', true);
             return;
         }
 

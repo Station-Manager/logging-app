@@ -69,7 +69,7 @@ func (s *Service) lookupCallsignOnline(callsign string) (types.ContactedStation,
 
 	station, err := s.QrzLookupService.Lookup(callsign)
 	if err != nil {
-		return emptyRetVal, errors.New(op).Err(err).Msg("Failed to lookup callsign")
+		return emptyRetVal, errors.New(op).Err(err).Msgf("Failed to lookup callsign: %s", callsign)
 	}
 
 	return station, nil
