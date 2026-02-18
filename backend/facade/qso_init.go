@@ -126,8 +126,9 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 		s.LoggerService.ErrorWith().Err(err).Msgf("Failed to fetch country details for callsign %s", parsedCallsign)
 	}
 
+	isNewEntity := false
 	if stderr.Is(err, errors.ErrNotFound) {
-		dbCountry.IsNewEntity = true
+		isNewEntity = true
 	}
 
 	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
@@ -139,9 +140,12 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 		dbCountry = country
 	}
 
+	dbCountry.IsNewEntity = isNewEntity
+
 	return dbCountry, nil
 }
 
+// initQsoDetailsSection initializes the QsoDetails section with default values and returns the QsoDetails object.
 func (s *Service) initQsoDetailsSection() types.QsoDetails {
 	return types.QsoDetails{
 		AntPath: "S",
