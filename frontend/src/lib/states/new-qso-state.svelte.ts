@@ -55,6 +55,7 @@ export interface QsoState extends CatDrivenFields {
     qslWanted: string;
 
     country_name: string;
+    isNewEntity: boolean;
     ccode: string;
     ant_path: string;
     short_path_distance: string;
@@ -119,6 +120,7 @@ export const qsoState: QsoState = $state({
     qslWanted: '',
 
     country_name: '',
+    isNewEntity: false,
     ccode: '',
     ant_path: '',
     short_path_distance: '',
@@ -163,6 +165,7 @@ export const qsoState: QsoState = $state({
         this.time_on = getTimeUTC();
         this.time_off = getTimeUTC();
         this.country_name = '';
+        this.isNewEntity = false;
         this.ccode = '';
         this.remote_time = '';
         this.remote_offset = '';
@@ -196,6 +199,7 @@ export const qsoState: QsoState = $state({
         this.email = qso.email ?? '';
         this.web = qso.web ?? '';
         this.country_name = qso.country ?? '';
+        this.isNewEntity = qso.country_details.is_new_entity ?? false;
         this.ccode = qso.country_details.ccode ?? '';
         this.remote_time = extractRemoteTime(qso.country_details.local_time);
         this.remote_offset = qso.country_details.time_offset ?? '';

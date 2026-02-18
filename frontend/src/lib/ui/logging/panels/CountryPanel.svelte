@@ -33,7 +33,7 @@
 <div class="w-60 h-59 border border-gray-300 rounded-md bg-gray-200">
     <div class="{isVisible ? 'block' : 'hidden'} flex flex-col">
         <div class="px-4 text-2xl text-center font-semibold mt-2 overflow-hidden text-ellipsis whitespace-nowrap">
-            {qsoState.country_name}
+            {qsoState.country_name}{#if qsoState.isNewEntity}<span>*</span>{/if}
         </div>
         <div class="flex justify-center h-13.5 my-1.5">
             <img class="border border-gray-400/40" src="{flagImgPath}" alt="{qsoState.country_name}" title="{qsoState.country_name}">
