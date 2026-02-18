@@ -155,6 +155,7 @@ func (s *Service) SetContainer(container *iocdi.Container) error {
 // Start begins the Service lifecycle by initializing dependencies, opening the database, and marking it as started.
 func (s *Service) Start(ctx context.Context) error {
 	const op errors.Op = "facade.Service.Start"
+
 	if !s.initialized.Load() {
 		err := errors.New(op).Msg(errMsgServiceNotInit)
 		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)

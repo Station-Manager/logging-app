@@ -1,3 +1,4 @@
+// logging-app
 package main
 
 import (
@@ -75,7 +76,6 @@ func main() {
 				_, _ = fmt.Fprintf(os.Stderr, "Stack trace:\n%s\n", debug.Stack())
 			}
 		}()
-
 		if err = facade.Start(ctx); err != nil {
 			errors.PrintChain(err)
 			_, _ = fmt.Fprintf(os.Stderr, "failed to start facade service: %v\n", errors.Root(err))
