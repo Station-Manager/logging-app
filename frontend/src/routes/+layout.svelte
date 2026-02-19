@@ -51,7 +51,7 @@
         }
 
         // Set initial focus to the callsign input field
-        focusContext.focus('callsignInput');
+        await focusContext.focus('callsignInput');
     });
 
     onDestroy((): void => {
