@@ -33,12 +33,12 @@
 
         const recipientAddress = configState.default_fwd_email;
         if (!recipientAddress || recipientAddress.length === 0) {
-            focusContext.focus('fwdSessionEmailInput');
+            await focusContext.focus('fwdSessionEmailInput');
             return;
         }
 
         if (emailPattern.test(recipientAddress) == false) {
-            focusContext.focus('fwdSessionEmailInput', true);
+            await focusContext.focus('fwdSessionEmailInput', true);
             return;
         }
 
