@@ -10,6 +10,8 @@ github.com/Station-Manager/config v0.0.41 h1:ReQ0jS1SiVvx8PAnE5vlAhp+s2xjjdSCy1T
 github.com/Station-Manager/config v0.0.41/go.mod h1:T5sYQcZxbT9ms8EF9v6IlSrRJ8agD4XMG7L97Xqj5Tk=
 github.com/Station-Manager/database v0.0.58 h1:blXJcEbT9hXNfvqdSgphTc8o6eJLxzYtrzzPRSly8pk=
 github.com/Station-Manager/database v0.0.58/go.mod h1:hURj2d0Dpc3rnsXbexJiIpV/PfUu6DLcss00ntSJQSI=
+github.com/Station-Manager/database v0.0.59 h1:HkEVgbscd5b8XjXbRfIu2vgOYGtRTIrr/lRVrQdm8h8=
+github.com/Station-Manager/database v0.0.59/go.mod h1:4ET72j46pnkZXp1Ki/NOeMdb0WfUVpQB0LlGufRrAhA=
 github.com/Station-Manager/email v0.0.8 h1:QpbuHkN+AFFKaum+BU5u8+Hxittmcaic6w2Q9wLu1YE=
 github.com/Station-Manager/email v0.0.8/go.mod h1:Kv5HFTKxUEsTqgDzxuR3n3BPgbSXyq7KMHXD8Ibylxg=
 github.com/Station-Manager/enums v0.0.8 h1:SJ6MdAZFlTAKxvAcRy2nln7eoTLfAF+nVN9bz8OUqpc=
