@@ -1,6 +1,6 @@
 <script lang="ts">
     import {frequencyToBandFromDottedMHz} from "@station-manager/shared-utils";
-    import {inputBase} from "$lib/ui/styles";
+    import {inputBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

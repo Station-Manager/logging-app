@@ -13,7 +13,7 @@
     import {showToast} from "$lib/utils/toast";
     import {ForwardSessionQsosByEmail} from "$lib/wailsjs/go/facade/Service";
     import {getFocusContext} from "@station-manager/shared-utils/svelte";
-    import {getTabButtonClass, inputCompact} from "$lib/ui/styles";
+    import {getTabButtonClass, inputCompact} from "@station-manager/shared-utils";
 
     const focusContext = getFocusContext();
 

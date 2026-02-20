@@ -1,6 +1,6 @@
 <script lang="ts">
     import {qsoState} from "$lib/states/new-qso-state.svelte.js";
-    import {inputDateTimePicker, inputTimerDisabled, labelBase} from "$lib/ui/styles";
+    import {inputDateTimePicker, inputTimerDisabled, labelBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string,

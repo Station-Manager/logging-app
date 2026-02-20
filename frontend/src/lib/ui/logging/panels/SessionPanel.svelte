@@ -21,7 +21,7 @@
     import {UpdateQso} from "$lib/wailsjs/go/facade/Service";
     import {showToast} from "$lib/utils/toast";
     import {getFocusContext} from "@station-manager/shared-utils/svelte";
-    import {sessionTable} from "$lib/ui/styles";
+    import {sessionTable} from "@station-manager/shared-utils";
 
     const focusContext = getFocusContext();
     const SHORT_PATH = 'S';

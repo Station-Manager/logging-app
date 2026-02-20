@@ -9,7 +9,7 @@
     import {frequencyToBandFromDottedMHz} from "@station-manager/shared-utils";
     import {showToast} from "$lib/utils/toast";
     import type {FocusRefs} from "@station-manager/shared-utils/svelte";
-    import {inputBaseUppercase, inputWrapper, labelBase} from "$lib/ui/styles";
+    import {inputBaseUppercase, inputWrapper, labelBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

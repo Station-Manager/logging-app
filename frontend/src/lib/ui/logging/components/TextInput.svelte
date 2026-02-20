@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {inputBase, inputWrapper, labelBase} from "$lib/ui/styles";
+    import {inputBase, inputWrapper, labelBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

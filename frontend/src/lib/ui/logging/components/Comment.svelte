@@ -1,7 +1,7 @@
 <script lang="ts">
     import {clickoutside} from "@svelte-put/clickoutside";
     import {clipboardState} from "$lib/states/clipboard-state.svelte";
-    import {textareaBase, inputWrapper, labelWithMargin} from "$lib/ui/styles";
+    import {textareaBase, inputWrapper, labelWithMargin} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

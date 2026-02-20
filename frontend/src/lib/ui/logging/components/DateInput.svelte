@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {inputDateTimePicker, labelBase} from "$lib/ui/styles";
+    import {inputDateTimePicker, labelBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

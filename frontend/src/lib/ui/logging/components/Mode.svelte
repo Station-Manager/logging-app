@@ -1,6 +1,6 @@
 <script lang="ts">
     import {isCatEnabled} from "$lib/states/cat-state.svelte";
-    import {selectBase, selectWrapper, labelBase} from "$lib/ui/styles";
+    import {selectBase, selectWrapper, labelBase} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;

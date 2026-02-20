@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {inputInvalid} from "$lib/ui/styles";
+    import {inputInvalid} from "@station-manager/shared-utils";
 
     interface Props {
         id: string;
