@@ -86,12 +86,13 @@ func (s *Service) insertOrUpdateContactedStation(station types.ContactedStation)
 func (s *Service) insertOrUpdateCountry(country types.Country) error {
 	const op errors.Op = "facade.Service.insertOrUpdateCountry"
 
-	model, err := s.DatabaseService.FetchCountryByName(country.Name)
+	//	model, err := s.DatabaseService.FetchCountryByName(country.Name)
+	model, err := s.DatabaseService.FetchCountryByCallsign(country.Prefix)
 	if err != nil && !stderr.Is(err, errors.ErrNotFound) {
 		return errors.New(op).Err(err)
 	}
 
-	if stderr.Is(err, errors.ErrNotFound) {
+	if stderr.Is(err, errors.ErrNotFound) || country.IsNewEntity {
 		model.ID, err = s.DatabaseService.InsertCountry(country)
 		if err != nil {
 			return errors.New(op).Err(err)

@@ -127,19 +127,31 @@ func (s *Service) initCountrySection(callsign string) (types.Country, error) {
 	}
 
 	isNewEntity := false
+	// Mark the country as new if it has not found in the database, but we need to confirm this status using the
+	// country name, which we don't know until we do a lookup online. So, 'new' can mean new in the sense of a new entity (new country),
+	// or new in the sense of a new prefix for the country already on the database.
 	if stderr.Is(err, errors.ErrNotFound) {
 		isNewEntity = true
 	}
 
+	// Look up the country online.
 	country, err := s.HamnutLookupService.Lookup(parsedCallsign)
 	if err != nil {
 		return dbCountry, errors.New(op).Err(err)
 	}
 
+	if isNewEntity {
+		dbCountry, err = s.DatabaseService.FetchCountryByName(country.Name)
+		if err != nil && !stderr.Is(err, errors.ErrNotFound) {
+			// This is a major database problem, but we can continue without the country details.
+			s.LoggerService.ErrorWith().Err(err).Msgf("Failed online look up country details for %s", country.Name)
+			isNewEntity = false
+		}
+	}
+
 	if dbCountry != country {
 		dbCountry = country
 	}
-
 	dbCountry.IsNewEntity = isNewEntity
 
 	return dbCountry, nil
