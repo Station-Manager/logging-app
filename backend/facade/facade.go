@@ -410,3 +410,22 @@ func (s *Service) GetQsoById(id int64) (types.Qso, error) {
 
 	return qso, nil
 }
+
+// HasDefaultLogbook checks if a default logbook exists in the database. Returns true if it exists, otherwise false.
+func (s *Service) HasDefaultLogbook() (bool, error) {
+	const op errors.Op = "facade.Service.HasDefaultLogbook"
+
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return false, errors.Root(err)
+	}
+
+	if !s.started.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotStarted)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotStarted)
+		return false, errors.Root(err)
+	}
+
+	return s.DatabaseService.CheckDefaultLogbookExists()
+}

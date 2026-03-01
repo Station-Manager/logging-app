@@ -249,7 +249,7 @@ func (s *Service) Start(ctx context.Context) error {
 }
 
 // Stop gracefully shuts down the service, closes resources, and resets the service state.
-// Returns an error if critical failures occur during shutdown, but attempts to complete
+// Returns an error if critical failures occur during shutdown but attempts to complete
 // all shutdown steps regardless of individual failures.
 func (s *Service) Stop() error {
 	const op errors.Op = "facade.Service.Stop"
