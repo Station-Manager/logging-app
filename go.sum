@@ -8,8 +8,8 @@ github.com/Station-Manager/cat v0.0.10 h1:pJwbS8EiLX95jS9nR/7F18rwkiNdz7SCQWrd0Y
 github.com/Station-Manager/cat v0.0.10/go.mod h1:JWDbQI7uCO8dkASo+dVg1DZRRJmtVTnAzaXDrtfPo74=
 github.com/Station-Manager/config v0.0.42 h1:50VmyvBuDkqtUv5qEvN5/wKbD2paHZd+YL4MSlVgGMk=
 github.com/Station-Manager/config v0.0.42/go.mod h1:lCR5dW1mIk/7vvTJB5GeGnDAVxLlrVvSsgDdmLaCTR4=
-github.com/Station-Manager/database v0.0.60 h1:bRg7Awn8BF0EqinfmGYex9KN+h0jmW2WjXAEgy5lVx8=
-github.com/Station-Manager/database v0.0.60/go.mod h1:4ET72j46pnkZXp1Ki/NOeMdb0WfUVpQB0LlGufRrAhA=
+github.com/Station-Manager/database v0.0.61 h1:I6f/lXbYqfCTNpu1Ovb7z+fU1HwUdS66aoz/gJ7Lch8=
+github.com/Station-Manager/database v0.0.61/go.mod h1:F4fHbY0Z7LPtDpQdQL3sYrzpn8pun/8xSKEHTXR1i7o=
 github.com/Station-Manager/email v0.0.8 h1:QpbuHkN+AFFKaum+BU5u8+Hxittmcaic6w2Q9wLu1YE=
 github.com/Station-Manager/email v0.0.8/go.mod h1:Kv5HFTKxUEsTqgDzxuR3n3BPgbSXyq7KMHXD8Ibylxg=
 github.com/Station-Manager/enums v0.0.8 h1:SJ6MdAZFlTAKxvAcRy2nln7eoTLfAF+nVN9bz8OUqpc=
