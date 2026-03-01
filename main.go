@@ -11,6 +11,7 @@ import (
 	"github.com/Station-Manager/iocdi"
 	"github.com/Station-Manager/utils"
 	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
 )
 
 const (
@@ -62,7 +63,22 @@ func main() {
 		os.Exit(ExitFacadeService)
 	}
 
-	if err = wails.Run(mainOpts(facade)); err != nil {
+	required, err := facade.ConfigService.RequiredConfigs()
+	if err != nil {
+		errors.PrintChain(err)
+		_, _ = fmt.Fprintf(os.Stderr, "failed to get required configs: %v\n", errors.Root(err))
+		os.Exit(ExitFacadeService)
+	}
+
+	var wailsOpts *options.App
+	if !required.SetupComplete {
+		_, _ = fmt.Fprintf(os.Stderr, "Setup not completed. Running the setup wizard.\n")
+		wailsOpts = setupOpts(facade)
+	} else {
+		wailsOpts = mainOpts(facade)
+	}
+
+	if err = wails.Run(wailsOpts); err != nil {
 		errors.PrintChain(err)
 		_, _ = fmt.Fprintf(os.Stderr, "failed to run wails: %v\n", errors.Root(err))
 		os.Exit(ExitWailsRun)

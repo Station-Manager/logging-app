@@ -28,6 +28,7 @@ const (
 	workerWaitTimeout     = 5 * time.Second
 )
 
+// runState encapsulates the state of the service during its current run.
 type runState struct {
 	shutdownChannel chan struct{}
 	wg              sync.WaitGroup
@@ -316,6 +317,95 @@ func (s *Service) Stop() error {
 		// Not a show-stopper, just log the error
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to soft-delete session ID")
 		shutdownErrors = append(shutdownErrors, err)
+	}
+
+	// Stop the database service
+	if err := s.DatabaseService.Close(); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to close database")
+		shutdownErrors = append(shutdownErrors, err)
+	}
+
+	// Return the combined error if any shutdown steps failed
+	if len(shutdownErrors) > 0 {
+		return errors.New(op).Msgf("shutdown completed with %d error(s)", len(shutdownErrors))
+	}
+
+	return nil
+}
+
+// StartDatabase starts the database service and initializes the database connection. This is used only for initial
+// setup when there is no default logbook.
+func (s *Service) StartDatabase(ctx context.Context) error {
+	const op errors.Op = "facade.Service.Start"
+
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return errors.Root(err)
+	}
+
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	// Use CompareAndSwap to atomically check and set started flag
+	if !s.started.CompareAndSwap(false, true) {
+		// Service already started
+		return nil
+	}
+
+	if s.container == nil {
+		return errors.New(op).Msg("Container is nil. Please call SetContainer() before calling Start()")
+	}
+
+	if ctx == nil || ctx.Err() != nil {
+		err := errors.New(op).Msg("Context cannot be nil or cancelled")
+		s.LoggerService.ErrorWith().Msg("Context cannot be nil or cancelled")
+		return errors.Root(err)
+	}
+	s.ctx = ctx
+
+	// Start the database service
+	if err := s.openDatabase(); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
+		return errors.Root(err)
+	}
+
+	run := &runState{
+		shutdownChannel: make(chan struct{}),
+	}
+	s.currentRun = run
+
+	return nil
+}
+
+// StopDatabase starts the database service and initializes the database connection. This is used only for initial
+// setup when there is no default logbook.
+func (s *Service) StopDatabase() error {
+	const op errors.Op = "facade.Service.Stop"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return err
+	}
+
+	// Collect non-fatal shutdown errors for reporting
+	var shutdownErrors []error
+
+	// Take a consistent view of the current run/forwarding state under lock to avoid races with Start.
+	s.mu.Lock()
+	run := s.currentRun
+	s.currentRun = nil
+	s.started.Store(false)
+	s.mu.Unlock()
+
+	if run != nil && run.shutdownChannel != nil {
+		select {
+		case <-run.shutdownChannel:
+			// already closed; nothing to do
+		default:
+			close(run.shutdownChannel)
+		}
 	}
 
 	// Stop the database service

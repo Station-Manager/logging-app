@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/Station-Manager/adif v0.0.8
 	github.com/Station-Manager/cat v0.0.10
-	github.com/Station-Manager/config v0.0.41
+	github.com/Station-Manager/config v0.0.42
 	github.com/Station-Manager/database v0.0.60
 	github.com/Station-Manager/email v0.0.8
 	github.com/Station-Manager/enums v0.0.8
@@ -15,7 +15,7 @@ require (
 	github.com/Station-Manager/logging v0.0.13
 	github.com/Station-Manager/lookup v0.0.16
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.79
+	github.com/Station-Manager/types v0.0.80
 	github.com/Station-Manager/utils v0.0.6
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/go-playground/validator/v10 v10.30.1
@@ -77,7 +77,7 @@ require (
 	golang.org/x/tools v0.42.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
-	modernc.org/libc v1.68.1 // indirect
+	modernc.org/libc v1.69.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.46.1 // indirect

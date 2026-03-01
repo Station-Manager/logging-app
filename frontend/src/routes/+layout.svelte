@@ -12,8 +12,13 @@
     import {Ready} from "$lib/wailsjs/go/facade/Service";
     import {configState} from "$lib/states/config-state.svelte";
     import {setFocusContext} from "@station-manager/shared-utils/svelte";
+    import {HasDefaultLogbook} from "$lib/wailsjs/go/facade/Service";
+    import SetupPage from "$lib/ui/setup/SetupPage.svelte";
 
     let {children} = $props();
+
+    let setupComplete: boolean = $state(false);
+
     let catStateEventsCancel: () => void = (): void => {}
 
     // Initialize focus context for cross-component focus management
@@ -37,6 +42,18 @@
     }
 
     onMount(async (): Promise<void> => {
+        try {
+            setupComplete = await HasDefaultLogbook();
+        } catch (e: unknown) {
+            console.error("Error checking default logbook: ", e);
+            return
+        }
+
+        if (!setupComplete) {
+            // Exit early if we don't have a default logbook.
+            return
+        }
+
         sessionState.start();
         // We set the operator's callsign to be the same as the logbook's callsign. However, the operator's callsign
         // can be set to a different callsign in contest mode. The station_callsign will always reflect the logbook's callsign.
@@ -61,6 +78,9 @@
     });
 </script>
 
+{#if !setupComplete}
+    <SetupPage/>
+{:else}
 <header>
     <SvelteToast/>
     <MainNav/>
@@ -68,3 +88,4 @@
 <main>
     {@render children()}
 </main>
+{/if}

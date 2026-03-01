@@ -14,17 +14,22 @@ import (
 // openAndLoadFromDatabase initializes the database connection, applies migrations, loads the default
 // logbook, and generates a session ID.
 func (s *Service) openAndLoadFromDatabase() error {
-	const op errors.Op = "facade.Service.loadFromDatabase"
+	const op errors.Op = "facade.Service.openAndLoadFromDatabase"
 
 	// Open and migrate the database. Don't need to ping as opening the database will do that.
-	if err := s.DatabaseService.Open(); err != nil {
+	//if err := s.DatabaseService.Open(); err != nil {
+	//	err = errors.New(op).Err(err)
+	//	s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
+	//	return err
+	//}
+	//if err := s.DatabaseService.Migrate(); err != nil {
+	//	err = errors.New(op).Err(err)
+	//	s.LoggerService.ErrorWith().Err(err).Msg("Failed to migrate database.")
+	//	return err
+	//}
+	if err := s.openDatabase(); err != nil {
 		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
-		return err
-	}
-	if err := s.DatabaseService.Migrate(); err != nil {
-		err = errors.New(op).Err(err)
-		s.LoggerService.ErrorWith().Err(err).Msg("Failed to migrate database.")
+		s.LoggerService.ErrorWith().Err(err).Msg("Open database failed.")
 		return err
 	}
 
@@ -42,6 +47,24 @@ func (s *Service) openAndLoadFromDatabase() error {
 	if err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to generate new session ID.")
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) openDatabase() error {
+	const op errors.Op = "facade.Service.openDatabase"
+
+	// Open and migrate the database. Don't need to ping as opening the database will do that.
+	if err := s.DatabaseService.Open(); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to open database.")
+		return err
+	}
+	if err := s.DatabaseService.Migrate(); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to migrate database.")
 		return err
 	}
 
