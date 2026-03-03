@@ -429,3 +429,29 @@ func (s *Service) HasDefaultLogbook() (bool, error) {
 
 	return s.DatabaseService.CheckDefaultLogbookExists()
 }
+
+func (s *Service) FinaliseSetup(logbook types.Logbook) error {
+	const op errors.Op = "facade.Service.UpdateAppConfig"
+	if !s.initialized.Load() {
+		err := errors.New(op).Msg(errMsgServiceNotInit)
+		s.LoggerService.ErrorWith().Err(err).Msg(errMsgServiceNotInit)
+		return errors.Root(err)
+	}
+
+	logbook.ID = 1
+	if err := s.DatabaseService.UpsertLogbook(logbook); err != nil {
+		s.LoggerService.ErrorWith().Err(err)
+		return errors.Root(err)
+	}
+
+	cfg := s.ConfigService.AppConfig
+	cfg.RequiredConfigs.SetupComplete = true
+
+	err := s.ConfigService.UpdateAppConfig(cfg)
+	if err != nil {
+		s.LoggerService.ErrorWith().Err(err)
+		return errors.Root(err)
+	}
+
+	return nil
+}

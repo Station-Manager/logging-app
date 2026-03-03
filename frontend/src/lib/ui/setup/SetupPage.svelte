@@ -1,5 +1,7 @@
 <script lang="ts">
     import {inputBase, inputBaseUppercase, labelBase} from "@station-manager/shared-utils";
+    import {types} from "$lib/wailsjs/go/models";
+    import {FinaliseSetup} from "$lib/wailsjs/go/facade/Service";
 
     interface Logbook {
         name: string;
@@ -13,8 +15,16 @@
         description: "",
     });
 
-    const onClickSave = () => {
-        console.log("Save button clicked");
+    const onClickSave = async (): Promise<void> => {
+        try {
+            const lb: types.Logbook = new types.Logbook();
+            lb.name = logbook.name;
+            lb.callsign = logbook.callsign;
+            lb.description = logbook.description;
+            await FinaliseSetup(lb);
+        } catch(e: unknown) {
+            console.error(e);
+        }
     }
 </script>
 
