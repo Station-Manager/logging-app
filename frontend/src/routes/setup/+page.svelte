@@ -101,8 +101,8 @@
         <div class="flex justify-end">
             <button
                     onclick={onClickSave}
-                    class="{showMsg ? 'cursor-not-allowed' : 'cursor-pointer'} h-9 rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20"
-                    DISABLED={showMsg}
+                    class="{showMsg ? 'cursor-not-allowed' : 'cursor-pointer'} h-9 rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm disabled:bg-gray-400 hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20"
+                    disabled={showMsg}
             >Save</button>
         </div>
     </div>
