@@ -3,23 +3,22 @@
     import {SvelteToast} from "@zerodevx/svelte-toast";
     import MainNav from "$lib/ui/MainNav.svelte";
     import {onDestroy, onMount} from "svelte";
+    import {goto} from "$app/navigation"
     import {sessionState} from "$lib/states/session-state.svelte";
     import {EventsOn} from "$lib/wailsjs/runtime/runtime";
     import {events} from "$lib/wailsjs/go/models";
     import {catState} from "$lib/states/cat-state.svelte";
     import {qsoState, type CatForQsoPayload} from "$lib/states/new-qso-state.svelte";
     import {handleAsyncError} from "$lib/utils/error-handler";
-    import {Ready} from "$lib/wailsjs/go/facade/Service";
+    import {Ready, HasDefaultLogbook} from "$lib/wailsjs/go/facade/Service";
     import {configState} from "$lib/states/config-state.svelte";
     import {setFocusContext} from "@station-manager/shared-utils/svelte";
-    import {HasDefaultLogbook} from "$lib/wailsjs/go/facade/Service";
-    import SetupPage from "$lib/ui/setup/SetupPage.svelte";
+    import {resolve} from "$app/paths";
 
     let {children} = $props();
 
-    let setupComplete: boolean = $state(false);
-
     let catStateEventsCancel: () => void = (): void => {}
+    let setupComplete: boolean = $state(false);
 
     // Initialize focus context for cross-component focus management
     const focusContext = setFocusContext();
@@ -42,16 +41,17 @@
     }
 
     onMount(async (): Promise<void> => {
+        // Here we check if the default logbook is set up. If it isn't, we redirect to the setup page.
+        // We do this check before starting the session.
         try {
             setupComplete = await HasDefaultLogbook();
         } catch (e: unknown) {
             console.error("Error checking default logbook: ", e);
-            return
         }
 
         if (!setupComplete) {
-            // Exit early if we don't have a default logbook.
-            return
+            await goto(resolve('/setup'));
+            return;
         }
 
         sessionState.start();
@@ -78,9 +78,6 @@
     });
 </script>
 
-{#if !setupComplete}
-    <SetupPage/>
-{:else}
 <header>
     <SvelteToast/>
     <MainNav/>
@@ -88,4 +85,3 @@
 <main>
     {@render children()}
 </main>
-{/if}
