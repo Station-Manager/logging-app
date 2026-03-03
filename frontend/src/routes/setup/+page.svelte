@@ -15,30 +15,41 @@
         description: "",
     });
 
+    let showMsg = $state(false);
+
     const onClickSave = async (): Promise<void> => {
+        if (showMsg) return;
+        if (logbook.callsign.length === 0) {
+            return;
+        }
+        if (logbook.description.length === 0) {
+            return;
+        }
+
         try {
             const lb: types.Logbook = new types.Logbook();
             lb.name = logbook.name;
             lb.callsign = logbook.callsign;
             lb.description = logbook.description;
             await FinaliseSetup(lb);
+            showMsg = true;
         } catch(e: unknown) {
             console.error(e);
         }
     }
 </script>
 
-<div class="mx-6 flex flex-col gap-4">
-    <div>
-        <h2 class="text-center">Setting your Default Logbook</h2>
-        <p>This page will create the <b>default logbook</b> used by the <i>Station Manager</i> logging application. The callsign
+<div class="mx-20 flex flex-col gap-y-6">
+    <div class="mt-4">
+        <h2 class="text-center">Setting your Default Log Book</h2>
+        <p>This page will create the <b>default log book</b> used by the <i>Station Manager</i> logging application. The callsign
             you provide here will identify the <i>Station Callsign</i> for all QSOs associated with this log book.
         </p>
         <p>If you use QRZ.com, then the callsign entered here should be the same as the callsign for the QRZ.com log book
             to which the QSOs will be forwarded (forwarding of QSOs is configurable and not enabled by default).
         </p>
     </div>
-    <div class="flex flex-col gap-y-4 mx-8">
+    <div class="flex flex-col gap-y-6 mx-68">
         <div>
             <div class="flex flex-col w-37.5">
                 <label for="name" class={labelBase}>Name</label>
@@ -60,11 +71,12 @@
                         type="text"
                         placeholder="Callsign"
                         class={inputBaseUppercase}
+                        title="The Default log book's callsign."
                 />
             </div>
         </div>
         <div>
-            <div class="flex flex-col w-64">
+            <div class="flex flex-col w-80">
                 <label class={labelBase} for="description">Description</label>
                 <input
                         bind:value={logbook.description}
@@ -78,7 +90,15 @@
         <div class="flex justify-end">
             <button
                     onclick={onClickSave}
-                    class="h-9 cursor-pointer rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20">Save</button>
+                    class="{showMsg ? 'cursor-not-allowed' : 'cursor-pointer'} h-9 rounded-md bg-indigo-600 p-2.5 py-1.5 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 w-20"
+                    DISABLED={showMsg}
+            >Save</button>
         </div>
+    </div>
+    <div class="mx-20 {showMsg ? 'block' : 'hidden'}">
+        <p class="font-bold text-red-600">
+        Please close this window and restart the application to start using the logging features. If you have any questions,
+        please refer to the documentation or reach out to me for support.
+        </p>
     </div>
 </div>
