@@ -439,6 +439,8 @@ func (s *Service) FinaliseSetup(logbook types.Logbook) error {
 	}
 
 	logbook.ID = 1
+	logbook.Callsign = strings.ToUpper(logbook.Callsign)
+
 	if err := s.DatabaseService.UpsertLogbook(logbook); err != nil {
 		s.LoggerService.ErrorWith().Err(err)
 		return errors.Root(err)
