@@ -1,5 +1,5 @@
 <script lang="ts">
-    import {inputBase, inputBaseUppercase, inputCompact, labelBase} from "@station-manager/shared-utils";
+    import {inputBase, inputBaseUppercase, labelBase} from "@station-manager/shared-utils";
 
     interface Logbook {
         name: string;
