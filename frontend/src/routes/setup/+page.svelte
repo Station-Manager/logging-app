@@ -2,12 +2,16 @@
     import {inputBase, inputBaseUppercase, labelBase} from "@station-manager/shared-utils";
     import {types} from "$lib/wailsjs/go/models";
     import {FinaliseSetup} from "$lib/wailsjs/go/facade/Service";
+    import {getFocusContext} from "@station-manager/shared-utils/svelte";
+    import {onMount} from "svelte";
 
     interface Logbook {
         name: string;
         callsign: string;
         description: string;
     }
+
+    const focusContext = getFocusContext();
 
     let logbook: Logbook = $state({
         name: "Default",
@@ -20,6 +24,7 @@
     const onClickSave = async (): Promise<void> => {
         if (showMsg) return;
         if (logbook.callsign.length === 0) {
+            await focusContext.focus('callsignInput');
             return;
         }
         if (logbook.description.length === 0) {
@@ -37,6 +42,11 @@
             console.error(e);
         }
     }
+
+    onMount(async (): Promise<void> => {
+        await focusContext.focus('callsignInput');
+    })
+
 </script>
 
 <div class="mx-20 flex flex-col gap-y-6">
@@ -67,6 +77,7 @@
                 <label class={labelBase} for="callsign">Callsign</label>
                 <input
                         bind:value={logbook.callsign}
+                        bind:this={focusContext.refs.callsignInput}
                         id="callsign"
                         type="text"
                         placeholder="Callsign"
