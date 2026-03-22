@@ -5,17 +5,18 @@ go 1.25.0
 require (
 	github.com/Station-Manager/adif v0.0.8
 	github.com/Station-Manager/cat v0.0.10
-	github.com/Station-Manager/config v0.0.46
+	github.com/Station-Manager/config v0.0.49
 	github.com/Station-Manager/database v0.0.62
 	github.com/Station-Manager/email v0.0.8
 	github.com/Station-Manager/enums v0.0.8
 	github.com/Station-Manager/errors v0.0.11
 	github.com/Station-Manager/forwarding v0.0.13
 	github.com/Station-Manager/iocdi v0.0.1
+	github.com/Station-Manager/listeners v0.0.0-20260322084429-212dbe2ad6d3
 	github.com/Station-Manager/logging v0.0.13
 	github.com/Station-Manager/lookup v0.0.16
 	github.com/Station-Manager/maidenhead v0.0.1
-	github.com/Station-Manager/types v0.0.85
+	github.com/Station-Manager/types v0.0.88
 	github.com/Station-Manager/utils v0.0.6
 	github.com/aarondl/sqlboiler/v4 v4.19.7
 	github.com/go-playground/validator/v10 v10.30.1

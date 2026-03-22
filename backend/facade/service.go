@@ -13,6 +13,7 @@ import (
 	"github.com/Station-Manager/errors"
 	fwdrs "github.com/Station-Manager/forwarding"
 	"github.com/Station-Manager/iocdi"
+	"github.com/Station-Manager/listeners"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/lookup/qrz"
@@ -35,13 +36,14 @@ type runState struct {
 }
 
 type Service struct {
-	ConfigService       *config.Service  `di.inject:"configservice"`
-	LoggerService       *logging.Service `di.inject:"loggingservice"`
-	DatabaseService     *sqlite.Service  `di.inject:"sqliteservice"`
-	CatService          *cat.Service     `di.inject:"catservice"`
-	HamnutLookupService *hamnut.Service  `di.inject:"hamnutlookupservice"`
-	QrzLookupService    *qrz.Service     `di.inject:"qrzlookupservice"`
-	EmailService        *email.Service   `di.inject:"emailservice"`
+	ConfigService       *config.Service    `di.inject:"configservice"`
+	LoggerService       *logging.Service   `di.inject:"loggingservice"`
+	DatabaseService     *sqlite.Service    `di.inject:"sqliteservice"`
+	CatService          *cat.Service       `di.inject:"catservice"`
+	ListenersService    *listeners.Service `di.inject:"networklisteners"`
+	HamnutLookupService *hamnut.Service    `di.inject:"hamnutlookupservice"`
+	QrzLookupService    *qrz.Service       `di.inject:"qrzlookupservice"`
+	EmailService        *email.Service     `di.inject:"emailservice"`
 	requiredCfgs        *types.RequiredConfigs
 
 	forwarders map[string]fwdrs.Forwarder
@@ -88,6 +90,11 @@ func (s *Service) Initialize() error {
 
 		if s.CatService == nil {
 			initErr = errors.New(op).Msg(errMsgNilCatService)
+			return
+		}
+
+		if s.ListenersService == nil {
+			initErr = errors.New(op).Msg(errMsgNilListenersService)
 			return
 		}
 
@@ -194,6 +201,13 @@ func (s *Service) Start(ctx context.Context) error {
 	if err := s.CatService.Start(); err != nil {
 		err = errors.New(op).Err(err)
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start CAT service.")
+		return errors.Root(err)
+	}
+
+	// Start the listeners service
+	if err := s.ListenersService.Start(ctx); err != nil {
+		err = errors.New(op).Err(err)
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to start listeners service.")
 		return errors.Root(err)
 	}
 
@@ -309,6 +323,12 @@ func (s *Service) Stop() error {
 	// Stop the CAT service
 	if err := s.CatService.Stop(); err != nil {
 		s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop CAT service")
+		shutdownErrors = append(shutdownErrors, err)
+	}
+
+	// Stop the listeners service
+	if err := s.ListenersService.Stop(); err != nil {
+		s.LoggerService.ErrorWith().Err(err).Msg("Failed to stop listeners service")
 		shutdownErrors = append(shutdownErrors, err)
 	}
 

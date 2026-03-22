@@ -16,7 +16,7 @@ tasks:
       - echo "Running..."
       - go vet ./...
       - task: format
-      - wails dev -ldflags "-X main.version=Dev"
+      - wails dev -ldflags "-X main.version=Dev" -tags webkit2_41
 
   update:
     cmds:
@@ -44,6 +44,6 @@ tasks:
   deploy:
     desc: "Local deployment of the {{.MODULE_NAME}} module"
     cmds:
-      - wails build -ldflags "-X main.version=$(cat {{.VERSION_FILE}} 2>/dev/null || echo '0.0.0')" -o {{.EXE_NAME}}
+      - wails build -tags webkit2_41-ldflags "-X main.version=$(cat {{.VERSION_FILE}} 2>/dev/null || echo '0.0.0')" -o {{.EXE_NAME}}
       - sudo cp -f {{.SM_WORKING_DIR}}/bin/{{.EXE_NAME}} {{.DEPLOY_DIR}}/{{.EXE_NAME}}
       - echo "✓ {{.MODULE_NAME}} v$(cat {{.VERSION_FILE}} 2>/dev/null || echo '0.0.0') deployed"

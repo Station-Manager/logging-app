@@ -10,10 +10,14 @@ import (
 	"github.com/Station-Manager/errors"
 	fwdrqrz "github.com/Station-Manager/forwarding/qrz"
 	"github.com/Station-Manager/iocdi"
+	"github.com/Station-Manager/listeners"
 	"github.com/Station-Manager/logging"
 	"github.com/Station-Manager/logging-app/backend/facade"
 	"github.com/Station-Manager/lookup/hamnut"
 	"github.com/Station-Manager/lookup/qrz"
+
+	// Register packet handlers
+	_ "github.com/Station-Manager/listeners/handlers/wsjtx"
 )
 
 // initializeContainer initializes the dependency injection container with required services and configurations.
@@ -52,6 +56,9 @@ func initializeContainer(workingDir string) error {
 		return errors.New(op).Err(err)
 	}
 	if err := container.Register(fwdrqrz.ServiceName, reflect.TypeOf((*fwdrqrz.Service)(nil))); err != nil {
+		return errors.New(op).Err(err)
+	}
+	if err := container.Register(listeners.ServiceName, reflect.TypeOf((*listeners.Service)(nil))); err != nil {
 		return errors.New(op).Err(err)
 	}
 
