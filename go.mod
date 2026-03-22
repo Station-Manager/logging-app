@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/Station-Manager/adif v0.0.8
 	github.com/Station-Manager/cat v0.0.10
-	github.com/Station-Manager/config v0.0.49
+	github.com/Station-Manager/config v0.0.51
 	github.com/Station-Manager/database v0.0.62
 	github.com/Station-Manager/email v0.0.8
 	github.com/Station-Manager/enums v0.0.8

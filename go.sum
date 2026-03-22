@@ -6,8 +6,8 @@ github.com/Station-Manager/adif v0.0.8 h1:VPy1u1PG6/Fq5Y35J8FVPMAh7l4xVHqDtVCppR
 github.com/Station-Manager/adif v0.0.8/go.mod h1:ueFOE5+CPZrLm2Yov6yLawu0tipa0wYMD9Lr/yJdzOc=
 github.com/Station-Manager/cat v0.0.10 h1:pJwbS8EiLX95jS9nR/7F18rwkiNdz7SCQWrd0YyTohU=
 github.com/Station-Manager/cat v0.0.10/go.mod h1:JWDbQI7uCO8dkASo+dVg1DZRRJmtVTnAzaXDrtfPo74=
-github.com/Station-Manager/config v0.0.49 h1:0cict+V7p8vYdN/ZT6NOdobbGllXHWpojg7K17MjARo=
-github.com/Station-Manager/config v0.0.49/go.mod h1:pdE3dzc1vQJSwpAMN4zRWHQJHR72S24TOA1Yefoi1Z8=
+github.com/Station-Manager/config v0.0.51 h1:oMfv+ODm6XoIRuxic8LeR/LghjkQ60iH0Y3KlmMPOGU=
+github.com/Station-Manager/config v0.0.51/go.mod h1:pdE3dzc1vQJSwpAMN4zRWHQJHR72S24TOA1Yefoi1Z8=
 github.com/Station-Manager/database v0.0.62 h1:0veQ8ntSM6PY4xNk2lMgBvhWb+ijMHQHg5oCSH0e6wM=
 github.com/Station-Manager/database v0.0.62/go.mod h1:F4fHbY0Z7LPtDpQdQL3sYrzpn8pun/8xSKEHTXR1i7o=
 github.com/Station-Manager/email v0.0.8 h1:QpbuHkN+AFFKaum+BU5u8+Hxittmcaic6w2Q9wLu1YE=
